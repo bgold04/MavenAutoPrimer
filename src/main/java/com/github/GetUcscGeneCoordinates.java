@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.github.autoprimer3A;
+package com.github.mavenautoprimer;
 
 import static com.github.autoprimer3A.GetGeneCoordinates.conn;
 import java.sql.PreparedStatement;
