@@ -11,7 +11,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane id="AnchorPane" fx:id="mainPane" minHeight="207.0" prefHeight="281.0" prefWidth="656.0" styleClass="mainFxmlClass" stylesheets="@autoprimer3A.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.github.autoprimer3A.AutoPrimer3A">
+<AnchorPane id="AnchorPane" fx:id="mainPane" minHeight="207.0" prefHeight="281.0" prefWidth="656.0" styleClass="mainFxmlClass" stylesheets="@mavenautoprimer.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.github.mavenautoprimer.MavenAutoPrimer">
   <children>
     <MenuBar fx:id="menuBar" focusTraversable="true" prefHeight="39.0" prefWidth="656.0" style="" useSystemMenuBar="false" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
       <menus>
@@ -141,7 +141,7 @@
                   <children>
                     <ProgressIndicator fx:id="progressIndicator" disable="false" opacity="1.0" progress="0.0" style="-fx-fill: null" visible="true" />
                     <Button fx:id="runButton" defaultButton="true" mnemonicParsing="false" onAction="#designPrimersToGene" style="&#10;" text="Design" textAlignment="LEFT" />
-                    <Label fx:id="progressLabel" prefHeight="17.0" prefWidth="308.0" text="AutoPrimer3A" />
+                    <Label fx:id="progressLabel" prefHeight="17.0" prefWidth="308.0" text="MavenAutoPrimer" />
                     <Button fx:id="refreshButton" text="Refresh" />
                     <Button fx:id="cancelButton" disable="false" mnemonicParsing="false" prefWidth="66.0" text="Cancel" />
                   </children>
@@ -162,7 +162,7 @@
                         <HBox alignment="CENTER_LEFT" layoutX="14.0" layoutY="156.0" prefHeight="47.0" prefWidth="613.0" spacing="10.0">
                            <children>
                               <ProgressIndicator fx:id="progressIndicator2" disable="false" opacity="1.0" prefHeight="47.0" prefWidth="60.0" progress="0.0" style="-fx-fill: null" visible="true" />
-                              <Label fx:id="progressLabel2" alignment="TOP_LEFT" prefHeight="39.0" prefWidth="171.0" text="AutoPrimer3A" wrapText="true">
+                              <Label fx:id="progressLabel2" alignment="TOP_LEFT" prefHeight="39.0" prefWidth="171.0" text="MavenAutoPrimer" wrapText="true">
                                  <font>
                                     <Font size="12.0" />
                                  </font></Label>

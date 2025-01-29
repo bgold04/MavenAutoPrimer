@@ -11,11 +11,13 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
+ * @author David Parry, edited by Bert Gold, PhD <bgold04@gmail.com>
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.github.autoprimer3A;
+package com.github.mavenautoprimer;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -23,39 +25,40 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-
-/**
-*
-* @author david
-*/
-public class GenomicRegionSummary implements Comparable<GenomicRegionSummary>, Serializable{
-    private Integer startPos;
-    private Integer endPos;
-    private Integer length;
-    private String startId;
-    private String endId;
-    private String chromosome = new String();
-    private String id = new String();
+public class GenomicRegionSummaryModel implements Comparable<GenomicRegionSummary>, Serializable {
+    public Integer startPos;
+    public Integer sp;
+    public Integer endPos;
+    public Integer ep;
+    public Integer length;
+    public String startId;
+    public String sd;
+    public String endId;
+    public String ed;
+    public String chromosome = new String();
+    public String chrom;
+    public String id = new String();
+    public String d;
     private String name = new String();
-    GenomicRegionSummary(){
+    GenomicRegionSummary() {
         this(null, 0, 0, null, null, null, null);
     }
-    GenomicRegionSummary(String chrom, int sp, int ep){
+    GenomicRegionSummary(String chrom, int sp, int ep) {
         this(chrom, sp, ep, null, null, null, null);
     }
-    GenomicRegionSummary(String chrom, int sp, int ep, String sd, String ed){
+    GenomicRegionSummary(String chrom, int sp, int ep, String sd, String ed) {
         this(chrom, sp, ep, sd, ed, null, null);
     }
-    GenomicRegionSummary(int sp, int ep){
+    GenomicRegionSummary(int sp, int ep) {
         this(null, sp, ep,  null, null, null, null);
     }
-    GenomicRegionSummary(int sp, int ep, String sd, String ed){
+    GenomicRegionSummary(int sp, int ep, String sd, String ed) {
         this(null, sp, ep, sd, ed, null, null);
     }
-    GenomicRegionSummary(int sp, int ep, String d){
+    GenomicRegionSummary(int sp, int ep, String d) {
         this(null, sp, ep, null, null, d, null);
     }
-    GenomicRegionSummary(String chrom, int sp, int ep, String sd, String ed, String d, String nm){
+    GenomicRegionSummary(String chrom, int sp, int ep, String sd, String ed, String d, String nm) {
         startPos = sp;
         endPos = ep;
         chromosome = chrom;
@@ -65,146 +68,143 @@ public class GenomicRegionSummary implements Comparable<GenomicRegionSummary>, S
         id = d;
         name = nm;
     }
-    
-    public void setChromosome(String c){
+    public void setChromosome(String c) {
         chromosome = c;
     }
-    public void setStartId(String d){
+    public void setStartId(String d) {
         startId = d;
     }
-    public void setEndId(String d){
+    public void setEndId(String d) {
         endId = d;
     }
-    public void setStartPos(int i){
+    public void setStartPos(int i) {
         startPos = i;
-    }    
-    public void setEndPos(int i){
+    }
+    public void setEndPos(int i) {
         endPos = i;
     }
-    public void setId(String d){
+    public void setId(String d) {
         id = d;
     }
-    public void setName(String n){
+    public void setName(String n) {
         name = n;
     }
-    public String getChromosome(){
+    public String getChromosome() {
         return chromosome;
     }
-    public String getStartId(){
+    public String getStartId() {
         return startId;
     }
-    public String getEndId(){
+    public String getEndId() {
         return endId;
     }
-    public int getStartPos(){
+    public int getStartPos() {
         return startPos;
     }
-    public int getEndPos(){
+    public int getEndPos() {
         return endPos;
     }
-    public String getId(){
+    public String getId() {
         return id;
     }
-    public String getName(){
+    public String getName() {
         return name;
     }
-    
-    public boolean isEmpty(){
+
+    public boolean isEmpty() {
         return startPos == 0 && endPos == 0;
     }
-    
-    public Integer getLength(){
+
+    public Integer getLength() {
         length = endPos - startPos + 1;
         return length;
     }
-    public String getCoordinateString(){
-        return chromosome + ":" + startPos + "-" + endPos; 
+    public String getCoordinateString() {
+        return chromosome + ":" + startPos + "-" + endPos;
     }
-    public String getBedLine(){
+    public String getBedLine() {
         return chromosome + "\\t" + startPos + "\\t" + endPos;
     }
-    public String getIdLine(){
+    public String getIdLine() {
         return startId + ";" + endId;
     }
 
     @Override
-    public int compareTo(GenomicRegionSummary r){
-        if (chromosome == null && r.getChromosome() != null){
+    public int compareTo(GenomicRegionSummary r) {
+        if (chromosome == null && r.getChromosome() != null) {
             return 1;
-        }else if (chromosome != null && r.getChromosome() == null){
+        } else if (chromosome != null && r.getChromosome() == null) {
             return -1;
-        }else if(chromosome != null && r.getChromosome() != null){
+        } else if(chromosome != null && r.getChromosome() != null) {
             ChromComparator chromCompare = new ChromComparator();
             int i = chromCompare.compare(chromosome,r.getChromosome());
             //int i =  chromosome.compareToIgnoreCase(r.getChromosome());
-            if (i == 0){
+            if (i == 0) {
                 i = startPos - r.getStartPos();
-                if (i != 0){
+                if (i != 0) {
                     return i;
-                }else{
+                } else {
                     return endPos - r.getEndPos();
                 }
-            }else{
+            } else {
                 return i;
             }
-        }else{
+        } else {
             int i = startPos - r.getStartPos();
-            if (i != 0){
+            if (i != 0) {
                 return i;
-            }else{
+            } else {
                 return endPos - r.getEndPos();
             }
         }
     }
-    public void mergeRegionsByPosition(ArrayList<GenomicRegionSummary> regions){
-        if (regions.size() < 2){
+    public void mergeRegionsByPosition(ArrayList<GenomicRegionSummary> regions) {
+        if (regions.size() < 2) {
             return;
         }
         Collections.sort(regions);
         Iterator<GenomicRegionSummary> rIter = regions.iterator();
         GenomicRegionSummary previousRegion = rIter.next();
         ArrayList<GenomicRegionSummary> merged = new ArrayList<>();
-        while (rIter.hasNext()){
+        while (rIter.hasNext()) {
             GenomicRegionSummary r = rIter.next();
-            if (r.getChromosome() == null && 
-                    previousRegion.getChromosome() == null){
-                if (previousRegion.getEndPos() >= r.getStartPos()){
-                    if (previousRegion.getEndPos() < r.getEndPos()){
+            if (r.getChromosome() == null && previousRegion.getChromosome() == null) {
+                if (previousRegion.getEndPos() >= r.getStartPos()) {
+                    if (previousRegion.getEndPos() < r.getEndPos()) {
                         previousRegion.setEndPos(r.getEndPos());
-                        if (!previousRegion.getName().equalsIgnoreCase(r.getName())){
+                        if (!previousRegion.getName().equalsIgnoreCase(r.getName())) {
                             previousRegion.setName(previousRegion.getName().concat("/").concat(r.getName()));
                         }
-                        if (!previousRegion.getId().equalsIgnoreCase(r.getId())){
+                        if (!previousRegion.getId().equalsIgnoreCase(r.getId())) {
                             previousRegion.setId(previousRegion.getId().concat("/").concat(r.getId()));
                         }
                     }
-                }else{
+                } else {
                     merged.add(previousRegion);
                     previousRegion = r;
                 }
-            }else if (r.getChromosome() == null || 
-                    previousRegion.getChromosome() == null){
+            } else if (r.getChromosome() == null || previousRegion.getChromosome() == null) {
                 merged.add(previousRegion);
                 previousRegion = r;
-            }else{//both not null
-                if (r.getChromosome().equalsIgnoreCase(previousRegion.getChromosome())
-                        && previousRegion.getEndPos() >= r.getStartPos()){
-                    if (previousRegion.getEndPos() <= r.getEndPos()){
+            } else {
+            //both not null
+                if (r.getChromosome().equalsIgnoreCase(previousRegion.getChromosome()) && previousRegion.getEndPos() >= r.getStartPos()) {
+                    if (previousRegion.getEndPos() <= r.getEndPos()) {
                         previousRegion.setEndPos(r.getEndPos());
-                        if (!previousRegion.getName().equalsIgnoreCase(r.getName())){//don't natch case insensitive
-                            previousRegion.setName(previousRegion.getName().
-                                    concat("/").concat(r.getName()));
-                        }else if (!previousRegion.getName().equals(r.getName())){//match case insensitive but not case sensistive
+                        if (!previousRegion.getName().equalsIgnoreCase(r.getName())) {
+                        //don't natch case insensitive
+                            previousRegion.setName(previousRegion.getName().concat("/").concat(r.getName()));
+                        } else if (!previousRegion.getName().equals(r.getName())) {
+                        //match case insensitive but not case sensistive
                             List<String> nameSort = Arrays.asList(previousRegion.getName(), r.getName());
                             Collections.sort(nameSort);
                             previousRegion.setName(nameSort.get(0));
                         }
-                        if (!previousRegion.getId().equalsIgnoreCase(r.getId())){
-                            previousRegion.setId(previousRegion.getId().
-                                    concat("/").concat(r.getId()));
+                        if (!previousRegion.getId().equalsIgnoreCase(r.getId())) {
+                            previousRegion.setId(previousRegion.getId().concat("/").concat(r.getId()));
                         }
                     }
-                }else{
+                } else {
                     merged.add(previousRegion);
                     previousRegion = r;
                 }
@@ -215,4 +215,5 @@ public class GenomicRegionSummary implements Comparable<GenomicRegionSummary>, S
         regions.addAll(merged);
     }
 
-}//end of GenomicRegionSummaryclass
+}
+//end of GenomicRegionSummaryclass

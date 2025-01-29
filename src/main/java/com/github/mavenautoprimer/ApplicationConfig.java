@@ -1,6 +1,6 @@
 /*
 
-*Copyright (C) 2014 David A. Parry <d.a.parry@leeds.ac.uk> 
+*Copyright (C) 2014 David A. Parry <d.a.parry@leeds.ac.uk>
 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.github.autoprimer3A;
+package com.github.mavenautoprimer;
 
 
 import java.io.BufferedWriter;
@@ -50,11 +50,10 @@ import org.dom4j.io.XMLWriter;
  *
  * @author david
  */
-public class AutoPrimer3AConfig {
+public class ApplicationConfig {
     final GetUcscBuildsAndTables buildsAndTables = new GetUcscBuildsAndTables();
     String fileSeparator = System.getProperty("file.separator");
-    File configDir =  new File(System.getProperty("user.home") + fileSeparator
-                    + ".AutoPrimer3A");
+    File configDir =  new File(System.getProperty("user.home") + fileSeparator + ".MavenAutoPrimer");
     File genomeXmlFile = new File (configDir  + fileSeparator + "genome.xml");
     File tableDir = new File (configDir + fileSeparator + "tables");
     File misprimingDir = new File (configDir + fileSeparator + "mispriming_libs");
@@ -67,78 +66,68 @@ public class AutoPrimer3AConfig {
     private LinkedHashMap<String, String> buildToDescription = new LinkedHashMap<>();
 //maps build name to description e.g. hg19 => 'Human Feb. 2009 (GRCh37/hg19) Genome at UCSC'
     private HashMap<String, LinkedHashSet<String>> buildToTables = new HashMap<>();
-
-    public AutoPrimer3AConfig() throws IOException {
+    public ApplicationConfig
+() throws IOException {
         this.primer3ex = File.createTempFile("primer3", "exe");
         primer3ex.deleteOnExit();
     }
-    
-    public File getGenomeXmlFile(){
+    public File getGenomeXmlFile() {
         return genomeXmlFile;
     }
-    
-    
-    public File extractP3Executable() throws FileNotFoundException, IOException{    
+    public File extractP3Executable() throws FileNotFoundException, IOException {
         InputStream inputStream;
-        if (System.getProperty("os.name").equals("Mac OS X")){
-                inputStream = this.getClass().
-                        getResourceAsStream("primer3_core_macosx");
-                //inputStream input = classLoader.getResourceAsStream("/package/macosx/AutoPrimer3A.icns");        
-        }else if (System.getProperty("os.name").equals("Linux")){
-            if (System.getProperty("os.arch").endsWith("64")){
-                inputStream = this.getClass().
-                        getResourceAsStream("primer3_core");
-                // inputStream input = classLoader.getResourceAsStream("/package/linux/AutoPrimer3A.png");        
-            }else{
-                inputStream = this.getClass().
-                        getResourceAsStream("primer3_core32");
-                //inputStream input = classLoader.getResourceAsStream("/package/windows/AutoPrimer3A.ico");       
+        if (System.getProperty("os.name").equals("Mac OS X")) {
+            inputStream = this.getClass().getResourceAsStream("primer3_core_macosx");
+            //inputStream input = classLoader.getResourceAsStream("/package/macosx/MavenAutoPrimer.icns");
+        } else if (System.getProperty("os.name").equals("Linux")) {
+            if (System.getProperty("os.arch").endsWith("64")) {
+                inputStream = this.getClass().getResourceAsStream("primer3_core");
+                // inputStream input = classLoader.getResourceAsStream("/package/linux/MavenAutoPrimer.png");
+            } else {
+                inputStream = this.getClass().getResourceAsStream("primer3_core32");
+                //inputStream input = classLoader.getResourceAsStream("/package/windows/MavenAutoPrimer.ico");
             }
-        }else{
-            inputStream = this.getClass().
-                        getResourceAsStream("primer3_core.exe");
+        } else {
+            inputStream = this.getClass().getResourceAsStream("primer3_core.exe");
         }
         OutputStream outputStream = new FileOutputStream(primer3ex);
         int read = 0;
         byte[] bytes = new byte[1024];
         while ((read = inputStream.read(bytes)) != -1) {
-                outputStream.write(bytes, 0, read);
+            outputStream.write(bytes, 0, read);
         }
         inputStream.close();
         outputStream.close();
         primer3ex.setExecutable(true);
         return primer3ex;
     }
-    
-    public File getP3Executable(){
+    public File getP3Executable() {
         return primer3ex;
     }
-    
-    public File extractMisprimingLibs() throws IOException, ZipException{
+    public File extractMisprimingLibs() throws IOException, ZipException {
         boolean libsExist = true;
-        if (! misprimingDir.exists()){
+        if (! misprimingDir.exists()) {
             misprimingDir.mkdir();
             libsExist = false;
         }
-        if (libsExist){
-            for (String s: misprimingLibs){
+        if (libsExist) {
+            for (String s: misprimingLibs) {
                 File f = new File(misprimingDir + fileSeparator + s);
-                if (! f.exists()){
+                if (! f.exists()) {
                     libsExist = false;
                     break;
                 }
             }
         }
-        if (!libsExist){
+        if (!libsExist) {
             File mispriming_zip = File.createTempFile("misprime", ".zip" );
             mispriming_zip.deleteOnExit();
-            InputStream inputStream = this.getClass().
-                    getResourceAsStream("mispriming_libraries.zip");
+            InputStream inputStream = this.getClass().getResourceAsStream("mispriming_libraries.zip");
             OutputStream outputStream = new FileOutputStream(mispriming_zip);
             int read = 0;
-            byte[] bytes = new byte[1024];    
+            byte[] bytes = new byte[1024];
             while ((read = inputStream.read(bytes)) != -1) {
-                    outputStream.write(bytes, 0, read);
+                outputStream.write(bytes, 0, read);
             }
             inputStream.close();
             outputStream.close();
@@ -147,72 +136,65 @@ public class AutoPrimer3AConfig {
         }
         return misprimingDir;
     }
-    
-    public File getMisprimingDir(){
+    public File getMisprimingDir() {
         return misprimingDir;
     }
-    
-    public File extractThermoConfig() throws IOException, ZipException{
+    public File extractThermoConfig() throws IOException, ZipException {
         boolean libsExist = true;
         File thermoZip = File.createTempFile("primer_config", ".zip" );
         thermoZip.deleteOnExit();
-        InputStream inputStream = this.getClass().
-                getResourceAsStream("primer3_config.zip");
+        InputStream inputStream = this.getClass().getResourceAsStream("primer3_config.zip");
         OutputStream outputStream = new FileOutputStream(thermoZip);
         int read = 0;
-        byte[] bytes = new byte[1024];    
+        byte[] bytes = new byte[1024];
         while ((read = inputStream.read(bytes)) != -1) {
-                outputStream.write(bytes, 0, read);
+            outputStream.write(bytes, 0, read);
         }
         inputStream.close();
         outputStream.close();
         ZipFile zip = new ZipFile(thermoZip);
-
-        if (! thermoDir.exists()){
+        if (! thermoDir.exists()) {
             thermoDir.mkdir();
             libsExist = false;
         }
-        if (libsExist){
+        if (libsExist) {
             List<FileHeader> fileHeaders = zip.getFileHeaders();
-            for (FileHeader fh: fileHeaders){
+            for (FileHeader fh: fileHeaders) {
                 File f = new File(misprimingDir + fileSeparator + fh.getFileName());
-                if (! f.exists()){
+                if (! f.exists()) {
                     libsExist = false;
                     break;
                 }
             }
         }
-        if (!libsExist){
+        if (!libsExist) {
             zip.extractAll(thermoDir.toString());
         }
         return thermoDir;
     }
-    
-    public File getThermoDir(){
+    public File getThermoDir() {
         return thermoDir;
     }
-    
-    public File extractTableXml() throws IOException, ZipException{
+    public File extractTableXml() throws IOException, ZipException {
         boolean libsExist = true;
-        if (! tableDir.exists()){
+        if (! tableDir.exists()) {
             tableDir.mkdir();
             libsExist = false;
         }
-        if (libsExist){
-            if (tableDir.listFiles().length == 0){
+        if (libsExist) {
+            if (tableDir.listFiles().length == 0) {
                 libsExist = false;
             }
         }
-        if (!libsExist){
+        if (!libsExist) {
             File tableZip = File.createTempFile("tables", ".zip" );
             tableZip.deleteOnExit();
-            InputStream inputStream = this.getClass().
-                    getResourceAsStream("tables.zip");
+            InputStream inputStream = this.getClass().getResourceAsStream("tables.zip");
             OutputStream outputStream = new FileOutputStream(tableZip);
             int read = 0;
-            byte[] bytes = new byte[1024];    
+            byte[] bytes = new byte[1024];
             while ((read = inputStream.read(bytes)) != -1) {
-                    outputStream.write(bytes, 0, read);
+                outputStream.write(bytes, 0, read);
             }
             inputStream.close();
             outputStream.close();
@@ -221,61 +203,50 @@ public class AutoPrimer3AConfig {
         }
         return tableDir;
     }
-    
-    
-    public HashMap<String, String> getBuildToMapMaster(){
+    public HashMap<String, String> getBuildToMapMaster() {
         return buildToMapMaster;
     }
-    
-    public LinkedHashMap<String, String> getBuildToDescription(){
+    public LinkedHashMap<String, String> getBuildToDescription() {
         return buildToDescription;
     }
-    
-    public  HashMap<String, LinkedHashSet<String>> getBuildToTables(){
+    public  HashMap<String, LinkedHashSet<String>> getBuildToTables() {
         return buildToTables;
     }
-    
-    public void setBuildToMapMaster(HashMap<String, String> buildMaster){
+    public void setBuildToMapMaster(HashMap<String, String> buildMaster) {
         buildToMapMaster = buildMaster;
     }
-    
-    public void setBuildToDescription(LinkedHashMap<String, String> buildDesc){
+    public void setBuildToDescription(LinkedHashMap<String, String> buildDesc) {
         buildToDescription = buildDesc;
     }
-    
-    public void setBuildToTables(HashMap<String, LinkedHashSet<String>> buildTables){
+    public void setBuildToTables(HashMap<String, LinkedHashSet<String>> buildTables) {
         buildToTables = buildTables;
     }
-    
-    public void writeGenomeXmlFile()
-            throws IOException, DocumentException, MalformedURLException{
+    public void writeGenomeXmlFile() throws IOException, DocumentException, MalformedURLException {
         buildsAndTables.readDasGenomeXmlDocument();
         writeGenomeXmlFile(buildsAndTables.getDasGenomeXmlDocument());
     }
-    
-    public void writeGenomeXmlFile(Document xmldoc) throws IOException{
-        if (! configDir.exists()){
+    public void writeGenomeXmlFile(Document xmldoc) throws IOException {
+        if (! configDir.exists()) {
             configDir.mkdir();
         }
         File temp = File.createTempFile("temp_genome", ".xml");
         OutputFormat format = OutputFormat.createPrettyPrint();
         BufferedWriter out = new BufferedWriter(new FileWriter(temp));
-        XMLWriter writer = new XMLWriter(out, format); 
+        XMLWriter writer = new XMLWriter(out, format);
         writer.write(xmldoc);
         out.close();
         Files.move(temp.toPath(), genomeXmlFile.toPath(), REPLACE_EXISTING);
     }
-    
-    public void readGenomeXmlFile() throws IOException, DocumentException{
-        if (genomeXmlFile.exists()){
+    public void readGenomeXmlFile() throws IOException, DocumentException {
+        if (genomeXmlFile.exists()) {
             readGenomeXmlFile(genomeXmlFile);
-        }else{
-            if (! configDir.exists()){
+        }
+        else{
+            if (! configDir.exists()) {
                 configDir.mkdir();
             }
-            InputStream inputStream = this.getClass().
-                            getResourceAsStream("genome.xml");
-            if (inputStream == null){
+            InputStream inputStream = this.getClass().getResourceAsStream("genome.xml");
+            if (inputStream == null) {
                 writeGenomeXmlFile();
                 return;
             }
@@ -290,105 +261,89 @@ public class AutoPrimer3AConfig {
             readGenomeXmlFile(genomeXmlFile);
         }
     }
-    
-    public void readGenomeXmlFile(File xml)throws IOException, DocumentException{        
+    public void readGenomeXmlFile(File xml)throws IOException, DocumentException {
         SAXReader reader = new SAXReader();
         Document doc = reader.read(xml);
         buildsAndTables.setDasGenomeXmlDocument(doc);
         buildsAndTables.readDasGenomeXmlDocument();
         setBuildToDescription(buildsAndTables.getBuildToDescription());
         setBuildToMapMaster(buildsAndTables.getBuildToMapMaster());
-        
     }
-    
-    public void readTablesXmlFiles() throws DocumentException{
-        if (! tableDir.exists()){
+    public void readTablesXmlFiles() throws DocumentException {
+        if (! tableDir.exists()) {
             tableDir.mkdir();
             return;
         }
         File[] tables = tableDir.listFiles();
-        for (File t: tables){
+        for (File t: tables) {
             buildToTables.put(t.getName(), readTableFile(t));
         }
     }
-     
-    public File getBuildXmlFile(String build){
+    public File getBuildXmlFile(String build) {
         return new File (tableDir + fileSeparator + build);
     }
-    
-    public Document getBuildXmlDocument(String build) 
-            throws DocumentException, MalformedURLException, IOException{
+    public Document getBuildXmlDocument(String build) throws DocumentException, MalformedURLException, IOException {
         return getBuildXmlDocument(build, false);
     }
-    
-    public Document getBuildXmlDocument(String build, Boolean forceRefresh) 
-            throws DocumentException, MalformedURLException, IOException{
+    public Document getBuildXmlDocument(String build, Boolean forceRefresh) throws DocumentException, MalformedURLException, IOException {
         SAXReader reader = new SAXReader();
         File f = getBuildXmlFile(build);
-        if (! f.exists() || forceRefresh){
+        if (! f.exists() || forceRefresh) {
             Document dasXml = buildsAndTables.getTableXmlDocument(build);
             writeTableXmlFile(dasXml, build);
         }
         return reader.read(f);
     }
-    
-    public LinkedHashSet<String> readTableFile(String build) throws DocumentException{
+    public LinkedHashSet<String> readTableFile(String build) throws DocumentException {
         return readTableFile(getBuildXmlFile(build));
     }
-    
     //xml must be an xml file from UCSC
-    public LinkedHashSet<String> readTableFile(File xml) throws DocumentException{
+    public LinkedHashSet<String> readTableFile(File xml) throws DocumentException {
         SAXReader reader = new SAXReader();
         Document dasXml = reader.read(xml);
         return readTableFile(dasXml);
     }
-    
-    public LinkedHashSet<String> readTableFile(File xml, String category)
-            throws DocumentException, MalformedURLException{
+    public LinkedHashSet<String> readTableFile(File xml, String category) throws DocumentException, MalformedURLException {
         SAXReader reader = new SAXReader();
         Document dasXml = reader.read(xml);
         return readTableFile(dasXml, category);
     }
-    
-    public LinkedHashSet<String> readTableFile(Document dasXml) throws DocumentException{
+    public LinkedHashSet<String> readTableFile(Document dasXml) throws DocumentException {
         LinkedHashSet<String> tables = new LinkedHashSet<>();
         Element root = dasXml.getRootElement();
         Element gff = root.element("GFF");
         Element segment = gff.element("SEGMENT");
-        for (Iterator i = segment.elementIterator("TYPE"); i.hasNext();){
+        for (Iterator i = segment.elementIterator("TYPE"); i.hasNext();) {
             Element type = (Element) i.next();
             Attribute id = type.attribute("id");
             tables.add(id.getValue());
         }
         return tables;
     }
-    
-    public LinkedHashSet<String> readTableFile(Document dasXml, String category) 
-            throws DocumentException{
+    public LinkedHashSet<String> readTableFile(Document dasXml, String category) throws DocumentException {
         LinkedHashSet<String> tables = new LinkedHashSet<>();
         Element root = dasXml.getRootElement();
         Element gff = root.element("GFF");
         Element segment = gff.element("SEGMENT");
-        for (Iterator i = segment.elementIterator("TYPE"); i.hasNext();){
+        for (Iterator i = segment.elementIterator("TYPE"); i.hasNext();) {
             Element type = (Element) i.next();
             Attribute id = type.attribute("id");
             Attribute cat = type.attribute("category");
-            if (cat.getValue().equals(category)){
+            if (cat.getValue().equals(category)) {
                 tables.add(id.getValue());
             }
         }
-        return tables;  
+        return tables;
     }
-    
-    public void writeTableXmlFile(Document xmldoc, String build) throws IOException{
-        if (! tableDir.exists()){
+    public void writeTableXmlFile(Document xmldoc, String build) throws IOException {
+        if (! tableDir.exists()) {
             tableDir.mkdir();
         }
         File buildXmlFile = getBuildXmlFile(build);
         File temp = File.createTempFile("temp_build_" + build, ".xml");
         OutputFormat format = OutputFormat.createPrettyPrint();
         BufferedWriter out = new BufferedWriter(new FileWriter(temp));
-        XMLWriter writer = new XMLWriter(out, format); 
+        XMLWriter writer = new XMLWriter(out, format);
         writer.write(xmldoc);
         out.close();
         Files.move(temp.toPath(), buildXmlFile.toPath(), REPLACE_EXISTING);

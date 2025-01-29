@@ -1,8 +1,8 @@
 /*
 * Copyright (C) 2013 David A. Parry
  * d.a.parry@leeds.ac.uk
- * 
- * 
+ *
+ *
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
@@ -17,41 +17,40 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.github.autoprimer3A;
+package com.github.mavenautoprimer;
 
 import java.util.Comparator;
 
 /**
  *
- * @author david
+ * @author David Parry
  */
-public class ChromComparator implements Comparator<String>{
+public class ChromosomeComparator implements Comparator<String> {
     @Override
-    public int compare(String s1, String s2){
-        if (s1.matches("^\\d+$") && s2.matches("^\\d+$")){
+    public int compare(String s1, String s2) {
+        if (s1.matches("^\\d+$") && s2.matches("^\\d+$")) {
             return Integer.valueOf(s1).compareTo(Integer.valueOf(s2));
-        }else if (s1.matches("^\\d+$")){
+        } else if (s1.matches("^\\d+$")) {
             return -1;
-        }else if (s2.matches("^\\d+$")){
+        } else if (s2.matches("^\\d+$")) {
             return +1;
-        }else if (s1.matches("^[uU]\\S+") || s2.matches("^[uU]\\S+")){
-            if (s1.matches("^[uU]\\S+") && s2.matches("^[uU]\\S+")){
+        } else if (s1.matches("^[uU]\\S+") || s2.matches("^[uU]\\S+")) {
+            if (s1.matches("^[uU]\\S+") && s2.matches("^[uU]\\S+")) {
                 return s1.compareTo(s2);
-            }
-            else if (s2.matches("^[uU]\\S+")){
+            } else if (s2.matches("^[uU]\\S+")) {
                 return +1;
-            }else{
+            } else {
                 return -1;
             }
-        }else if (s1.matches("^[mM]\\w*") || s2.matches("^[mM]\\w*")){
-            if (s1.matches("^[mM]\\w*") && s2.matches("^[mM]\\w*")){
+        } else if (s1.matches("^[mM]\\w*") || s2.matches("^[mM]\\w*")) {
+            if (s1.matches("^[mM]\\w*") && s2.matches("^[mM]\\w*")) {
                 return s1.compareTo(s2);
-            }else if (s1.matches("^[mM]\\w*")){
+            } else if (s1.matches("^[mM]\\w*")) {
                 return +1;
-            }else {
+            } else {
                 return -1;
             }
-        }else{
+        } else {
             return s1.compareTo(s2);
         }
     }

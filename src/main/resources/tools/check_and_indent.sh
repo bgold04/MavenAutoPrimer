@@ -18,7 +18,7 @@ find "$JAVA_HOME/javafx-src/javafx" -type f || echo "JavaFX sources not found"
 set -euo pipefail
 
 # File to process
-SOURCE_FILE="/Users/bgold/AutoPrimer3AA/src/com/github/autoprimer3A/AutoPrimer3A.java"
+SOURCE_FILE="/Users/bgold/MavenAutoPrimer/src/main/java/com/github/ApplicationMain.java"
 
 # Functions
 count_braces() {
@@ -89,8 +89,62 @@ indent_code
 
 echo "Done!"
 
+# Directory containing Java files
+JAVA_DIR="/Users/bgold/MavenAutoPrimer/src/main/java/com/github"
 
+# Check for missing semicolons in each Java file
+echo "Checking for semicolon errors in Java files..."
+for file in "$JAVA_DIR"/*.java; do
+    
+    echo "Processing $file..."
+    awk '{
+        # Skip lines that are comments or empty
+        if ($0 ~ /^\/\// || $0 ~ /^\/\*/) next;
+        # Look for lines that do not end with ; or { or }
+        if ($0 !~ /;$/ && $0 !~ /{$/ && $0 !~ /}$/ && NF > 0) {
+            print "Possible missing semicolon in " FILENAME " at line " NR ": " $0;
+        }
+    }
+    ' "$file"
+done
+echo "Semicolon check complete!"
 
+# Directory containing Java files
+JAVA_DIR="/Users/bgold/MavenAutoPrimer/src/main/java/com/github"
+
+# Temporary output file to store compilation results
+TEMP_OUTPUT="/tmp/java_compile_errors.txt"
+
+# Clear previous results
+> "$TEMP_OUTPUT"
+
+# Compile each Java file and record errors
+echo "Compiling individual Java files and counting errors..."
+for file in "$JAVA_DIR"/*.java; do
+    echo "Compiling $file..."
+    javac "$file" 2>> "$TEMP_OUTPUT"
+    if [ $? -ne 0 ]; then
+        echo "Errors found in $file"
+    fi
+done
+
+# Count errors for each file
+echo "Ranking files by number of errors..."
+awk '
+/\.java/ { file = $0 }
+/error/ { errors[file]++ }
+END {
+    for (file in errors) {
+        print errors[file], file
+    }
+}' "$TEMP_OUTPUT" | sort -nr > /tmp/java_error_ranking.txt
+
+# Display the ranked results
+cat /tmp/java_error_ranking.txt
+
+# Cleanup
+rm "$TEMP_OUTPUT"
+echo "Ranking complete! Results saved in /tmp/java_error_ranking.txt"
 
 
 

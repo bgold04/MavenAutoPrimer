@@ -14,60 +14,58 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.github.autoprimer3A;
+package com.github.mavenautoprimer;
 
 import java.util.LinkedHashSet;
 
 /**
  *
- * @author David A. Parry <d.a.parry@leeds.ac.uk>
+ * @author David A. Parry <d.a.parry@leeds.ac.uk> and edited by Bert Gold, PhD <bgold04@gmail.com>
  */
-public class GeneSearchResult {
+public class GeneSearchResultModel {
     //details of hits
     private LinkedHashSet<GeneDetails> found = new LinkedHashSet();
     //search terms that weren't found
     private LinkedHashSet<String> notFound = new LinkedHashSet();
     //search terms where only non-coding targets were found
     private LinkedHashSet<String> nonCodingTargets = new LinkedHashSet();
-    private GetGeneCoordinates geneSearcher;
-    GeneSearchResult(LinkedHashSet<GeneDetails> hits, LinkedHashSet<String> misses,
-            LinkedHashSet<String> noncoding){
+    private GeneCoordinatesFetcher geneSearcher;
+    GeneSearchResult(LinkedHashSet<GeneDetails> hits, LinkedHashSet<String> misses, LinkedHashSet<String> noncoding) {
         found = hits;
         notFound = misses;
         nonCodingTargets = noncoding;
     }
-    
-    GeneSearchResult(LinkedHashSet<GeneDetails> hits, LinkedHashSet<String> misses,
-            LinkedHashSet<String> noncoding, GetGeneCoordinates g){
+
+    GeneSearchResult(LinkedHashSet<GeneDetails> hits, LinkedHashSet<String> misses, LinkedHashSet<String> noncoding, GeneCoordinatesFetcher g) {
         found = hits;
         notFound = misses;
         nonCodingTargets = noncoding;
         geneSearcher = g;
     }
-    
-    
-    public void setFound(LinkedHashSet<GeneDetails> f){
+
+
+    public void setFound(LinkedHashSet<GeneDetails> f) {
         found = f;
     }
-    public void setNotFound(LinkedHashSet<String> n){
+    public void setNotFound(LinkedHashSet<String> n) {
         notFound = n;
     }
-    public void setNonCoding (LinkedHashSet<String> n){
+    public void setNonCoding (LinkedHashSet<String> n) {
         nonCodingTargets = n;
     }
-    public void setGeneSearcher(GetGeneCoordinates g){
+    public void setGeneSearcher(GeneCoordinatesFetcher g) {
         geneSearcher = g;
     }
-    public LinkedHashSet<GeneDetails> getFound(){
+    public LinkedHashSet<GeneDetails> getFound() {
         return found;
     }
-    public LinkedHashSet<String> getNotFound(){
+    public LinkedHashSet<String> getNotFound() {
         return notFound;
     }
-    public LinkedHashSet<String> getNonCodingTargets(){
+    public LinkedHashSet<String> getNonCodingTargets() {
         return nonCodingTargets;
     }
-    public GetGeneCoordinates getGeneSearcher(){
+    public GeneCoordinatesFetcher getGeneSearcher() {
         return geneSearcher;
     }
 }

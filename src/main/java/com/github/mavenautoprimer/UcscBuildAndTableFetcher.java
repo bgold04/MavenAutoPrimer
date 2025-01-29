@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.github.autoprimer3A;
+package com.github.mavenautoprimer;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -27,35 +27,30 @@ import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
-
 /**
  *
- * @author David A. Parry <d.a.parry@leeds.ac.uk>
- * 
+ * @author David A. Parry <d.a.parry@leeds.ac.uk> and edited by Bert Gold, PhD <bgold04@gmail.com>
+ *
  * Connect to DAS server on UCSC and retrieve all genome builds in constructor
  * The method getAvailableTables returns all available tables for a given build
  */
-public class GetUcscBuildsAndTables {
-    
+public class UcscBuildAndTableFetcher {
     private HashMap<String, String> buildToMapMaster = new HashMap<>();
-//maps build name to url e.g. hg19 => http://genome.cse.ucsc.edu:80/cgi-bin/das/hg19
-//a list of IDs so we can retrieve them in the same order they're given
+// maps build name to url e.g. hg19 => http://genome.cse.ucsc.edu:80/cgi-bin/das/hg19
+// a list of IDs so we can retrieve them in the same order they're given
     private LinkedHashMap<String, String> buildToDescription = new LinkedHashMap<>();
-//maps build name to description e.g. hg19 => 'Human Feb. 2009 (GRCh37/hg19) Genome at UCSC'
-    
+// maps build name to description e.g. hg19 => 'Human Feb. 2009 (GRCh37/hg19) Genome at UCSC'
     public Document dasGenomeXml;
-    
     //get build names and DAS urls
-    public void connectToUcsc() throws DocumentException, MalformedURLException{
+    public void connectToUcsc() throws DocumentException, MalformedURLException {
         SAXReader reader = new SAXReader();
         URL url = new URL("http://genome.ucsc.edu/cgi-bin/das/dsn");
         //URL url = new URL("http://genome-euro.ucsc.edu/cgi-bin/das/dsn");
         dasGenomeXml  = reader.read(url);
         readDasGenomeXmlDocument();
     }
-    
-    public void readDasGenomeXmlDocument(){
-        if (dasGenomeXml == null){
+    public void readDasGenomeXmlDocument() {
+        if (dasGenomeXml == null) {
             return;
         }
         Element root = dasGenomeXml.getRootElement();
@@ -69,52 +64,41 @@ public class GetUcscBuildsAndTables {
             buildToDescription.put(build.getValue(), desc.getText());
         }
     }
-    
-    public Document getDasGenomeXmlDocument(){
+    public Document getDasGenomeXmlDocument() {
         return dasGenomeXml;
     }
-    
-    public void setDasGenomeXmlDocument(Document document){
+    public void setDasGenomeXmlDocument(Document document) {
         dasGenomeXml = document;
     }
-    
-    public HashMap<String, String> getBuildToMapMaster(){
+    public HashMap<String, String> getBuildToMapMaster() {
         return buildToMapMaster;
     }
-    
-    public LinkedHashMap<String, String> getBuildToDescription(){
+    public LinkedHashMap<String, String> getBuildToDescription() {
         return buildToDescription;
     }
-    
-    public ArrayList<String> getBuildIds(){
+    public ArrayList<String> getBuildIds() {
         return new ArrayList<>(buildToDescription.keySet());
     }
-    
-    public String getGenomeDescription(String genome){
+    public String getGenomeDescription(String genome) {
         return buildToDescription.get(genome);
     }
-    
-    public Document getTableXmlDocument(String build) 
-            throws DocumentException, MalformedURLException{
+    public Document getTableXmlDocument(String build) throws DocumentException, MalformedURLException {
         SAXReader reader = new SAXReader();
-        URL url = new URL("http://genome.ucsc.edu/cgi-bin/das/" + build + "/types");    
+        URL url = new URL("http://genome.ucsc.edu/cgi-bin/das/" + build + "/types");
         Document dasXml;
         dasXml  = reader.read(url);
         return dasXml;
     }
-    
-    //uses 0-based coordinates for compatibility with gene tables, bed etc., although DAS uses 1-based
-    public String retrieveSequence(String build, String chrom, Integer start, Integer end)
-            throws DocumentException, MalformedURLException{
-        if (buildToDescription.isEmpty()){
+// uses 0-based coordinates for compatibility with gene tables, bed etc., although DAS uses 1-based
+    public String retrieveSequence(String build, String chrom, Integer start, Integer end) throws DocumentException, MalformedURLException {
+        if (buildToDescription.isEmpty()) {
             this.connectToUcsc();
         }
-        if (! buildToMapMaster.containsKey(build)){
+        if (! buildToMapMaster.containsKey(build)) {
             return null;
-        }else{
+        } else {
             StringBuilder dna = new StringBuilder();
-            URL genomeUrl = new URL(buildToMapMaster.get(build) + 
-                    "/dna?segment="+chrom + ":" + (start + 1) + "," + end);
+            URL genomeUrl = new URL(buildToMapMaster.get(build) + "/dna?segment="+chrom + ":" + (start + 1) + "," + end);
             SAXReader reader = new SAXReader();
             Document dasXml;
             dasXml  = reader.read(genomeUrl);
@@ -124,12 +108,11 @@ public class GetUcscBuildsAndTables {
                 Element seq = dsn.element("DNA");
                 String text = seq.getText().replaceAll("\n", "");
                 dna.append(text);
-                //dna.append(seq.getText());
             }
             return dna.toString();
-                        
+
         }
-        
+
     }
-    
+
 }

@@ -2,7 +2,7 @@
 * Copyright (C) 2013 David A. Parry
  * d.a.parry@leeds.ac.uk
  * https://sourceforge.net/projects/snpviewer/
- * 
+ *
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
@@ -17,7 +17,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.github.autoprimer3A;
+package com.github.mavenautoprimer;
 
 import java.util.Arrays;
 import java.util.Comparator;
@@ -25,38 +25,37 @@ import java.util.List;
 
 /**
  *
- * @author david
+ * @author David A Parry, edited by Bert Gold, PhD <bgold04@gmail.com>
  */
-public class CoordComparator implements Comparator<String>{
+public class CoordinateComparator implements Comparator<String> {
     ChromComparator chromCompare = new ChromComparator();
     @Override
-    public int compare(String s1, String s2){
-        if (s1.matches("\\w+:\\d+-\\d+") && s2.matches("\\w+:\\d+-\\d+")){
+    public int compare(String s1, String s2) {
+        if (s1.matches("\\w+:\\d+-\\d+") && s2.matches("\\w+:\\d+-\\d+")) {
             List<String> split1 =  Arrays.asList(s1.split(":"));
             List<String> split2 =  Arrays.asList(s2.split(":"));
             String chr1 = split1.get(0);
             String chr2 = split2.get(0);
             chr1 = chr1.replaceFirst("chr", "");
             chr2 = chr1.replaceFirst("chr", "");
-            int chrComp = chromCompare.compare(chr1, chr2); 
-            if (chrComp != 0){
+            int chrComp = chromCompare.compare(chr1, chr2);
+            if (chrComp != 0) {
                 return chrComp;
-            }else{
+            } else {
                 List<String> pos1 = Arrays.asList(split1.get(1).split("-"));
                 List<String> pos2 = Arrays.asList(split2.get(1).split("-"));
-                int startComp = Integer.valueOf(pos1.get(0)).
-                        compareTo(Integer.valueOf(pos2.get(0)));
-                if (startComp != 0){
+                int startComp = Integer.valueOf(pos1.get(0)).compareTo(Integer.valueOf(pos2.get(0)));
+                if (startComp != 0) {
                     return startComp;
-                }else{
+                } else {
                     return Integer.valueOf(pos1.get(0)).compareTo(Integer.valueOf(pos2.get(0)));
                 }
             }
-        }else if (s1.matches("\\w+:\\d+-\\d+")){
+        } else if (s1.matches("\\w+:\\d+-\\d+")) {
             return -1;
-        }else if (s2.matches("\\w+:\\d+-\\d+")){
+        } else if (s2.matches("\\w+:\\d+-\\d+")) {
             return 1;
-        }else{
+        } else {
             return s1.compareTo(s2);
         }
     }

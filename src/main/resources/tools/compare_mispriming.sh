@@ -1,11 +1,11 @@
 #!/bin/bash
 
 # Paths to Java files
-file1=~/AutoPrimer3AA/src/com/github/autoprimer3A/AutoPrimer3A.java
+file1=~/MavenAutoPrimerA/src/com/github/mavenautoprimer/MavenAutoPrimer.java
 file2=~/Documents/AutoPrimer3/src/com/github/autoprimer3/AutoPrimer3.java
 
 # Directory to store results
-work_dir=~/AutoPrimer3AA/work
+work_dir=~/MavenAutoPrimerA/work
 
 # Check if both files exist
 if [ ! -f "$file1" ]; then
@@ -32,7 +32,7 @@ extract_overview() {
 }
 
 # Generate overviews
-overview1="$work_dir/mispriming_AutoPrimer3A.java.txt"
+overview1="$work_dir/mispriming_MavenAutoPrimer.java.txt"
 overview2="$work_dir/mispriming_AutoPrimer3.java.txt"
 extract_overview "$file1" "$overview1"
 extract_overview "$file2" "$overview2"
