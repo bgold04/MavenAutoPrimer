@@ -12,6 +12,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
+ * This program was written by David A Parry and edited by Bert Gold <bgold04@gmail.com>
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -46,12 +48,8 @@ import org.dom4j.io.OutputFormat;
 import org.dom4j.io.SAXReader;
 import org.dom4j.io.XMLWriter;
 
-/**
- *
- * @author david
- */
 public class ApplicationConfig {
-    final GetUcscBuildsAndTables buildsAndTables = new GetUcscBuildsAndTables();
+    final UcscBuildAndTableFetcher buildsAndTables = new UcscBuildAndTableFetcher();
     String fileSeparator = System.getProperty("file.separator");
     File configDir =  new File(System.getProperty("user.home") + fileSeparator + ".MavenAutoPrimer");
     File genomeXmlFile = new File (configDir  + fileSeparator + "genome.xml");
@@ -66,8 +64,7 @@ public class ApplicationConfig {
     private LinkedHashMap<String, String> buildToDescription = new LinkedHashMap<>();
 //maps build name to description e.g. hg19 => 'Human Feb. 2009 (GRCh37/hg19) Genome at UCSC'
     private HashMap<String, LinkedHashSet<String>> buildToTables = new HashMap<>();
-    public ApplicationConfig
-() throws IOException {
+    public ApplicationConfig() throws IOException {
         this.primer3ex = File.createTempFile("primer3", "exe");
         primer3ex.deleteOnExit();
     }

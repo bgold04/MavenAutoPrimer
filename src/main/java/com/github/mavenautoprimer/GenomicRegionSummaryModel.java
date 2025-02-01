@@ -187,15 +187,15 @@ public class GenomicRegionSummaryModel implements Comparable<GenomicRegionSummar
                 merged.add(previousRegion);
                 previousRegion = r;
             } else {
-            //both not null
+                //both not null
                 if (r.getChromosome().equalsIgnoreCase(previousRegion.getChromosome()) && previousRegion.getEndPos() >= r.getStartPos()) {
                     if (previousRegion.getEndPos() <= r.getEndPos()) {
                         previousRegion.setEndPos(r.getEndPos());
                         if (!previousRegion.getName().equalsIgnoreCase(r.getName())) {
-                        //don't natch case insensitive
+                            //don't natch case insensitive
                             previousRegion.setName(previousRegion.getName().concat("/").concat(r.getName()));
                         } else if (!previousRegion.getName().equals(r.getName())) {
-                        //match case insensitive but not case sensistive
+                            //match case insensitive but not case sensistive
                             List<String> nameSort = Arrays.asList(previousRegion.getName(), r.getName());
                             Collections.sort(nameSort);
                             previousRegion.setName(nameSort.get(0));

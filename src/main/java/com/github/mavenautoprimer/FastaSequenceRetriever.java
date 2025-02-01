@@ -69,7 +69,7 @@ public class FastaSequenceRetriever {
                     throw new SamHeaderFromDictException("Invalid sequence dictionary" + " - invalid number of fields. Should be 5, found " + splitLine.size());
                 }
                 for (int i = 1; i < splitLine.size(); i++) {
-                //check all but chrom field are integers
+                    //check all but chrom field are integers
                     try {
                         Integer.parseInt(splitLine.get(i));
                     } catch(NumberFormatException ex) {

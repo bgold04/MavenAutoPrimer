@@ -46,11 +46,11 @@ public class EnsemblGeneCoordinatesFetcher extends UcscGeneCoordinatesFetcher {
     public String getString(String rs) {
         throw new ArrayIndexOutOfBoundsException("getString exception problem");
     }
-    public Integer getInt(Integer COUNT) {
-        throw new IllegalArgumentException ("getInt exception problem");
-    }
+    public int getInt(ResultSet rs, String columnLabel) throws SQLException {
+    return super.getInt(rs, columnLabel);
+    }    
     GeneDetails geneDetails = geneHashToGeneDetails(gene);
-     // Inherited from GenomicBase
+    // Inherited from GenomicBase
     class getTranscriptsFromResultSet {
         public ArrayList<GeneDetails> getTranscriptsFromResultSet(GeneCoordinatesFetcher.ResultSet rs, ArrayList<String> fields) throws SQLException, GenomicBase.TranscriptsFromrsException {
             ArrayList<HashMap<String, String>> genes = new ArrayList<>();
@@ -68,7 +68,8 @@ public class EnsemblGeneCoordinatesFetcher extends UcscGeneCoordinatesFetcher {
             }
             return transcriptsToReturn;
         }
-        @SuppressWarnings({"ThrowableInstanceNotThrown", "ThrowableInstanceNeverThrown"})private GeneDetails geneHashToGeneDetails(HashMap<String, String> gene) {throw new IllegalStateException("Gene Hash Problem");
+        @SuppressWarnings({"ThrowableInstanceNotThrown", "ThrowableInstanceNeverThrown"})private GeneDetails geneHashToGeneDetails(HashMap<String, String> gene) {
+            throw new IllegalStateException("Gene Hash Problem");
         }
     }
     class getTranscriptsViaKgId  {
@@ -113,43 +114,55 @@ public class EnsemblGeneCoordinatesFetcher extends UcscGeneCoordinatesFetcher {
                 }
             }
         }
-     }
+    }
 @Override
-    class getGeneFromSymbol {
-        public ArrayList<GeneDetails> getGeneFromSymbol(String symbol, String build, String db) throws SQLException, GenomicBase.GetGeneExonException {
-            String fieldsToRetrieve = String.join(", ", fields);
-            ArrayList<GeneDetails> transcripts = new ArrayList<>();
-            Connection conn = DriverManager.getConnection("jdbc:mysql://genome-mysql.cse.ucsc.edu" + "?user=genomep&password=password&no-auto-rehash");
-            PreparedStatement st = conn.prepareStatement(query);
-            query = ("SELECT COUNT(*) COLUMNS FROM information_schema.tables WHERE table_schema = '" + build + "' AND table_name = 'ensemblToGeneName';");
-            ResultSet rs2 = (ResultSet) st.executeQuery(query);
-            while (rs2.next()) {
-                if (rs2.getInt("COUNT(*)") < 1) {
-                    transcripts = getTranscriptsViaKgId();
-                } else {
-                    transcripts = getTranscriptsFromEnsemblToName();
+public ArrayList<GeneDetails> getGeneFromSymbol(String symbol, String build, String db) 
+        throws SQLException, GetGeneFromSymbolException {
+    ArrayList<GeneDetails> transcripts = new ArrayList<>();
+
+    try (Connection conn = DriverManager.getConnection(
+            "jdbc:mysql://genome-mysql.cse.ucsc.edu?user=genomep&password=password&no-auto-rehash")) {
+
+        // Check if ensemblToGeneName table exists
+        String tableCheckQuery = "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = ? AND table_name = 'ensemblToGeneName'";
+        boolean ensemblTableExists = false;
+        
+        try (PreparedStatement ps = conn.prepareStatement(tableCheckQuery)) {
+            ps.setString(1, build);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    ensemblTableExists = rs.getInt(1) > 0;
                 }
             }
-            return transcripts;
         }
-        boolean next() {throw new IllegalStateException("next() exception problem");
-        }
-        public String getString(String rs) {throw new ArrayIndexOutOfBoundsException("getString exception problem");
-        }
-        private Integer getInt(Integer COUNT) {throw new IllegalArgumentException("getInt exception problem");
-        }
-        private ArrayList<GeneDetails> getTranscriptsViaKgId() {throw new UnsupportedOperationException("Problem with getTranscriptsViaKgId method");
-        	 //To change body of generated methods, choose Tools | Templates.
-        }
-        private ArrayList<GeneDetails> getTranscriptsFromEnsemblToName() {throw new UnsupportedOperationException("Problem with getTranscriptsFromEnsemblToName method");
-        //To change body of generated methods, choose Tools | Templates.
+
+        if (ensemblTableExists) {
+            // Get gene from ensemblToGeneName table
+            String ensemblQuery = "SELECT name FROM " + build + ".ensemblToGeneName WHERE value=?";
+            try (PreparedStatement ps = conn.prepareStatement(ensemblQuery)) {
+                ps.setString(1, symbol);
+                try (ResultSet rs = ps.executeQuery()) {
+                    while (rs.next()) {
+                        String ensemblID = rs.getString("name");
+                        transcripts.addAll(super.getGeneFromID(ensemblID, build, db));
+                    }
+                }
+            }
+        } else {
+            // Fallback to UCSC method
+            transcripts = getTranscriptsViaKgId(symbol, build, db);
         }
     }
+
+    return transcripts;
+}
+
     class getTranscriptsFromEnsemblToName {
         public void getTranscriptsFromEnsemblToName(String symbol, String build, String db, String fieldsToRetrieve) throws SQLException, EnsemblToNameException {
             class transcripts {
-                private void addAll(Object transcriptsFromResultSet) {throw new UnsupportedOperationException("Not supported yet.");
-                //To change body of generated methods, choose Tools | Templates.
+                private void addAll(Object transcriptsFromResultSet) {
+                    throw new UnsupportedOperationException("Not supported yet.");
+                    //To change body of generated methods, choose Tools | Templates.
                 }
                 private transcripts() throws SQLException {
                     String query = null;
@@ -171,38 +184,40 @@ public class EnsemblGeneCoordinatesFetcher extends UcscGeneCoordinatesFetcher {
         }
     }
 @Override
-    class getGeneFromID {
-        public ArrayList<GeneDetails> getGeneFromID(String id, String build, String db) throws SQLException, GetGeneFromIDException {
-            String fields = new String();
-            String symbol = new String();
-            Object rs = new Object();
-            String query = new String();
-            String fieldsToRetrieve = String.join(", ", fields);
-            System.out.println("SELECT " + fieldsToRetrieve + " FROM " + build + "." + db + " WHERE name='"+ id + "'");
-            query = ("SELECT " + fieldsToRetrieve + " FROM " + build + "." + db + " WHERE name='"+ id + "'");
-            Connection conn = DriverManager.getConnection("jdbc:mysql://genome-mysql.cse.ucsc.edu" + "?user=genomep&password=password&no-auto-rehash");
-            String query7 = null;
-            PreparedStatement stmt7 = conn.prepareStatement(query7);
-            query7 = ("SELECT COUNT(*) FROM " + "information_schema.tables  WHERE table_schema = '" + build + "' AND table_name = 'ensemblToGeneName';");
-            ResultSet rs2  = (ResultSet)  stmt7.executeQuery(query7);
-            while (rs2.next()) {
-                if (rs2.getInt("COUNT(*)") < 1) {
-                    symbol = getSymbolViaKgId(id, build);
-                } else {
-                    symbol = getSymbolFromEnsemblToName(id, build);
-                }
+public ArrayList<GeneDetails> getGeneFromID(String id, String build, String db) throws SQLException, GetGeneFromIDException {
+    ArrayList<GeneDetails> transcripts = super.getGeneFromID(id, build, db);
+    
+    // Additional Ensembl-specific processing (if needed)
+    if (transcripts.isEmpty()) {
+        String symbol = getSymbolFromEnsemblToName(id, build);
+        System.out.println("Fallback to Ensembl symbol resolution for " + id + ": " + symbol);
+    }
+    
+    return transcripts;
+}
+
+private String getSymbolFromEnsemblToName(String id, String build) throws SQLException {
+    String symbol = "";
+    Connection conn = DriverManager.getConnection("jdbc:mysql://genome-mysql.cse.ucsc.edu?user=genomep&password=password&no-auto-rehash");
+    
+    String query = "SELECT name, value FROM " + build + ".ensemblToGeneName WHERE name=?";
+    try (PreparedStatement ps = conn.prepareStatement(query)) {
+        ps.setString(1, id);
+        try (ResultSet rs = ps.executeQuery()) {
+            if (rs.next()) {
+                symbol = rs.getString("value");
             }
-            return null;
         }
+    }
+    
+    return symbol;
+}
+
         private String getSymbolViaKgId(String id, String build) throws SQLException {
             System.out.println("SELECT COUNT(*) FROM " + "information_schema.tables  " + "WHERE table_schema = '"+ build +"' AND table_name = 'knownToEnsembl';");
             return null;
         }
-        private String getSymbolFromEnsemblToName(String id, String build) throws SQLException {
-            System.out.println("SELECT name, value FROM " + build + ".ensemblToGeneName WHERE name='" + id +"';");
-            return null;
-        }
-    }
+
     class getSymbolFromEnsemblToName {
         public String getSymbolFromEnsemblToName(String id, String build) throws SQLException {
             String symbol = new String();
@@ -249,7 +264,7 @@ public class EnsemblGeneCoordinatesFetcher extends UcscGeneCoordinatesFetcher {
             throw new IllegalStateException("next() exception problem");
         }
         public String getString(String rs) {
-        throw new ArrayIndexOutOfBoundsException("getString exception problem");
+            throw new ArrayIndexOutOfBoundsException("getString exception problem");
         }
         public int getInt(Integer COUNT) {
             throw new IllegalArgumentException("getInt exception problem");

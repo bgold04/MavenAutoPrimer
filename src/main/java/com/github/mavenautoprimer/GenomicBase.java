@@ -26,6 +26,7 @@ import java.lang.Exception;
 import java.lang.RuntimeException;
 import java.lang.IllegalStateException;
 import java.util.ArrayList;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 public class GenomicBase {
@@ -122,7 +123,7 @@ public class GenomicBase {
             super(cause);
         }
     }
-    public class EnsemblTranscriptException  extends Exception {
+  public class EnsemblTranscriptException  extends Exception {
         public EnsemblTranscriptException() {
             super();
         }
@@ -296,12 +297,6 @@ public class GenomicBase {
                 super(cause);
             }
         }
-        public static class GetGeneFromIDException extends Exception {
-            public GetGeneFromIDException() {
-                super();
-            } public GetGeneFromIDException(String message) {
-                super(message);
-            }
             public static class GetGeneFromSymbolException extends Exception {
                 public GetGeneFromSymbolException() {
                     super();
@@ -346,61 +341,122 @@ public class GenomicBase {
                 }
             }
 // Helper method to display alerts with exceptions
-private void showAlert(String title, String header, Throwable ex) {
-    Alert errorAlert = new Alert(Alert.AlertType.ERROR);
-    errorAlert.setTitle(title);
-    errorAlert.setHeaderText(header);
-    errorAlert.setContentText(ex.getMessage());
-    errorAlert.showAndWait();
-    ex.printStackTrace();
-}
+            private void showAlert(String title, String header, Throwable ex) {
+                Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+                errorAlert.setTitle(title);
+                errorAlert.setHeaderText(header);
+                errorAlert.setContentText(ex.getMessage());
+                errorAlert.showAndWait();
+                ex.printStackTrace();
+            }
 // Helper method to display error alerts
-private void showErrorAlert(String title, String content, Exception ex) {
-    Alert alert = new Alert(Alert.AlertType.ERROR);
-    alert.setTitle(title);
-    alert.setHeaderText(title);
-    alert.setContentText(content + "\n\nSee exception below:\n" + ex.getMessage());
-    alert.showAndWait();
-}
-            public ArrayList<GeneDetails> getGeneFromId(String id, String build, String db) throws SQLException, GetGeneFromIDException {
-                System.err.System.out.println("getGeneFromID fetching problem.");
-                return getTranscriptsFromResultSet();
+            private void showErrorAlert(String title, String content, Exception ex) {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle(title);
+                alert.setHeaderText(title);
+                alert.setContentText(content + "\n\nSee exception below:\n" + ex.getMessage());
+                alert.showAndWait();
             }
-            public ArrayList<GeneDetails> getGeneFromSymbol(String symbol, String build, String db) throws SQLException, GetGeneFromSymbolException {
-                System.err.System.out.println("getGeneFromSymbol fetching problem.");
-                return getTranscriptsFromResultSet();
-            }
-            protected int getInt(String count) {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.}
-                public ArrayList<GenomicRegionSummary> getSnpCoordinates(String chromosome, int start, int end, String genome, String snpDb) throws SQLException {
-                    System.err.System.out.println("getSnpCoordinates fetching problem.");
-                    return snpCoordinates;
-                }
-                protected String getString(String name) {
-                    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.}}
-                    private ArrayList<GeneDetails> getTranscriptsFromResultSet() {
-                        throw new IllegalStateException("Gene Hash Problem");
-            protected boolean next() {
-                throw new UnsupportedOperationException("Not supported yet.");
-                 //To change body of generated methods, choose Tools | Templates.}
-                private ArrayList<GenomicRegionSummary> snpCoordinates;
-                protected GeneDetails geneHashToGeneDetails(HashMap<String, String> gene) throws RuntimeException {
-                    GeneDetails geneDetails = new GeneDetails();
-                    geneDetails.setSymbol(gene.get("name2"));
-                    geneDetails.setId(gene.get("name"));
-                    geneDetails.setStrand(gene.get("strand"));
-                    geneDetails.setChromosome(gene.get("chrom"));
-                    geneDetails.setTxStart(Integer.parseInt(gene.get("txStart")));
-                    geneDetails.setTxEnd(Integer.parseInt(gene.get("txEnd")));
-                    geneDetails.setCdsStart(Integer.parseInt(gene.get("cdsStart")));
-                    geneDetails.setCdsEnd(Integer.parseInt(gene.get("cdsEnd")));
-                    geneDetails.setTotalExons(Integer.parseInt(gene.get("exonCount")));
-                    try {
-                        geneDetails.setExons(gene.get("exonStarts"), gene.get("exonEnds"));
-                    } catch (GeneDetails.GeneExonsException ex) {
-                        throw new RuntimeException("Error in hash " + geneDetails.getId() + ", gene " + geneDetails.getSymbol(), ex);
-                    }
-                    return geneDetails;
+public ArrayList<GeneDetails> getGeneFromID(String id, String build, String db) throws SQLException, GetGeneFromIDException {
+        ArrayList<GeneDetails> transcripts = new ArrayList<>();
+        
+        // Ensure database connection
+        Connection conn = DriverManager.getConnection("jdbc:mysql://genome-mysql.cse.ucsc.edu?user=genomep&password=password&no-auto-rehash");
+        
+        // Retrieve standard fields
+        String fieldsToRetrieve = String.join(", ", Arrays.asList("name", "chrom", "txStart", "txEnd", "cdsStart", "cdsEnd", "exonCount", "exonStarts", "exonEnds", "strand"));
+        String query = "SELECT " + fieldsToRetrieve + " FROM " + build + "." + db + " WHERE name=?";
+
+        try (PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setString(1, id);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    transcripts.add(parseGeneDetails(rs));
                 }
             }
+        } catch (SQLException ex) {
+            throw new GetGeneFromIDException("Error retrieving gene: " + id, ex);
+        }
+
+        return transcripts;
+    }
+
+    private GeneDetails parseGeneDetails(ResultSet rs) throws SQLException {
+        GeneDetails geneDetails = new GeneDetails();
+        geneDetails.setId(rs.getString("name"));
+        geneDetails.setChromosome(rs.getString("chrom"));
+        geneDetails.setTxStart(rs.getInt("txStart"));
+        geneDetails.setTxEnd(rs.getInt("txEnd"));
+        geneDetails.setCdsStart(rs.getInt("cdsStart"));
+        geneDetails.setCdsEnd(rs.getInt("cdsEnd"));
+        geneDetails.setTotalExons(rs.getInt("exonCount"));
+        geneDetails.setStrand(rs.getString("strand"));
+        return geneDetails;
+    }
 }
+
+
+
+
+
+@Override
+public ArrayList<GeneDetails> getGeneFromSymbol(String symbol, String build, String db) 
+        throws SQLException, GetGeneFromSymbolException {
+    ArrayList<GeneDetails> transcripts = new ArrayList<>();
+    
+    // Ensure database connection
+    try (Connection conn = DriverManager.getConnection(
+            "jdbc:mysql://genome-mysql.cse.ucsc.edu?user=genomep&password=password&no-auto-rehash")) {
+        
+        // Standard fields to retrieve
+        String fieldsToRetrieve = String.join(", ", Arrays.asList(
+            "name", "chrom", "txStart", "txEnd", "cdsStart", "cdsEnd", "exonCount", 
+            "exonStarts", "exonEnds", "strand", "name2"
+        ));
+
+        // Query execution
+        String query = "SELECT " + fieldsToRetrieve + " FROM " + build + "." + db + " WHERE name2=?";
+        try (PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setString(1, symbol);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    transcripts.add(parseGeneDetails(rs));
+                }
+            }
+        }
+    } catch (SQLException ex) {
+        throw new GetGeneFromSymbolException("Error retrieving gene for symbol: " + symbol, ex);
+    }
+
+    return transcripts;
+}
+
+    protected int getInt(ResultSet rs, String columnLabel) throws SQLException {
+        if (rs == null) {
+            throw new IllegalStateException("ResultSet is not initialized.");
+        }
+        return rs.getInt(columnLabel);
+    }
+// Correct structure for geneHashToGeneDetails.
+    protected GeneDetails geneHashToGeneDetails(HashMap<String,String> gene) 
+            throws GetGeneExonsException{
+        GeneDetails geneDetails = new GeneDetails();
+        geneDetails.setSymbol(gene.get("name2"));
+        geneDetails.setId(gene.get("name"));
+        geneDetails.setStrand(gene.get("strand"));
+        geneDetails.setChromosome(gene.get("chrom"));
+        geneDetails.setTxStart(Integer.parseInt(gene.get("txStart")));
+        geneDetails.setTxEnd(Integer.parseInt(gene.get("txEnd")));
+        geneDetails.setCdsStart(Integer.parseInt(gene.get("cdsStart")));
+        geneDetails.setCdsEnd(Integer.parseInt(gene.get("cdsEnd")));
+        geneDetails.setTotalExons(Integer.parseInt(gene.get("exonCount")));
+        try{
+            geneDetails.setExons(gene.get("exonStarts"), gene.get("exonEnds"));
+        }catch (GeneDetails.GeneExonsException ex){
+            throw new GetGeneExonsException("Error parsing exons for transcript "
+                    + geneDetails.getId() + ", gene " + geneDetails.getSymbol(), ex);
+        }
+        return geneDetails;
+    }
+}
+

@@ -129,14 +129,14 @@ public class GeneDetailsModel {
                 //whole exon before cds, skip
                 //whole exon before cds, skip
             } else if (exon.getStart() < cdsStart) {
-            //cds start is in this exon
+                //cds start is in this exon
                 if (exon.getEnd() <= cdsEnd) {
                     codingExons.add(new Exon(cdsStart, exon.getEnd(), exon.getOrder()));
                 } else {
                     codingExons.add(new Exon(cdsStart, cdsEnd, exon.getOrder()));
                 }
             } else if (exon.getStart() < cdsEnd) {
-            //within cds
+                //within cds
                 if (exon.getEnd() > cdsEnd) {
                     codingExons.add(new Exon(exon.getStart(), cdsEnd, exon.getOrder()));
                 } else {
@@ -207,21 +207,21 @@ public class GeneDetailsModel {
             if (end < cdsStart) {
                 return null;
             } else if (start < cdsStart) {
-            //cds start is in this exon
+                //cds start is in this exon
                 if (end <= cdsEnd) {
                     return new Exon(cdsStart, end, order);
                 } else {
                     return new Exon(cdsStart, cdsEnd, order);
                 }
             } else if (start < cdsEnd) {
-            //within cds
+                //within cds
                 if (end > cdsEnd) {
                     return new Exon(start, cdsEnd, order);
                 } else {
                     return new Exon(start, end, order);
                 }
             } else {
-            //outside CDS
+                //outside CDS
                 return null;
             }
         }

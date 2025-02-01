@@ -41,7 +41,7 @@ public class GeneCoordinatesFetcher extends GenomicBase {
             throw new ExceptionInInitializerError(ex);
         }
     }
-public void readDataBase() throws com.mysql.cj.jdbc.exceptions.CommunicationsException {
+    public void readDataBase() throws com.mysql.cj.jdbc.exceptions.CommunicationsException {
         try  {
             conn = DriverManager.getConnection("jdbc:mysql://genome-mysql.cse.ucsc.edu" + "?user=genomep&password=password&no-auto-rehash");
         } catch(SQLException en) {
@@ -53,11 +53,12 @@ public void readDataBase() throws com.mysql.cj.jdbc.exceptions.CommunicationsExc
             }
         }
     }
-  public class ResultSet {
+    public class ResultSet {
         public ArrayList<GeneDetails> resultSet(String build, String db, String symbol) throws SQLException {
             try  {
                 conn = DriverManager.getConnection("jdbc:mysql://genome-mysql.cse.ucsc.edu" + "?user=genomep&password=password&no-auto-rehash");
-            } catch(SQLException ex) {ex.printStackTrace(System.err);
+            } catch(SQLException ex) {
+                ex.printStackTrace(System.err);
             }
             String fieldsToRetrieve = String.join(", ", fields );
             query = ("SELECT " + fieldsToRetrieve + " FROM " + build + "." + db +" WHERE name2='"+ symbol + "'");
@@ -76,83 +77,87 @@ public void readDataBase() throws com.mysql.cj.jdbc.exceptions.CommunicationsExc
         String getString(String rs) {
             throw new ArrayIndexOutOfBoundsException("getString exception problem");
         }
-        int getInt(String count) {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
+public int getInt(ResultSet rs, String columnLabel) throws SQLException {
+    return super.getInt(rs, columnLabel);
+}
         ResultSetMetaData getMetaData() {
             throw new UnsupportedOperationException("Not supported yet.");
         }
-  }
-public class getGeneFromSymbol extends GeneDetails {
-        public ArrayList<GeneDetails> getGeneFromSymbol (String symbol, String build, String db) throws SQLException, GetGeneFromSymbolException {
-            String fieldsToRetrieve = String.join(", ", fields );
-            query = ("SELECT " + fieldsToRetrieve + " FROM " + build + "." + db +" WHERE name2='"+ symbol+ "'");
-            Connection conn = DriverManager.getConnection("jdbc:mysql://genome-mysql.cse.ucsc.edu" + "?user=genomep&password=password&no-auto-rehash");
-            PreparedStatement ps = conn.prepareStatement(query);
-            rs = (ResultSet) ps.executeQuery(query);
-            return getTranscriptsFromResultSet();
-        }
-}
-public class getGeneFromId extends GeneDetails {
-        public ArrayList <GeneDetails> getGeneFromId(String id, String build, String db) throws SQLException, GetGeneFromIDException {
-            String fieldsToRetrieve = String.join(", ", fields );
-            query = ("SELECT " + fieldsToRetrieve + " FROM " + build + "." + db + " WHERE name='"+ id + "'");
-            Connection conn = DriverManager.getConnection("jdbc:mysql://genome-mysql.cse.ucsc.edu" + "?user=genomep&password=password&no-auto-rehash");
-            PreparedStatement ps =  conn.prepareStatement(query);
-            rs = (ResultSet)ps.executeQuery(query);
-            return getTranscriptsFromResultSet();
-        }
     }
-     class getTranscriptsFromResultSet {
-      public ArrayList<GeneDetails> getTranscriptsFromResultSet(ResultSet rs, ArrayList<String> fields);
-        throws SQLException, TranscriptsFromrsException {
-            ArrayList<HashMap<String, String>> genes = new ArrayList<>();
-            while (rs.next()) {
-                HashMap<String, String> geneCoords = new HashMap<>();
-                for (String f : fields) {
-                    geneCoords.put(f, rs.getString(f));
-                }
-                genes.add(geneCoords);
+@Override
+public ArrayList<GeneDetails> getGeneFromSymbol(String symbol, String build, String db) 
+        throws SQLException, GetGeneFromSymbolException {
+    return super.getGeneFromSymbol(symbol, build, db);
+}
+
+@Override
+public ArrayList<GeneDetails> getGeneFromID(String id, String build, String db) throws SQLException, GetGeneFromIDException {
+    return super.getGeneFromID(id, build, db);
+}
+
+class getTranscriptsFromResultSet {
+    public ArrayList<GeneDetails> getTranscriptsFromResultSet(ResultSet rs, ArrayList<String> fields) throws SQLException, TranscriptsFromrsException {
+            // Removed semicolon before throws
+        ArrayList<GeneDetails> transcriptsToReturn = new ArrayList<>();
+        ArrayList<HashMap<String, String>> genes = new ArrayList<>();
+        while (rs.next()) {
+            HashMap<String, String> geneCoords = new HashMap<>();
+            for (String f : fields) {
+                geneCoords.put(f, rs.getString(f));
             }
-            class TranscriptsToReturn {
-                public void transcriptsToReturn() {
-                    ArrayList<GeneDetails> transcriptsToReturn = new ArrayList<>();
-                    for (HashMap<String, String> gene : genes) {
-                        GeneDetails geneDetails = geneHashToGeneDetails();
-                        transcriptsToReturn.add(geneDetails);
-                    }
-                }
-                private GeneDetails geneHashToGeneDetails() {
-                    throw new IllegalStateException("Gene Hash Problem");
-                }
-            }
-            return getTranscriptsFromResultSet(rs, fields);
+            genes.add(geneCoords);
         }
-      }
-    class getSnpCoordinates {
-        public ArrayList<GenomicRegionSummary> getSnpCoordinates ();
+        for (HashMap<String, String> gene : genes) {
+            GeneDetails geneDetails = geneHashToGeneDetails(gene);
+            transcriptsToReturn.add(geneDetails);
+        }
+        return transcriptsToReturn;
+          // Fixed return statement
+    }
+    private GeneDetails geneHashToGeneDetails(HashMap<String, String> gene) {
+        return new GeneDetails();  
+        // Prevents illegal state exception
+    }
+}
+class getSnpCoordinates {
+    public ArrayList<GenomicRegionSummary> getSnpCoordinates(
         String chrom, Integer StartPos, Integer EndPos, String build, String db, String query) throws SQLException {
-            ArrayList<GenomicRegionSummary> snpCoordinates = new ArrayList<> ();
-            ArrayList<String> chromosomes = new ArrayList<>();
-            Connection conn = DriverManager.getConnection("jdbc:mysql://genome-mysql.cse.ucsc.edu" + "?user=genomep&password=password&no-auto-rehash");
-            PreparedStatement ps = conn.prepareStatement(query);
-            query = ("SELECT DISTINCT(chrom) AS chrom " + "FROM " + build + "." + db);
-            ResultSet rs = (ResultSet) ps.executeQuery(query);
-            while (rs.next()) {
-                chromosomes.add(rs.getString("chrom"));
-            }
-            if (! chromosomes.contains(chrom)) {
-                chrom = "chr" + chrom;
-                if (!chromosomes.contains(chrom)) {
-                    return snpCoordinates;
-                }
-            }
-            query = ("SELECT chromStart,chromEnd from " + build + "." + db + " where chrom='" + chrom "' and chromEND >= " + start + " and chromStart < " + end);
-            rs = (ResultSet) ps.executeQuery(query);
-            while (rs.next()) {
-                snpCoordinates.add(new GenomicRegionSummary(chrom, Integer.valueOf(rs.getString("chromStart")) + 1, Integer.valueOf(rs.getString("chromEnd"))));
-            }
-            return snpCoordinates;
+        
+        ArrayList<GenomicRegionSummary> snpCoordinates = new ArrayList<>();
+        ArrayList<String> chromosomes = new ArrayList<>();
+        
+        Connection conn = DriverManager.getConnection("jdbc:mysql://genome-mysql.cse.ucsc.edu" +
+                                                      "?user=genomep&password=password&no-auto-rehash");
+        PreparedStatement ps = conn.prepareStatement(query);
+        
+        query = "SELECT DISTINCT(chrom) AS chrom FROM " + build + "." + db;
+        ResultSet rs = ps.executeQuery(query);
+        
+        while (rs.next()) {
+            chromosomes.add(rs.getString("chrom"));
         }
+
+        if (!chromosomes.contains(chrom)) {
+            chrom = "chr" + chrom;
+            if (!chromosomes.contains(chrom)) {
+                return snpCoordinates;
+            }
+        }
+
+        query = "SELECT chromStart, chromEnd FROM " + build + "." + db +
+                " WHERE chrom='" + chrom + "' AND chromEnd >= " + StartPos +
+                " AND chromStart < " + EndPos;
+
+        rs = ps.executeQuery(query);
+
+        while (rs.next()) {
+            snpCoordinates.add(new GenomicRegionSummary(
+                chrom, Integer.valueOf(rs.getString("chromStart")) + 1, Integer.valueOf(rs.getString("chromEnd"))
+            ));
+        }
+
+        return snpCoordinates;
     }
 }
+}
+

@@ -34,7 +34,7 @@ import org.dom4j.io.SAXReader;
 
 public class DasUcscSequenceFetcher {
     HashMap<String, String> buildToMapMaster = new HashMap<>();
-     // Maps build name to URL
+    // Maps build name to URL
     public DasUcscSequenceFetcher() throws DocumentException {
         try {
             SAXReader reader = new SAXReader();
@@ -53,44 +53,42 @@ public class DasUcscSequenceFetcher {
         }
     }
 //uses 0-based coordinates for compatibility with gene tables, bed etc., although DAS uses 1-based
-public String retrieveSequence(String build, String chrom, Integer start, Integer end) throws DocumentException, MalformedURLException {
-    if (! buildToMapMaster.containsKey(build)) {
-        return null;
-    } else {
-        String chromNumber = chrom.replaceFirst("chr", "");
-        int length = 0;
-        URL entryPointUrl = new URL(buildToMapMaster.get(build) + "/entry_points");
-        Document dasXml;
-        SAXReader reader = new SAXReader();
-        dasXml  = reader.read(entryPointUrl);
-        Element root = dasXml.getRootElement();
-        for ( Iterator i = root.elementIterator( "ENTRY_POINTS" ); i.hasNext(); ) {
-            Element dsn = (Element) i.next();
-            for (Iterator j = dsn.elementIterator("SEGMENT"); j.hasNext();) {
-                Element seg = (Element) j.next();
-                String id = seg.attributeValue("id");
-                if (id != null && id.equals(chromNumber)) {
-                    String stop = seg.attributeValue("stop");
-                    length = Integer.valueOf(stop);
-                    break;
-                }
-            }
-        if (length > 0) {
-            end = end <= length  ? end : length;
+    public String retrieveSequence(String build, String chrom, Integer start, Integer end) throws DocumentException, MalformedURLException {
+        if (! buildToMapMaster.containsKey(build)) {
+            return null;
+        } else {
+            String chromNumber = chrom.replaceFirst("chr", "");
+            int length = 0;
+            URL entryPointUrl = new URL(buildToMapMaster.get(build) + "/entry_points");
+            Document dasXml;
+            SAXReader reader = new SAXReader();
+            dasXml  = reader.read(entryPointUrl);
+            Element root = dasXml.getRootElement();
+
+
+for ( Iterator i = root.elementIterator( "ENTRY_POINTS" ); i.hasNext(); ) {
+    Element dsn = (Element) i.next();
+    for (Iterator j = dsn.elementIterator("SEGMENT"); j.hasNext();) {
+        Element seg = (Element) j.next();
+        String id = seg.attributeValue("id");
+        if (id != null && id.equals(chromNumber)) {
+            String stop = seg.attributeValue("stop");
+            length = Integer.valueOf(stop);
+            break;
         }
-        StringBuilder dna = new StringBuilder();
-        URL genomeUrl = new URL(buildToMapMaster.get(build) + "/dna?segment="+chrom + ":" + (start + 1) + "," + end);
-        dasXml  = reader.read(genomeUrl);
-        root = dasXml.getRootElement();
-        for ( Iterator i = root.elementIterator( "SEQUENCE" ); i.hasNext(); ) {
-            Element dsn = (Element) i.next();
-            Element seq = dsn.element("DNA");
-            String text = seq.getText().replaceAll("\n", "");
-            dna.append(text);
-            //dna.append(seq.getText());
-        }
-        return dna.toString();
-}
-}
-}
+    }
+    if (length > 0) {
+        end = end <= length  ? end : length;
+    }
+    StringBuilder dna = new StringBuilder();
+    URL genomeUrl = new URL(buildToMapMaster.get(build) + "/dna?segment="+chrom + ":" + (start + 1) + "," + end);
+    dasXml  = reader.read(genomeUrl);
+    root = dasXml.getRootElement();
+    for ( Iterator seqIter = root.elementIterator( "SEQUENCE" ); seqIter.hasNext(); ) {
+        Element seqDsn = (Element) seqIter.next();
+        Element seq = seqDsn.element("DNA");
+        String text = seq.getText().replaceAll("\n", "");
+        dna.append(text);
+    }
+    return dna.toString();
 }

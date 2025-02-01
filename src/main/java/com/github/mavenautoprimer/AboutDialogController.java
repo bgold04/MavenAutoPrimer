@@ -63,16 +63,16 @@ public class AboutDialogController implements Initializable {
         });
         closeButton.setDefaultButton(true);
         closeButton.setCancelButton(true);
-final KeyCombination macCloseKeyComb = new KeyCodeCombination(KeyCode.W, KeyCombination.SHORTCUT_DOWN);
-        if (System.getProperty("os.name").equals("Mac OS X")){
-                closeButton.addEventHandler(KeyEvent.KEY_RELEASED, new EventHandler<KeyEvent>() {
-                    @Override
-                    public void handle(KeyEvent ev){
-                        if (macCloseKeyComb.match(ev)){
-                            closeButton.fire();
-                        }
+        final KeyCombination macCloseKeyComb = new KeyCodeCombination(KeyCode.W, KeyCombination.SHORTCUT_DOWN);
+        if (System.getProperty("os.name").equals("Mac OS X")) {
+            closeButton.addEventHandler(KeyEvent.KEY_RELEASED, new EventHandler<KeyEvent>() {
+                @Override
+                public void handle(KeyEvent ev) {
+                    if (macCloseKeyComb.match(ev)) {
+                        closeButton.fire();
                     }
-                });
+                }
+            });
         }
     }
     public void setVersion(String version) {

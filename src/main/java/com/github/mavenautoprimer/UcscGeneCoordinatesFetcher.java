@@ -29,38 +29,49 @@ import java.util.HashMap;
 
 public class UcscGeneCoordinatesFetcher extends GeneCoordinatesFetcher {
     final ArrayList<String> fields = new ArrayList<>(Arrays.asList("name", "chrom", "txStart", "txEnd", "cdsStart", "cdsEnd", "exonCount", "exonStarts", "exonEnds", "strand"));
+@Override
+public ArrayList<GeneDetails> getGeneFromSymbol(String symbol, String build, String db) 
+        throws SQLException, GetGeneExonsException {
+    ArrayList<GeneDetails> transcripts = new ArrayList<>();
 
-    public ArrayList<GeneDetails> getGeneFromSymbol(String symbol, String build, String db) throws SQLException, GetGeneExonException {
-        ArrayList<GeneDetails> transcripts = new ArrayList<>();
-        String fieldsToRetrieve = String.join(", ", fields);
-        
-        String query = "SELECT kgID, geneSymbol FROM " + build + ".kgXref WHERE geneSymbol='" + symbol + "'";
-        PreparedStatement ps = conn.prepareStatement(query);
-        ResultSet rs2 = ps.executeQuery();
+    // Open connection and execute query
+    try (Connection conn = DriverManager.getConnection(
+            "jdbc:mysql://genome-mysql.cse.ucsc.edu?user=genomep&password=password&no-auto-rehash")) {
 
-        while (rs2.next()) {
-            query = "SELECT " + fieldsToRetrieve + " FROM " + build + "." + db + " WHERE name='" + rs2.getString("kgID") + "'";
-            ResultSet rs = ps.executeQuery(query);
-            transcripts.addAll(getTranscriptsFromResultSet(rs, symbol));
+        // Step 1: Retrieve UCSC kgID
+        String kgQuery = "SELECT kgID FROM " + build + ".kgXref WHERE geneSymbol=?";
+        try (PreparedStatement ps = conn.prepareStatement(kgQuery)) {
+            ps.setString(1, symbol);
+            try (ResultSet rs2 = ps.executeQuery()) {
+                while (rs2.next()) {
+                    String kgID = rs2.getString("kgID");
+
+                    // Step 2: Retrieve transcript details using kgID
+                    String fieldsToRetrieve = String.join(", ", fields);
+                    String query = "SELECT " + fieldsToRetrieve + " FROM " + build + "." + db + " WHERE name=?";
+                    try (PreparedStatement ps2 = conn.prepareStatement(query)) {
+                        ps2.setString(1, kgID);
+                        try (ResultSet rs = ps2.executeQuery()) {
+                            transcripts.addAll(getTranscriptsFromResultSet(rs, symbol));
+                        }
+                    }
+                }
+            }
         }
-        return transcripts;
     }
 
-    public ArrayList<GeneDetails> getGeneFromId(String id, String build, String db) throws SQLException, GetGeneExonException {
-        String fieldsToRetrieve = String.join(", ", fields);
-        String query = "SELECT " + fieldsToRetrieve + " FROM " + build + "." + db + " WHERE name='" + id + "'";
-        PreparedStatement ps = conn.prepareStatement(query);
-        ResultSet rs = ps.executeQuery();
+    return transcripts;
+}
 
-        query = "SELECT kgID, geneSymbol FROM " + build + ".kgXref WHERE kgID='" + id + "'";
-        ResultSet rs2 = ps.executeQuery();
-
-        String symbol = "";
-        while (rs2.next()) {
-            symbol = rs2.getString("geneSymbol");
-        }
-        return getTranscriptsFromResultSet(rs, symbol);
+@Override
+public ArrayList<GeneDetails> getGeneFromID(String id, String build, String db) throws SQLException, GetGeneFromIDException {
+    ArrayList<GeneDetails> transcripts = super.getGeneFromID(id, build, db);
+    // Special UCSC handling if needed
+    if (transcripts.isEmpty()) {
+        System.out.println("Warning: UCSC-specific fallback may be needed for " + id);
     }
+    return transcripts;
+}
 
     protected ArrayList<GeneDetails> getTranscriptsFromResultSet(ResultSet rs, String symbol) throws SQLException, GetGeneExonException {
         ArrayList<HashMap<String, String>> genes = new ArrayList<>();
@@ -68,11 +79,9 @@ public class UcscGeneCoordinatesFetcher extends GeneCoordinatesFetcher {
             HashMap<String, String> geneCoords = new HashMap<>();
             for (String f : fields) {
                 geneCoords.put(f, rs.getString(f));
-            }
-            geneCoords.put("name2", symbol);
+            }            geneCoords.put("name2", symbol);
             genes.add(geneCoords);
-        }
-
+}
         ArrayList<GeneDetails> transcriptsToReturn = new ArrayList<>();
         for (HashMap<String, String> gene : genes) {
             transcriptsToReturn.add(GeneHashToGeneDetails(gene));

@@ -89,6 +89,7 @@ public class UcscBuildAndTableFetcher {
         dasXml  = reader.read(url);
         return dasXml;
     }
+  
 // uses 0-based coordinates for compatibility with gene tables, bed etc., although DAS uses 1-based
     public String retrieveSequence(String build, String chrom, Integer start, Integer end) throws DocumentException, MalformedURLException {
         if (buildToDescription.isEmpty()) {
