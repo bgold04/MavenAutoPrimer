@@ -30,11 +30,12 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 
-public class Primer3ResultsController {
+public class Primer3ResultViewController {
 
     private ObservableList<Primer3Result> data = FXCollections.observableArrayList();
     private TableColumn<Primer3Result, Hyperlink> ispcrCol;
     private TableColumn<Primer3Result, Hyperlink> ispcrResCol;
+
 
     public Primer3ResultViewController() {
         ispcrCol.setCellValueFactory(cellData -> {

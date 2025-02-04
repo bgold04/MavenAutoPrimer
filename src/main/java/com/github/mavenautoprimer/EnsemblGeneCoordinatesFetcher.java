@@ -1,3 +1,6 @@
+
+package com.github.mavenautoprimer;
+
 /*
  * Copyright (C) 2014 David A. Parry <d.a.parry@leeds.ac.uk>
  *
@@ -17,260 +20,143 @@
 
 /**
  *
- * @author David A. Parry <d.a.parry@leeds.ac.uk> and edited by Bert Gold <bgold04@gmail.com>
+ * @author David A. Parry <d.a.parry@leeds.ac.uk> and
+ * edited by Bert Gold <bgold04@gmail.com> and ChatGPT
+ * February 4, 2025
+ *
  */
 
 
-package com.github.mavenautoprimer;
+import java.sql.*;
+import java.util.*;
 
-import com.github.mavenautoprimer.GeneCoordinatesFetcher;
-import com.github.mavenautoprimer.GenomicBase;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
+public class EnsemblGeneCoordinatesFetcher extends GeneCoordinatesFetcher {
+    private static final List<String> FIELDS = Arrays.asList("name", "chrom", "txStart", "txEnd", "cdsStart", "cdsEnd", "exonCount", "exonStarts", "exonEnds", "strand");
 
-public class EnsemblGeneCoordinatesFetcher extends UcscGeneCoordinatesFetcher {
-    final ArrayList<String> fields = new ArrayList<>(Arrays.asList("name", "chrom", "txStart", "txEnd", "cdsStart", "cdsEnd", "exonCount", "exonStarts", "exonEnds", "strand"));
-    public void setgeneSymbol(String geneSymbol, String symbol, String name2) {
-        this.geneSymbol = symbol = name2;
-    }
-    public boolean next() {
-        throw new IllegalStateException("next() exception problem");
-    }
-    public String getString(String rs) {
-        throw new ArrayIndexOutOfBoundsException("getString exception problem");
-    }
-    public int getInt(ResultSet rs, String columnLabel) throws SQLException {
-    return super.getInt(rs, columnLabel);
-    }    
-    GeneDetails geneDetails = geneHashToGeneDetails(gene);
-    // Inherited from GenomicBase
-    class getTranscriptsFromResultSet {
-        public ArrayList<GeneDetails> getTranscriptsFromResultSet(GeneCoordinatesFetcher.ResultSet rs, ArrayList<String> fields) throws SQLException, GenomicBase.TranscriptsFromrsException {
-            ArrayList<HashMap<String, String>> genes = new ArrayList<>();
-            while (rs.next()) {
-                HashMap<String, String> geneCoords = new HashMap<>();
-                for (String f : fields) {
-                    geneCoords.put(f, rs.getString(f));
-                }
-                genes.add(geneCoords);
+    @Override
+    public ArrayList<GeneDetails> getGeneFromSymbol(String symbol, String build, String db) throws SQLException, GetGeneFromSymbolException {
+        ArrayList<GeneDetails> transcripts = new ArrayList<>();
+
+        try (Connection conn = getConnection()) {
+            if (tableExists(conn, build, "ensemblToGeneName")) {
+                transcripts.addAll(fetchFromEnsemblToGeneName(conn, symbol, build, db));
+            } else {
+                transcripts = getTranscriptsViaKgId(symbol, build, db, String.join(", ", FIELDS));
             }
-            ArrayList<GeneDetails> transcriptsToReturn = new ArrayList<>();
-            for (HashMap<String, String> gene: genes) {
-                GeneDetails geneDetails = geneHashToGeneDetails(gene);
-                transcriptsToReturn.add(geneDetails);
-            }
-            return transcriptsToReturn;
         }
-        @SuppressWarnings({"ThrowableInstanceNotThrown", "ThrowableInstanceNeverThrown"})private GeneDetails geneHashToGeneDetails(HashMap<String, String> gene) {
-            throw new IllegalStateException("Gene Hash Problem");
+        return transcripts;
+    }
+
+    private boolean tableExists(Connection conn, String build, String tableName) throws SQLException {
+        String query = "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = ? AND table_name = ?";
+        try (PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setString(1, build);
+            stmt.setString(2, tableName);
+            try (ResultSet rs = stmt.executeQuery()) {
+                return rs.next() && rs.getInt(1) > 0;
+            }
         }
     }
-    class getTranscriptsViaKgId  {
-        ArrayList<GeneDetails> getTranscriptsViaKgId(String symbol, String build, String db, String fieldsToRetrieve) throws SQLException {
-            ArrayList<GeneDetails> transcripts = new ArrayList<>();
-            Connection conn = DriverManager.getConnection("jdbc:mysql://genome-mysql.cse.ucsc.edu" + "?user=genomep&password=password&no-auto-rehash");
-            String query = null;
-            String fields = new String();
-            PreparedStatement stmt3 = conn.prepareStatement(query);
-            query  = ("SELECT COUNT(*) FROM " + "information_schema.tables  WHERE table_schema = '" + build + "' AND table_name = 'knownToEnsembl';");
-            GeneCoordinatesFetcher.ResultSet rs2 = (GeneCoordinatesFetcher.ResultSet) stmt3.executeQuery(query);
-            ResultSetMetaData resultSetMetaData = rs2.getMetaData();
-            // and get the first column header
-            String columnHeader = resultSetMetaData.getColumnLabel(1);
-            // initialize an empty StringBuilder OUTSIDE the loop
-            StringBuilder sb = new StringBuilder();
-            // then loop through the resultset
-            while (rs2.next()) {
-                if (rs2.getInt("COUNT(*)") > 0) {
-                    ArrayList<String> kgids = new ArrayList<>();
-                    System.out.println("SELECT kgID, " + "geneSymbol FROM " + build + ".kgXref WHERE geneSymbol='" + symbol + "';");
-                    //db +" WHERE name2='"+ symbol + "'"
-                    conn = DriverManager.getConnection("jdbc:mysql://genome-mysql.cse.ucsc.edu" + "?user=genomep&password=password&no-auto-rehash");
-                    PreparedStatement stmt5 = conn.prepareStatement(query);
-                    query = ("SELECT kgID, " + "geneSymbol FROM " + build + ".kgXref WHERE geneSymbol='" + symbol + "';");
-                    GeneCoordinatesFetcher.ResultSet rs3 = (GeneCoordinatesFetcher.ResultSet) stmt5.executeQuery(query);
-                    while(rs3.next()) {
-                        kgids.add(rs3.getString("kgID"));
-                    }
-                    System.out.println("Select value FROM " + build + ".knownToEnsembl WHERE name='" + String.join(" or name=", kgids) + "';");
-                    PreparedStatement st = conn.prepareStatement(query);
-                    query = ("Select value FROM " + build + ".knownToEnsembl WHERE name='" + String.join(" or name=", kgids) + "';");
-                    GeneCoordinatesFetcher.ResultSet rs4 = (GeneCoordinatesFetcher.ResultSet) st.executeQuery(query);
-                    while (rs4.next()) {
-                        query = ("SELECT " + fieldsToRetrieve + " FROM " + build + "." + db +" WHERE name='"+ rs4.getString("value") + "'");
-                        PreparedStatement stmt4 = conn.prepareStatement(query);
-                        GeneCoordinatesFetcher.ResultSet rs = (GeneCoordinatesFetcher.ResultSet) stmt4.executeQuery(query);
-                        Collection<? extends GeneDetails> getTranscriptsFromResultSet = null;
-                        transcripts.addAll(getTranscriptsFromResultSet);
-                    }
-                    return transcripts;
+
+    private ArrayList<GeneDetails> fetchFromEnsemblToGeneName(Connection conn, String symbol, String build, String db) throws SQLException {
+        ArrayList<GeneDetails> transcripts = new ArrayList<>();
+        String query = "SELECT name FROM " + build + ".ensemblToGeneName WHERE value = ?";
+        try (PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setString(1, symbol);
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    transcripts.addAll(super.getGeneFromID(rs.getString("name"), build, db));
                 }
             }
         }
+        return transcripts;
     }
-@Override
-public ArrayList<GeneDetails> getGeneFromSymbol(String symbol, String build, String db) 
-        throws SQLException, GetGeneFromSymbolException {
-    ArrayList<GeneDetails> transcripts = new ArrayList<>();
 
-    try (Connection conn = DriverManager.getConnection(
-            "jdbc:mysql://genome-mysql.cse.ucsc.edu?user=genomep&password=password&no-auto-rehash")) {
+    private ArrayList<GeneDetails> getTranscriptsViaKgId(String symbol, String build, String db, String fieldsToRetrieve) throws SQLException {
+        ArrayList<GeneDetails> transcripts = new ArrayList<>();
 
-        // Check if ensemblToGeneName table exists
-        String tableCheckQuery = "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = ? AND table_name = 'ensemblToGeneName'";
-        boolean ensemblTableExists = false;
-        
-        try (PreparedStatement ps = conn.prepareStatement(tableCheckQuery)) {
-            ps.setString(1, build);
-            try (ResultSet rs = ps.executeQuery()) {
+        try (Connection conn = getConnection()) {
+            if (!tableExists(conn, build, "knownToEnsembl")) {
+                return transcripts;
+            }
+
+            List<String> kgIDs = fetchKgIDs(conn, symbol, build);
+            if (kgIDs.isEmpty()) return transcripts;
+
+            List<String> ensemblIDs = fetchEnsemblIDs(conn, kgIDs, build);
+            if (ensemblIDs.isEmpty()) return transcripts;
+
+            transcripts.addAll(fetchTranscriptsByEnsemblIDs(conn, ensemblIDs, build, db, fieldsToRetrieve));
+        }
+        return transcripts;
+    }
+
+    private List<String> fetchKgIDs(Connection conn, String symbol, String build) throws SQLException {
+        List<String> kgIDs = new ArrayList<>();
+        String query = "SELECT kgID FROM " + build + ".kgXref WHERE geneSymbol = ?";
+        try (PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setString(1, symbol);
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    kgIDs.add(rs.getString("kgID"));
+                }
+            }
+        }
+        return kgIDs;
+    }
+
+    private List<String> fetchEnsemblIDs(Connection conn, List<String> kgIDs, String build) throws SQLException {
+        List<String> ensemblIDs = new ArrayList<>();
+        String query = "SELECT value FROM " + build + ".knownToEnsembl WHERE name IN (" + String.join(", ", Collections.nCopies(kgIDs.size(), "?")) + ")";
+        try (PreparedStatement stmt = conn.prepareStatement(query)) {
+            for (int i = 0; i < kgIDs.size(); i++) {
+                stmt.setString(i + 1, kgIDs.get(i));
+            }
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    ensemblIDs.add(rs.getString("value"));
+                }
+            }
+        }
+        return ensemblIDs;
+    }
+
+    private List<GeneDetails> fetchTranscriptsByEnsemblIDs(Connection conn, List<String> ensemblIDs, String build, String db, String fieldsToRetrieve) throws SQLException {
+        List<GeneDetails> transcripts = new ArrayList<>();
+        String query = "SELECT " + fieldsToRetrieve + " FROM " + build + "." + db + " WHERE name IN (" + String.join(", ", Collections.nCopies(ensemblIDs.size(), "?")) + ")";
+        try (PreparedStatement stmt = conn.prepareStatement(query)) {
+            for (int i = 0; i < ensemblIDs.size(); i++) {
+                stmt.setString(i + 1, ensemblIDs.get(i));
+            }
+            try (ResultSet rs = stmt.executeQuery()) {
+                transcripts.addAll(getTranscriptsFromResultSet(rs, new ArrayList<>(Arrays.asList(fieldsToRetrieve.split(", ")))));
+            }
+        }
+        return transcripts;
+    }
+
+    @Override
+    public ArrayList<GeneDetails> getGeneFromID(String id, String build, String db) throws SQLException, GetGeneFromIDException {
+        ArrayList<GeneDetails> transcripts = super.getGeneFromID(id, build, db);
+        if (transcripts.isEmpty()) {
+            String symbol = getSymbolFromEnsemblToName(id, build);
+            System.out.println("Fallback to Ensembl symbol resolution for " + id + ": " + symbol);
+        }
+        return transcripts;
+    }
+
+    private String getSymbolFromEnsemblToName(String id, String build) throws SQLException {
+        String query = "SELECT value FROM " + build + ".ensemblToGeneName WHERE name = ?";
+        try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setString(1, id);
+            try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
-                    ensemblTableExists = rs.getInt(1) > 0;
+                    return rs.getString("value");
                 }
             }
         }
-
-        if (ensemblTableExists) {
-            // Get gene from ensemblToGeneName table
-            String ensemblQuery = "SELECT name FROM " + build + ".ensemblToGeneName WHERE value=?";
-            try (PreparedStatement ps = conn.prepareStatement(ensemblQuery)) {
-                ps.setString(1, symbol);
-                try (ResultSet rs = ps.executeQuery()) {
-                    while (rs.next()) {
-                        String ensemblID = rs.getString("name");
-                        transcripts.addAll(super.getGeneFromID(ensemblID, build, db));
-                    }
-                }
-            }
-        } else {
-            // Fallback to UCSC method
-            transcripts = getTranscriptsViaKgId(symbol, build, db);
-        }
-    }
-
-    return transcripts;
-}
-
-    class getTranscriptsFromEnsemblToName {
-        public void getTranscriptsFromEnsemblToName(String symbol, String build, String db, String fieldsToRetrieve) throws SQLException, EnsemblToNameException {
-            class transcripts {
-                private void addAll(Object transcriptsFromResultSet) {
-                    throw new UnsupportedOperationException("Not supported yet.");
-                    //To change body of generated methods, choose Tools | Templates.
-                }
-                private transcripts() throws SQLException {
-                    String query = null;
-                    System.out.println("SELECT name, value FROM '" + build + ".ensemblToGeneName' WHERE value='" + symbol +"';");
-                    Connection conn = DriverManager.getConnection("jdbc:mysql://genome-mysql.cse.ucsc.edu" + "?user=genomep&password=password&no-auto-rehash");
-                    PreparedStatement ps = conn.prepareStatement(query);
-                    query = ("SELECT COUNT(*) FROM " + "information_schema.tables  WHERE table_schema = '" + build + "' AND table_name = 'ensemblToGeneName';");
-                    ResultSet rs2 = (ResultSet) ps.executeQuery(query);
-                    while (rs2.next()) {
-                        if (rs2.getInt("COUNT(*)") < 1) {
-                            //PreparedStatement ps = conn.prepareStatement(query);
-                            query = ("SELECT " + fieldsToRetrieve + " FROM " + build + "." + db +" WHERE name='"+ rs2.getString("name") + "'");
-                            rs = (ResultSet) ps.executeQuery(query);
-                            //transcripts.addAll(getTranscriptsFromResultSet());
-                        }
-                    }
-                }
-            }
-        }
-    }
-@Override
-public ArrayList<GeneDetails> getGeneFromID(String id, String build, String db) throws SQLException, GetGeneFromIDException {
-    ArrayList<GeneDetails> transcripts = super.getGeneFromID(id, build, db);
-    
-    // Additional Ensembl-specific processing (if needed)
-    if (transcripts.isEmpty()) {
-        String symbol = getSymbolFromEnsemblToName(id, build);
-        System.out.println("Fallback to Ensembl symbol resolution for " + id + ": " + symbol);
-    }
-    
-    return transcripts;
-}
-
-private String getSymbolFromEnsemblToName(String id, String build) throws SQLException {
-    String symbol = "";
-    Connection conn = DriverManager.getConnection("jdbc:mysql://genome-mysql.cse.ucsc.edu?user=genomep&password=password&no-auto-rehash");
-    
-    String query = "SELECT name, value FROM " + build + ".ensemblToGeneName WHERE name=?";
-    try (PreparedStatement ps = conn.prepareStatement(query)) {
-        ps.setString(1, id);
-        try (ResultSet rs = ps.executeQuery()) {
-            if (rs.next()) {
-                symbol = rs.getString("value");
-            }
-        }
-    }
-    
-    return symbol;
-}
-
-        private String getSymbolViaKgId(String id, String build) throws SQLException {
-            System.out.println("SELECT COUNT(*) FROM " + "information_schema.tables  " + "WHERE table_schema = '"+ build +"' AND table_name = 'knownToEnsembl';");
-            return null;
-        }
-
-    class getSymbolFromEnsemblToName {
-        public String getSymbolFromEnsemblToName(String id, String build) throws SQLException {
-            String symbol = new String();
-            Connection conn = DriverManager.getConnection("jdbc:mysql://genome-mysql.cse.ucsc.edu" + "?user=genomep&password=password&no-auto-rehash");
-            String query = "SELECT name, value FROM " + build + ".ensemblToGeneName WHERE name='" + id +"';";
-            PreparedStatement ps = conn.prepareStatement(query);
-            ResultSet rs2  = (ResultSet) ps.executeQuery(query);
-            while (rs2.next()) {
-                symbol = rs2.getString("value");
-            }
-            return symbol;
-        }
-        public int getInt(Integer COUNT) {
-            throw new IllegalArgumentException("getInt exception problem");
-        }
-    }
-    class getSymbolViaKgId {
-        public String getSymbolViaKgId(String id, String build) throws SQLException {
-            String symbol = new String();
-            String query = null;
-            Connection conn = DriverManager.getConnection("jdbc:mysql://genome-mysql.cse.ucsc.edu" + "?user=genomep&password=password&no-auto-rehash");
-            query = ("SELECT COUNT(*) FROM " + "information_schema.tables  WHERE table_schema = '"+ build +"' AND table_name = 'knownToEnsembl';");
-            PreparedStatement ps = conn.prepareStatement(query);
-            ResultSet rs2 = (ResultSet) ps.executeQuery(query);
-            query = null;
-            while (rs2.next()) {
-                if (rs2.getInt("COUNT(*)") > 0) {
-                    query = ("Select name FROM " + build + ".knownToEnsembl WHERE value='" + id + "';");
-                    ps = conn.prepareStatement(query);
-                    ResultSet rs3  = (ResultSet) ps.executeQuery(query);
-                    while (rs3.next()) {
-                        query = ("SELECT geneSymbol FROM " + build + ".kgXref WHERE kgID='" + rs3.getString("name") +"';");
-                        ps = conn.prepareStatement(query);
-                        ResultSet rs4  = (ResultSet)  ps.executeQuery(query);
-                        while (rs4.next()) {
-                            symbol = rs4.getString("geneSymbol");
-                        }
-                    }
-                }
-            }
-            return symbol;
-        }
-        boolean next() {
-            throw new IllegalStateException("next() exception problem");
-        }
-        public String getString(String rs) {
-            throw new ArrayIndexOutOfBoundsException("getString exception problem");
-        }
-        public int getInt(Integer COUNT) {
-            throw new IllegalArgumentException("getInt exception problem");
-        }
+        return "";
     }
 }
-
 
 

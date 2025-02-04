@@ -66,29 +66,33 @@ public class DasUcscSequenceFetcher {
             Element root = dasXml.getRootElement();
 
 
-for ( Iterator i = root.elementIterator( "ENTRY_POINTS" ); i.hasNext(); ) {
-    Element dsn = (Element) i.next();
-    for (Iterator j = dsn.elementIterator("SEGMENT"); j.hasNext();) {
-        Element seg = (Element) j.next();
-        String id = seg.attributeValue("id");
-        if (id != null && id.equals(chromNumber)) {
-            String stop = seg.attributeValue("stop");
-            length = Integer.valueOf(stop);
-            break;
+            for ( Iterator i = root.elementIterator( "ENTRY_POINTS" ); i.hasNext(); ) {
+                Element dsn = (Element) i.next();
+                for (Iterator j = dsn.elementIterator("SEGMENT"); j.hasNext();) {
+                    Element seg = (Element) j.next();
+                    String id = seg.attributeValue("id");
+                    if (id != null && id.equals(chromNumber)) {
+                        String stop = seg.attributeValue("stop");
+                        length = Integer.valueOf(stop);
+                        break;
+                    }
+                }
+            }
+            if (length > 0) {
+                end = end <= length  ? end : length;
+            }
+            StringBuilder dna = new StringBuilder();
+            URL genomeUrl = new URL(buildToMapMaster.get(build) + "/dna?segment="+chrom + ":" + (start + 1) + "," + end);
+            dasXml  = reader.read(genomeUrl);
+            root = dasXml.getRootElement();
+            for ( Iterator seqIter = root.elementIterator( "SEQUENCE" ); seqIter.hasNext(); ) {
+                Element seqDsn = (Element) seqIter.next();
+                Element seq = seqDsn.element("DNA");
+                String text = seq.getText().replaceAll("\n", "");
+                dna.append(text);
+
+            }
+            return dna.toString();
         }
     }
-    if (length > 0) {
-        end = end <= length  ? end : length;
-    }
-    StringBuilder dna = new StringBuilder();
-    URL genomeUrl = new URL(buildToMapMaster.get(build) + "/dna?segment="+chrom + ":" + (start + 1) + "," + end);
-    dasXml  = reader.read(genomeUrl);
-    root = dasXml.getRootElement();
-    for ( Iterator seqIter = root.elementIterator( "SEQUENCE" ); seqIter.hasNext(); ) {
-        Element seqDsn = (Element) seqIter.next();
-        Element seq = seqDsn.element("DNA");
-        String text = seq.getText().replaceAll("\n", "");
-        dna.append(text);
-    }
-    return dna.toString();
 }

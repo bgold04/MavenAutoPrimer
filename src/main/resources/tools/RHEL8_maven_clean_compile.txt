@@ -1,0 +1,236 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] --------------------< com.example:MavenAutoPrimer >---------------------
+[INFO] Building MavenAutoPrimer 1.0-SNAPSHOT
+[INFO] --------------------------------[ jar ]---------------------------------
+[WARNING] The artifact mysql:mysql-connector-java:jar:8.0.33 has been relocated to com.mysql:mysql-connector-j:jar:8.0.33
+[INFO] 
+[INFO] --- maven-clean-plugin:2.5:clean (default-clean) @ MavenAutoPrimer ---
+[INFO] Deleting /home/bgold/gpt4all/gpt4all-backend/target
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:resources (default-resources) @ MavenAutoPrimer ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Copying 41 resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.8.1:compile (default-compile) @ MavenAutoPrimer ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 21 source files to /home/bgold/gpt4all/gpt4all-backend/target/classes
+[INFO] -------------------------------------------------------------
+[ERROR] COMPILATION ERROR : 
+[INFO] -------------------------------------------------------------
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/GeneSearchResultModel.java:[33,5] invalid method declaration; return type required
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/GeneSearchResultModel.java:[39,5] invalid method declaration; return type required
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/Primer3ResultsController.java:[39,12] invalid method declaration; return type required
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/FastaSequenceRetriever.java:[34,8] class, interface, or enum expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/FastaSequenceRetriever.java:[36,5] class, interface, or enum expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/FastaSequenceRetriever.java:[37,5] class, interface, or enum expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/FastaSequenceRetriever.java:[38,5] class, interface, or enum expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/FastaSequenceRetriever.java:[40,9] class, interface, or enum expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/FastaSequenceRetriever.java:[41,9] class, interface, or enum expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/FastaSequenceRetriever.java:[43,9] class, interface, or enum expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/FastaSequenceRetriever.java:[45,5] class, interface, or enum expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/FastaSequenceRetriever.java:[46,12] class, interface, or enum expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/FastaSequenceRetriever.java:[48,19] class, interface, or enum expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/FastaSequenceRetriever.java:[49,19] class, interface, or enum expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/FastaSequenceRetriever.java:[50,13] class, interface, or enum expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/FastaSequenceRetriever.java:[52,13] class, interface, or enum expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/FastaSequenceRetriever.java:[54,9] class, interface, or enum expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/FastaSequenceRetriever.java:[56,9] class, interface, or enum expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/FastaSequenceRetriever.java:[58,12] class, interface, or enum expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/FastaSequenceRetriever.java:[60,9] class, interface, or enum expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/FastaSequenceRetriever.java:[62,13] class, interface, or enum expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/FastaSequenceRetriever.java:[63,13] class, interface, or enum expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/FastaSequenceRetriever.java:[64,13] class, interface, or enum expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/FastaSequenceRetriever.java:[65,13] class, interface, or enum expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/FastaSequenceRetriever.java:[67,17] class, interface, or enum expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/FastaSequenceRetriever.java:[68,17] class, interface, or enum expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/FastaSequenceRetriever.java:[70,17] class, interface, or enum expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/FastaSequenceRetriever.java:[71,33] class, interface, or enum expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/FastaSequenceRetriever.java:[71,55] class, interface, or enum expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/FastaSequenceRetriever.java:[75,21] class, interface, or enum expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/FastaSequenceRetriever.java:[77,21] class, interface, or enum expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/FastaSequenceRetriever.java:[81,13] class, interface, or enum expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/FastaSequenceRetriever.java:[84,9] class, interface, or enum expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/FastaSequenceRetriever.java:[87,9] class, interface, or enum expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/FastaSequenceRetriever.java:[89,9] class, interface, or enum expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/FastaSequenceRetriever.java:[90,9] class, interface, or enum expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/FastaSequenceRetriever.java:[91,5] class, interface, or enum expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/FastaSequenceRetriever.java:[120,1] class, interface, or enum expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/ApplicationMain.java:[609,34] <identifier> expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/ApplicationMain.java:[609,36] ';' expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/ApplicationMain.java:[609,95] illegal start of type
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/ApplicationMain.java:[609,96] '(' expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/ApplicationMain.java:[611,28] ';' expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/ApplicationMain.java:[611,68] ';' expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/ApplicationMain.java:[611,69] not a statement
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/ApplicationMain.java:[611,71] ';' expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/ApplicationMain.java:[611,79] ';' expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/ApplicationMain.java:[639,71] illegal start of type
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/ApplicationMain.java:[640,39] <identifier> expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/ApplicationMain.java:[640,41] ';' expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/ApplicationMain.java:[640,81] illegal start of type
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/ApplicationMain.java:[640,82] '(' expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/ApplicationMain.java:[642,28] ';' expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/ApplicationMain.java:[642,83] ';' expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/ApplicationMain.java:[642,84] not a statement
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/ApplicationMain.java:[642,92] ';' expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/ApplicationMain.java:[642,110] ';' expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/ApplicationMain.java:[649,6] illegal start of type
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/ApplicationMain.java:[650,33] <identifier> expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/ApplicationMain.java:[650,35] ';' expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/ApplicationMain.java:[650,74] illegal start of type
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/ApplicationMain.java:[650,75] '(' expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/ApplicationMain.java:[652,28] ';' expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/ApplicationMain.java:[652,74] <identifier> expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/ApplicationMain.java:[652,97] <identifier> expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/ApplicationMain.java:[652,119] ';' expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/ApplicationMain.java:[666,6] illegal start of type
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/ApplicationMain.java:[667,36] <identifier> expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/ApplicationMain.java:[667,38] ';' expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/ApplicationMain.java:[667,78] illegal start of type
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/ApplicationMain.java:[667,79] '(' expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/ApplicationMain.java:[669,28] ';' expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/ApplicationMain.java:[669,83] ';' expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/ApplicationMain.java:[669,84] not a statement
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/ApplicationMain.java:[669,92] ';' expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/ApplicationMain.java:[669,110] ';' expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/ApplicationMain.java:[680,6] illegal start of type
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/ApplicationMain.java:[681,32] <identifier> expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/ApplicationMain.java:[681,34] ';' expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/ApplicationMain.java:[681,73] illegal start of type
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/ApplicationMain.java:[681,74] '(' expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/ApplicationMain.java:[683,28] ';' expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/ApplicationMain.java:[683,74] <identifier> expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/ApplicationMain.java:[683,97] <identifier> expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/ApplicationMain.java:[683,119] ';' expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/ApplicationMain.java:[692,6] illegal start of type
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/ApplicationMain.java:[693,5] illegal start of type
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/ApplicationMain.java:[693,41] <identifier> expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/ApplicationMain.java:[693,42] ';' expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/ApplicationMain.java:[693,43] illegal start of type
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/ApplicationMain.java:[693,53] ';' expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/ApplicationMain.java:[695,7] illegal start of type
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/ApplicationMain.java:[695,11] ';' expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/ApplicationMain.java:[696,9] invalid method declaration; return type required
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/ApplicationMain.java:[696,20] illegal start of type
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/ApplicationMain.java:[697,9] invalid method declaration; return type required
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/ApplicationMain.java:[699,5] class, interface, or enum expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/ApplicationMain.java:[701,16] class, interface, or enum expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/ApplicationMain.java:[703,9] class, interface, or enum expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/ApplicationMain.java:[707,9] class, interface, or enum expected
+[INFO] 100 errors 
+[INFO] -------------------------------------------------------------
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  1.202 s
+[INFO] Finished at: 2025-02-02T09:51:37-05:00
+[INFO] ------------------------------------------------------------------------
+[ERROR] Failed to execute goal org.apache.maven.plugins:maven-compiler-plugin:3.8.1:compile (default-compile) on project MavenAutoPrimer: Compilation failure: Compilation failure: 
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/GeneSearchResultModel.java:[33,5] invalid method declaration; return type required
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/GeneSearchResultModel.java:[39,5] invalid method declaration; return type required
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/Primer3ResultsController.java:[39,12] invalid method declaration; return type required
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/FastaSequenceRetriever.java:[34,8] class, interface, or enum expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/FastaSequenceRetriever.java:[36,5] class, interface, or enum expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/FastaSequenceRetriever.java:[37,5] class, interface, or enum expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/FastaSequenceRetriever.java:[38,5] class, interface, or enum expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/FastaSequenceRetriever.java:[40,9] class, interface, or enum expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/FastaSequenceRetriever.java:[41,9] class, interface, or enum expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/FastaSequenceRetriever.java:[43,9] class, interface, or enum expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/FastaSequenceRetriever.java:[45,5] class, interface, or enum expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/FastaSequenceRetriever.java:[46,12] class, interface, or enum expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/FastaSequenceRetriever.java:[48,19] class, interface, or enum expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/FastaSequenceRetriever.java:[49,19] class, interface, or enum expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/FastaSequenceRetriever.java:[50,13] class, interface, or enum expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/FastaSequenceRetriever.java:[52,13] class, interface, or enum expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/FastaSequenceRetriever.java:[54,9] class, interface, or enum expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/FastaSequenceRetriever.java:[56,9] class, interface, or enum expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/FastaSequenceRetriever.java:[58,12] class, interface, or enum expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/FastaSequenceRetriever.java:[60,9] class, interface, or enum expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/FastaSequenceRetriever.java:[62,13] class, interface, or enum expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/FastaSequenceRetriever.java:[63,13] class, interface, or enum expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/FastaSequenceRetriever.java:[64,13] class, interface, or enum expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/FastaSequenceRetriever.java:[65,13] class, interface, or enum expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/FastaSequenceRetriever.java:[67,17] class, interface, or enum expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/FastaSequenceRetriever.java:[68,17] class, interface, or enum expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/FastaSequenceRetriever.java:[70,17] class, interface, or enum expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/FastaSequenceRetriever.java:[71,33] class, interface, or enum expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/FastaSequenceRetriever.java:[71,55] class, interface, or enum expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/FastaSequenceRetriever.java:[75,21] class, interface, or enum expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/FastaSequenceRetriever.java:[77,21] class, interface, or enum expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/FastaSequenceRetriever.java:[81,13] class, interface, or enum expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/FastaSequenceRetriever.java:[84,9] class, interface, or enum expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/FastaSequenceRetriever.java:[87,9] class, interface, or enum expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/FastaSequenceRetriever.java:[89,9] class, interface, or enum expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/FastaSequenceRetriever.java:[90,9] class, interface, or enum expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/FastaSequenceRetriever.java:[91,5] class, interface, or enum expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/FastaSequenceRetriever.java:[120,1] class, interface, or enum expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/ApplicationMain.java:[609,34] <identifier> expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/ApplicationMain.java:[609,36] ';' expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/ApplicationMain.java:[609,95] illegal start of type
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/ApplicationMain.java:[609,96] '(' expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/ApplicationMain.java:[611,28] ';' expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/ApplicationMain.java:[611,68] ';' expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/ApplicationMain.java:[611,69] not a statement
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/ApplicationMain.java:[611,71] ';' expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/ApplicationMain.java:[611,79] ';' expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/ApplicationMain.java:[639,71] illegal start of type
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/ApplicationMain.java:[640,39] <identifier> expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/ApplicationMain.java:[640,41] ';' expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/ApplicationMain.java:[640,81] illegal start of type
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/ApplicationMain.java:[640,82] '(' expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/ApplicationMain.java:[642,28] ';' expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/ApplicationMain.java:[642,83] ';' expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/ApplicationMain.java:[642,84] not a statement
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/ApplicationMain.java:[642,92] ';' expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/ApplicationMain.java:[642,110] ';' expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/ApplicationMain.java:[649,6] illegal start of type
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/ApplicationMain.java:[650,33] <identifier> expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/ApplicationMain.java:[650,35] ';' expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/ApplicationMain.java:[650,74] illegal start of type
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/ApplicationMain.java:[650,75] '(' expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/ApplicationMain.java:[652,28] ';' expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/ApplicationMain.java:[652,74] <identifier> expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/ApplicationMain.java:[652,97] <identifier> expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/ApplicationMain.java:[652,119] ';' expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/ApplicationMain.java:[666,6] illegal start of type
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/ApplicationMain.java:[667,36] <identifier> expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/ApplicationMain.java:[667,38] ';' expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/ApplicationMain.java:[667,78] illegal start of type
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/ApplicationMain.java:[667,79] '(' expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/ApplicationMain.java:[669,28] ';' expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/ApplicationMain.java:[669,83] ';' expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/ApplicationMain.java:[669,84] not a statement
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/ApplicationMain.java:[669,92] ';' expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/ApplicationMain.java:[669,110] ';' expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/ApplicationMain.java:[680,6] illegal start of type
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/ApplicationMain.java:[681,32] <identifier> expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/ApplicationMain.java:[681,34] ';' expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/ApplicationMain.java:[681,73] illegal start of type
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/ApplicationMain.java:[681,74] '(' expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/ApplicationMain.java:[683,28] ';' expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/ApplicationMain.java:[683,74] <identifier> expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/ApplicationMain.java:[683,97] <identifier> expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/ApplicationMain.java:[683,119] ';' expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/ApplicationMain.java:[692,6] illegal start of type
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/ApplicationMain.java:[693,5] illegal start of type
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/ApplicationMain.java:[693,41] <identifier> expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/ApplicationMain.java:[693,42] ';' expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/ApplicationMain.java:[693,43] illegal start of type
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/ApplicationMain.java:[693,53] ';' expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/ApplicationMain.java:[695,7] illegal start of type
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/ApplicationMain.java:[695,11] ';' expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/ApplicationMain.java:[696,9] invalid method declaration; return type required
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/ApplicationMain.java:[696,20] illegal start of type
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/ApplicationMain.java:[697,9] invalid method declaration; return type required
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/ApplicationMain.java:[699,5] class, interface, or enum expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/ApplicationMain.java:[701,16] class, interface, or enum expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/ApplicationMain.java:[703,9] class, interface, or enum expected
+[ERROR] /home/bgold/gpt4all/gpt4all-backend/src/main/java/com/github/mavenautoprimer/ApplicationMain.java:[707,9] class, interface, or enum expected
+[ERROR] -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException

@@ -1,8 +1,11 @@
+
+package com.github.mavenautoprimer;
+
 /*
  * This superclass is in public domain
  * Written by Bert Gold, PhD <bgold04@gmail.com> and ChatGPT
  *
- * Revised January 25, 2025
+ * Revised February 4, 2025
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,95 +21,87 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.github.mavenautoprimer;
-
-import java.lang.Object;
-import java.lang.Throwable;
-import java.lang.Exception;
-import java.lang.RuntimeException;
-import java.lang.IllegalStateException;
-import java.util.ArrayList;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashMap;
-public class GenomicBase {
-    public  Integer ChromEnd;
-    public  Integer ChromStart;
-    public  String  Chromosome;
-    public  Object  Cursor;
-    public  Integer EndPos;
-    public  Object  ResultSet;
-    public  Integer StartPos;
-    public  String  Statement;
-    public  Integer TotalExons;
-    public  Object  Transcripts;
-    public  String  build;
-    public  Integer cdsEnd;
-    public  Integer cdsStart;
-    public  String  chrom;
-    public  String  chromSet;
-    public  String  chromosome;
-    public  Object  db;
-    public  Object  document;
-    public  Integer e;
-    public  Integer end;
-    public  Integer ex;
-    public  Integer exon;
-    public  Integer exonCount;
-    public  Integer exonEnds;
-    public  Integer exonStarts;
-    public  String  f;
-    public  Object  fieldsToRetrieve;
-    public  String  gene;
-    public  Object  geneDetails;
-    public  String  geneSymbol;
-    public  String  genes;
-    public  String  genome;
-    public  Object  getTranscriptsFromResultSet;
-    public  String  id;
-    public  String  j;
-    public  String  name;
-    public  Object  node;
-    public  Object  ps;
-    public  String  qu1;
-    public  String  qu;
-    public  String  query1;
-    public  String  query2;
-    public  String  query7;
-    public  String  query;
-    public  String  regions;
-    public  Object  rs2;
-    public  Object  rs3;
-    public  Object  rs4;
-    public  Object  rs;
-    public  String  snpDb;
-    public  Object  sql;
-    public  Integer st;
-    public  Integer start;
-    public  Object  statement;
-    public  Object  stmt10;
-    public  Object  stmt1;
-    public  Object  stmt2;
-    public  Object  stmt3;
-    public  Object  stmt4;
-    public  Object  stmt5;
-    public  Object  stmt6;
-    public  Object  stmt7;
-    public  Object  stmt8;
-    public  Object  stmt;
-    public  String  strand;
-    public  String  symbol;
-    public  String  t;
-    public  Integer txEnd;
-    public  Integer txStart;
-// need a better definition of GenomicRegionSummary
-    public class Db {
-        public String db;
-        public String getDb() {
-            return db;
+import java.util.ArrayList;
+import java.util.List;
+
+public abstract class GenomicBase {
+
+    private static final String DB_URL = "jdbc:mysql://genome-mysql.cse.ucsc.edu?user=genomep&password=password&no-auto-rehash";
+    private static Connection conn;
+
+    static {
+        try {
+            conn = DriverManager.getConnection(DB_URL);
+        } catch (SQLException ex) {
+            throw new ExceptionInInitializerError("Database connection initialization failed: " + ex.getMessage());
         }
-        public void setDb(String db) {
-            this.db = db;
+    }
+
+    protected static Connection getConnection() throws SQLException {
+        if (conn == null || conn.isClosed()) {
+            conn = DriverManager.getConnection(DB_URL);
+        }
+        return conn;
+    }
+
+    public abstract List<GeneDetails> getGeneFromSymbol(String symbol, String build, String db) throws SQLException;
+
+    public List<GeneDetails> getGeneFromID(String id, String build, String db) throws SQLException {
+        List<GeneDetails> transcripts = new ArrayList<>();
+        String query = "SELECT name, chrom, txStart, txEnd, cdsStart, cdsEnd, exonCount, exonStarts, exonEnds, strand FROM " + build + "." + db + " WHERE name=?";
+
+        try (Connection conn = getConnection();
+                    PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setString(1, id);
+            try (ResultSet rs = ps.executeQuery()) {
+                transcripts.addAll(parseGeneDetailsFromResultSet(rs));
+            }
+        } catch (SQLException ex) {
+            throw new SQLException("Error retrieving gene by ID: " + id, ex);
+        }
+        return transcripts;
+    }
+
+    protected List<GeneDetails> parseGeneDetailsFromResultSet(ResultSet rs) throws SQLException {
+        List<GeneDetails> transcripts = new ArrayList<>();
+        while (rs.next()) {
+            GeneDetails geneDetails = new GeneDetails();
+            geneDetails.setId(rs.getString("name"));
+            geneDetails.setChromosome(rs.getString("chrom"));
+            geneDetails.setTxStart(rs.getInt("txStart"));
+            geneDetails.setTxEnd(rs.getInt("txEnd"));
+            geneDetails.setCdsStart(rs.getInt("cdsStart"));
+            geneDetails.setCdsEnd(rs.getInt("cdsEnd"));
+            geneDetails.setTotalExons(rs.getInt("exonCount"));
+            geneDetails.setStrand(rs.getString("strand"));
+            transcripts.add(geneDetails);
+        }
+        return transcripts;
+    }
+
+    protected void logError(String message, Exception ex) {
+        System.err.println(message + ": " + ex.getMessage());
+        ex.printStackTrace();
+    }
+    public class KgID {
+        public String kgID;
+        public String getkgID() {
+            return kgID;
+        } public void setKgID(String kgID,String name, String id) {
+            this.kgID = kgID = name = id;
+        }
+    }
+    public static class GenomicException extends Exception {
+        public GenomicException(String message) {
+            super(message);
+        }
+        public GenomicException(String message, Throwable cause) {
+            super(message, cause);
         }
     }
     public class EnsemblToNameException extends Exception {
@@ -123,7 +118,7 @@ public class GenomicBase {
             super(cause);
         }
     }
-  public class EnsemblTranscriptException  extends Exception {
+    public class EnsemblTranscriptException  extends Exception {
         public EnsemblTranscriptException() {
             super();
         }
@@ -135,15 +130,6 @@ public class GenomicBase {
         }
         public EnsemblTranscriptException (Throwable cause) {
             super(cause);
-        }
-    }
-    public class Fields {
-        public String fields;
-        public String getfields() {
-            return fields;
-        }
-        public void setFields(String fields) {
-            this.fields = fields;
         }
     }
     public class GeneDetailsException extends Exception {
@@ -212,20 +198,6 @@ public class GenomicBase {
             super(cause);
         }
     }
-    public class Id {
-        public String id;
-        public String getid() {
-            return id;
-        }
-    }
-    public class KgID {
-        public String kgID;
-        public String getkgID() {
-            return kgID;
-        } public void setKgID(String kgID,String name, String id) {
-            this.kgID = kgID = name = id;
-        }
-    }
     public class KgIdTranscriptException extends Exception {
         public KgIdTranscriptException() {
             super();
@@ -237,226 +209,93 @@ public class GenomicBase {
             super(cause);
         }
     }
-    public class Name {
-        public String name;
-        public String getName() {
-            return name;
-        } public void setName(String name, String id, String kgID) {
-            this.name = id = kgID = name;
+    public class SamHeaderFromDictException extends Exception {
+        public SamHeaderFromDictException() {
+            super();
+        }
+        public SamHeaderFromDictException(String message) {
+            super(message);
+        }
+        public SamHeaderFromDictException(String message, Throwable cause) {
+            super(message, cause);
+        }
+        public SamHeaderFromDictException(Throwable cause) {
+            super(cause);
         }
     }
-    public class Name2 {
-        public String name2;
-        public String getName2() {
-            return name2;
-        } public void setName2(String name2, String symbol, String geneSymbol) {
-            this.name2 = symbol = geneSymbol;
+    public class SequenceFromFastaException extends Exception {
+        public SequenceFromFastaException() {
+            super();
         }
-    } public class Build {
-        public String build;
-        public String getBuild() {
-            return build;
-        } public void setBuild(String build) {
-            this.build = build;
+        public SequenceFromFastaException(String message) {
+            super(message);
         }
-    }
-    public class PreparedSet {
-        public String ps;
-        public String getPreparedSet() {
-            return ps;
-        } public void setPreparedSet(String ps) {
-            this.ps = ps;
+        public SequenceFromFastaException(String message, Throwable cause) {
+            super(message, cause);
+        }
+        public SequenceFromFastaException(Throwable cause) {
+            super(cause);
         }
     }
-    public class ResultSet {
-        public String rs;
-        public String getResultSet() {
-            return rs;
-        } public void setResultSet(String rs) {
-            this.rs = rs;
+    public class TranscriptsFromrsException extends Exception {
+        public TranscriptsFromrsException() {
+            super();
+        } public TranscriptsFromrsException(String message) {
+            super(message);
+        } public TranscriptsFromrsException(String message, Throwable cause) {
+            super(message, cause);
+        } public TranscriptsFromrsException(Throwable cause) {
+            super(cause);
         }
-        public class TranscriptsFromrsException extends Exception {
-            public TranscriptsFromrsException() {
-                super();
-            } public TranscriptsFromrsException(String message) {
-                super(message);
-            } public TranscriptsFromrsException(String message, Throwable cause) {
-                super(message, cause);
-            } public TranscriptsFromrsException(Throwable cause) {
-                super(cause);
-            }
+    }
+    public class TryCatchException extends Exception {
+        public TryCatchException() {
+            super();
+        } public TryCatchException(String message) {
+            super(message);
+        } public TryCatchException(String message, Throwable cause) {
+            super(message, cause);
+        } public TryCatchException(Throwable cause) {
+            super(cause);
         }
-        public class TryCatchException extends Exception {
-            public TryCatchException() {
-                super();
-            } public TryCatchException(String message) {
-                super(message);
-            } public TryCatchException(String message, Throwable cause) {
-                super(message, cause);
-            } public TryCatchException(Throwable cause) {
-                super(cause);
-            }
+    }
+    public static class GetGeneFromSymbolException extends Exception {
+        public GetGeneFromSymbolException() {
+            super();
+        } public GetGeneFromSymbolException(String message) {
+            super(message);
+        } public GetGeneFromSymbolException(String message, Throwable cause) {
+            super(message, cause);
+        } public GetGeneFromSymbolException(Throwable cause) {
+            super(cause);
         }
-            public static class GetGeneFromSymbolException extends Exception {
-                public GetGeneFromSymbolException() {
-                    super();
-                } public GetGeneFromSymbolException(String message) {
-                    super(message);
-                } public GetGeneFromSymbolException(String message, Throwable cause) {
-                    super(message, cause);
-                } public GetGeneFromSymbolException(Throwable cause) {
-                    super(cause);
-                }
-            }
-            public static class Name {
-                public String name;
-                public String getName() {
-                    return name;
-                } public void setName(String name, String id) {
-                    this.name = id;
-                }
-            }
-            public static class Name2 {
-                public String name2;
-                public String getName2() {
-                    return name2;
-                } public void setName2(String name2, String symbol) {
-                    this.name2 = symbol;
-                }
-            } public void setSymbol(String symbol, String geneSymbol, String value, String name2) {
-                this.symbol = symbol;
-                this.symbol = geneSymbol;
-                this.symbol = value;
-                this.symbol = name2;
-            }
-            public class getEnsemblTranscriptException extends Exception {
-                public getEnsemblTranscriptException() {
-                    super();
-                } public getEnsemblTranscriptException(String message) {
-                    super(message);
-                } public getEnsemblTranscriptException(String message, Throwable cause) {
-                    super(message, cause);
-                } public getEnsemblTranscriptException(Throwable cause) {
-                    super(cause);
-                }
-            }
+    }
+    public class getEnsemblTranscriptException extends Exception {
+        public getEnsemblTranscriptException() {
+            super();
+        } public getEnsemblTranscriptException(String message) {
+            super(message);
+        } public getEnsemblTranscriptException(String message, Throwable cause) {
+            super(message, cause);
+        } public getEnsemblTranscriptException(Throwable cause) {
+            super(cause);
+        }
+    }
 // Helper method to display alerts with exceptions
-            private void showAlert(String title, String header, Throwable ex) {
-                Alert errorAlert = new Alert(Alert.AlertType.ERROR);
-                errorAlert.setTitle(title);
-                errorAlert.setHeaderText(header);
-                errorAlert.setContentText(ex.getMessage());
-                errorAlert.showAndWait();
-                ex.printStackTrace();
-            }
+    private void showAlert(String title, String header, Throwable ex) {
+        Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+        errorAlert.setTitle(title);
+        errorAlert.setHeaderText(header);
+        errorAlert.setContentText(ex.getMessage());
+        errorAlert.showAndWait();
+        ex.printStackTrace();
+    }
 // Helper method to display error alerts
-            private void showErrorAlert(String title, String content, Exception ex) {
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle(title);
-                alert.setHeaderText(title);
-                alert.setContentText(content + "\n\nSee exception below:\n" + ex.getMessage());
-                alert.showAndWait();
-            }
-public ArrayList<GeneDetails> getGeneFromID(String id, String build, String db) throws SQLException, GetGeneFromIDException {
-        ArrayList<GeneDetails> transcripts = new ArrayList<>();
-        
-        // Ensure database connection
-        Connection conn = DriverManager.getConnection("jdbc:mysql://genome-mysql.cse.ucsc.edu?user=genomep&password=password&no-auto-rehash");
-        
-        // Retrieve standard fields
-        String fieldsToRetrieve = String.join(", ", Arrays.asList("name", "chrom", "txStart", "txEnd", "cdsStart", "cdsEnd", "exonCount", "exonStarts", "exonEnds", "strand"));
-        String query = "SELECT " + fieldsToRetrieve + " FROM " + build + "." + db + " WHERE name=?";
-
-        try (PreparedStatement ps = conn.prepareStatement(query)) {
-            ps.setString(1, id);
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    transcripts.add(parseGeneDetails(rs));
-                }
-            }
-        } catch (SQLException ex) {
-            throw new GetGeneFromIDException("Error retrieving gene: " + id, ex);
-        }
-
-        return transcripts;
-    }
-
-    private GeneDetails parseGeneDetails(ResultSet rs) throws SQLException {
-        GeneDetails geneDetails = new GeneDetails();
-        geneDetails.setId(rs.getString("name"));
-        geneDetails.setChromosome(rs.getString("chrom"));
-        geneDetails.setTxStart(rs.getInt("txStart"));
-        geneDetails.setTxEnd(rs.getInt("txEnd"));
-        geneDetails.setCdsStart(rs.getInt("cdsStart"));
-        geneDetails.setCdsEnd(rs.getInt("cdsEnd"));
-        geneDetails.setTotalExons(rs.getInt("exonCount"));
-        geneDetails.setStrand(rs.getString("strand"));
-        return geneDetails;
+    private void showErrorAlert(String title, String content, Exception ex) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle(title);
+        alert.setHeaderText(title);
+        alert.setContentText(content + "\n\nSee exception below:\n" + ex.getMessage());
+        alert.showAndWait();
     }
 }
-
-
-
-
-
-@Override
-public ArrayList<GeneDetails> getGeneFromSymbol(String symbol, String build, String db) 
-        throws SQLException, GetGeneFromSymbolException {
-    ArrayList<GeneDetails> transcripts = new ArrayList<>();
-    
-    // Ensure database connection
-    try (Connection conn = DriverManager.getConnection(
-            "jdbc:mysql://genome-mysql.cse.ucsc.edu?user=genomep&password=password&no-auto-rehash")) {
-        
-        // Standard fields to retrieve
-        String fieldsToRetrieve = String.join(", ", Arrays.asList(
-            "name", "chrom", "txStart", "txEnd", "cdsStart", "cdsEnd", "exonCount", 
-            "exonStarts", "exonEnds", "strand", "name2"
-        ));
-
-        // Query execution
-        String query = "SELECT " + fieldsToRetrieve + " FROM " + build + "." + db + " WHERE name2=?";
-        try (PreparedStatement ps = conn.prepareStatement(query)) {
-            ps.setString(1, symbol);
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    transcripts.add(parseGeneDetails(rs));
-                }
-            }
-        }
-    } catch (SQLException ex) {
-        throw new GetGeneFromSymbolException("Error retrieving gene for symbol: " + symbol, ex);
-    }
-
-    return transcripts;
-}
-
-    protected int getInt(ResultSet rs, String columnLabel) throws SQLException {
-        if (rs == null) {
-            throw new IllegalStateException("ResultSet is not initialized.");
-        }
-        return rs.getInt(columnLabel);
-    }
-// Correct structure for geneHashToGeneDetails.
-    protected GeneDetails geneHashToGeneDetails(HashMap<String,String> gene) 
-            throws GetGeneExonsException{
-        GeneDetails geneDetails = new GeneDetails();
-        geneDetails.setSymbol(gene.get("name2"));
-        geneDetails.setId(gene.get("name"));
-        geneDetails.setStrand(gene.get("strand"));
-        geneDetails.setChromosome(gene.get("chrom"));
-        geneDetails.setTxStart(Integer.parseInt(gene.get("txStart")));
-        geneDetails.setTxEnd(Integer.parseInt(gene.get("txEnd")));
-        geneDetails.setCdsStart(Integer.parseInt(gene.get("cdsStart")));
-        geneDetails.setCdsEnd(Integer.parseInt(gene.get("cdsEnd")));
-        geneDetails.setTotalExons(Integer.parseInt(gene.get("exonCount")));
-        try{
-            geneDetails.setExons(gene.get("exonStarts"), gene.get("exonEnds"));
-        }catch (GeneDetails.GeneExonsException ex){
-            throw new GetGeneExonsException("Error parsing exons for transcript "
-                    + geneDetails.getId() + ", gene " + geneDetails.getSymbol(), ex);
-        }
-        return geneDetails;
-    }
-}
-

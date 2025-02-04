@@ -40,25 +40,25 @@ public class GenomicRegionSummaryModel implements Comparable<GenomicRegionSummar
     public String id = new String();
     public String d;
     private String name = new String();
-    GenomicRegionSummary() {
+    public GenomicRegionSummaryModel(String chrom, int sp, int ep) {
         this(null, 0, 0, null, null, null, null);
     }
-    GenomicRegionSummary(String chrom, int sp, int ep) {
+    public GenomicRegionSummaryModel(String chrom, int sp, int ep) {
         this(chrom, sp, ep, null, null, null, null);
     }
-    GenomicRegionSummary(String chrom, int sp, int ep, String sd, String ed) {
+    public GenomicRegionSummaryModel(String chrom, int sp, int ep, String sd, String ed) {
         this(chrom, sp, ep, sd, ed, null, null);
     }
-    GenomicRegionSummary(int sp, int ep) {
+    public GenomicRegionSummaryModel(int sp, int ep) {
         this(null, sp, ep,  null, null, null, null);
     }
-    GenomicRegionSummary(int sp, int ep, String sd, String ed) {
+    public GenomicRegionSummaryModel(int sp, int ep, String sd, String ed) {
         this(null, sp, ep, sd, ed, null, null);
     }
-    GenomicRegionSummary(int sp, int ep, String d) {
+    public GenomicRegionSummaryModel(int sp, int ep, String d) {
         this(null, sp, ep, null, null, d, null);
     }
-    GenomicRegionSummary(String chrom, int sp, int ep, String sd, String ed, String d, String nm) {
+    public GenomicRegionSummaryModel(String chrom, int sp, int ep, String sd, String ed, String d, String nm) {
         startPos = sp;
         endPos = ep;
         chromosome = chrom;

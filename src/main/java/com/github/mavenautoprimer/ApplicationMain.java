@@ -298,6 +298,7 @@ public class ApplicationMain extends Application {
             primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("icon.png")));
             primaryStage.show();
             // Set close request handler
+
             primaryStage.setOnCloseRequest(e -> {
                 Platform.exit();
                 System.exit(0);
@@ -398,6 +399,7 @@ public class ApplicationMain extends Application {
                     if (items.get(i).toString().toLowerCase().startsWith(c)) {
                         genomeChoiceBox2.getSelectionModel().select(i);
                         return;
+
                     }
                 }
             }
@@ -419,184 +421,185 @@ public class ApplicationMain extends Application {
 //###################################################### INSERT BELOW ###################################
 
 
-private void setupMisprimingLibraryListener() {
-    autoSelectMisprimingLibraryCheckBox.selectedProperty().addListener(new ChangeListener<Boolean>() {
-        @Override
-        public void changed(ObservableValue<? extends Boolean> ov, Boolean oldValue, Boolean newValue) {
-            autoSelectMisprime = newValue;
-            final String id = (String) genomeChoiceBox.getSelectionModel().getSelectedItem();
-            Platform.runLater(new Runnable() {
-                @Override
-                public void run() {
-                    if (newValue) {
-                        selectMisprimingLibrary(id);
-                    } else {
-                        misprimingLibraryChoiceBox.getSelectionModel().select("none");
+    private void setupMisprimingLibraryListener() {
+        autoSelectMisprimingLibraryCheckBox.selectedProperty().addListener(new ChangeListener<Boolean>() {
+            @Override
+            public void changed(ObservableValue<? extends Boolean> ov, Boolean oldValue, Boolean newValue) {
+                autoSelectMisprime = newValue;
+                final String id = (String) genomeChoiceBox.getSelectionModel().getSelectedItem();
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (newValue) {
+                            selectMisprimingLibrary(id);
+                        } else {
+                            misprimingLibraryChoiceBox.getSelectionModel().select("none");
+                        }
                     }
-                }
-            });
-        }
-    });
-}
+                });
+            }
+        });
+    }
 
 // Ensure this method is called inside initialize()
-public void initialize(URL url, ResourceBundle rb) {
-    setupMisprimingLibraryListener();
+    public void initialize(URL url, ResourceBundle rb) {
+        setupMisprimingLibraryListener();
 
-    // Ensure ap3Config is initialized before accessing it
-    if (ap3Config != null) {
-        genomeChoiceBox.getItems().clear();
-        genomeChoiceBox.getItems().addAll(new ArrayList<>(ap3Config.getBuildToDescription().keySet()));
-        genomeChoiceBox.getSelectionModel().selectFirst();
+        // Ensure ap3Config is initialized before accessing it
+        if (ap3Config != null) {
+            genomeChoiceBox.getItems().clear();
+            genomeChoiceBox.getItems().addAll(new ArrayList<>(ap3Config.getBuildToDescription().keySet()));
+            genomeChoiceBox.getSelectionModel().selectFirst();
+        }
+
+        misprimingLibraryChoiceBox.getItems().add("none");
+
+        // Check if misprimeDir is null before iterating
+        if (misprimeDir != null && misprimeDir.listFiles() != null) {
+            for (File f : misprimeDir.listFiles()) {
+                misprimingLibraryChoiceBox.getItems().add(f.getName());
+            }
+        }
+        misprimingLibraryChoiceBox.getSelectionModel().selectFirst();
+
+        // Use anonymous inner classes for event filters instead of lambdas
+        minDistanceTextField.addEventFilter(KeyEvent.KEY_TYPED, new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent event) {
+                if (!event.getCharacter().matches("\\d")) {
+                    event.consume();
+                }
+            }
+        });
+
+        minDistanceTextField2.addEventFilter(KeyEvent.KEY_TYPED, new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent event) {
+                if (!event.getCharacter().matches("\\d")) {
+                    event.consume();
+                }
+            }
+        });
+
+        flankingRegionsTextField.addEventFilter(KeyEvent.KEY_TYPED, new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent event) {
+                if (!event.getCharacter().matches("\\d")) {
+                    event.consume();
+                }
+            }
+        });
+
+        flankingRegionsTextField2.addEventFilter(KeyEvent.KEY_TYPED, new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent event) {
+                if (!event.getCharacter().matches("\\d")) {
+                    event.consume();
+                }
+            }
+        });
+
+        minSizeTextField.addEventFilter(KeyEvent.KEY_TYPED, new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent event) {
+                if (!event.getCharacter().matches("\\d")) {
+                    event.consume();
+                }
+            }
+        });
+
+        optSizeTextField.addEventFilter(KeyEvent.KEY_TYPED, new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent event) {
+                if (!event.getCharacter().matches("\\d")) {
+                    event.consume();
+                }
+            }
+        });
+
+        maxSizeTextField.addEventFilter(KeyEvent.KEY_TYPED, new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent event) {
+                if (!event.getCharacter().matches("\\d")) {
+                    event.consume();
+                }
+            }
+        });
+
+        maxDiffTextField.addEventFilter(KeyEvent.KEY_TYPED, new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent event) {
+                if (!event.getCharacter().matches("\\d")) {
+                    event.consume();
+                }
+            }
+        });
+
+        maxMisprimeTextField.addEventFilter(KeyEvent.KEY_TYPED, new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent event) {
+                if (!event.getCharacter().matches("\\d")) {
+                    event.consume();
+                }
+            }
+        });
+
+        sizeRangeTextField.addEventFilter(KeyEvent.KEY_TYPED, new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent event) {
+                if (!event.getCharacter().matches("[\\d-\\s]")) {
+                    event.consume();
+                }
+            }
+        });
+
+        minTmTextField.addEventFilter(KeyEvent.KEY_TYPED, new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent event) {
+                if (!event.getCharacter().matches("[\\d.]")) {
+                    event.consume();
+                }
+            }
+        });
+
+        optTmTextField.addEventFilter(KeyEvent.KEY_TYPED, new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent event) {
+                if (!event.getCharacter().matches("[\\d.]")) {
+                    event.consume();
+                }
+            }
+        });
+
+        maxTmTextField.addEventFilter(KeyEvent.KEY_TYPED, new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent event) {
+                if (!event.getCharacter().matches("[\\d.]")) {
+                    event.consume();
+                }
+            }
+        });
+
+        splitRegionsTextField.addEventFilter(KeyEvent.KEY_TYPED, new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent event) {
+                if (!event.getCharacter().matches("\\d")) {
+                    event.consume();
+                }
+            }
+        });
+
+        minDistanceTextField2.textProperty().bindBidirectional(minDistanceTextField.textProperty());
+        flankingRegionsTextField2.textProperty().bindBidirectional(flankingRegionsTextField.textProperty());
+
+        resetValuesButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                resetPrimerSettings();
+            }
+        });
     }
 
-    misprimingLibraryChoiceBox.getItems().add("none");
-
-    // Check if misprimeDir is null before iterating
-    if (misprimeDir != null && misprimeDir.listFiles() != null) {
-        for (File f : misprimeDir.listFiles()) {
-            misprimingLibraryChoiceBox.getItems().add(f.getName());
-        }
-    }
-    misprimingLibraryChoiceBox.getSelectionModel().selectFirst();
-
-    // Use anonymous inner classes for event filters instead of lambdas
-    minDistanceTextField.addEventFilter(KeyEvent.KEY_TYPED, new EventHandler<KeyEvent>() {
-        @Override
-        public void handle(KeyEvent event) {
-            if (!event.getCharacter().matches("\\d")) {
-                event.consume();
-            }
-        }
-    });
-
-    minDistanceTextField2.addEventFilter(KeyEvent.KEY_TYPED, new EventHandler<KeyEvent>() {
-        @Override
-        public void handle(KeyEvent event) {
-            if (!event.getCharacter().matches("\\d")) {
-                event.consume();
-            }
-        }
-    });
-
-    flankingRegionsTextField.addEventFilter(KeyEvent.KEY_TYPED, new EventHandler<KeyEvent>() {
-        @Override
-        public void handle(KeyEvent event) {
-            if (!event.getCharacter().matches("\\d")) {
-                event.consume();
-            }
-        }
-    });
-
-    flankingRegionsTextField2.addEventFilter(KeyEvent.KEY_TYPED, new EventHandler<KeyEvent>() {
-        @Override
-        public void handle(KeyEvent event) {
-            if (!event.getCharacter().matches("\\d")) {
-                event.consume();
-            }
-        }
-    });
-
-    minSizeTextField.addEventFilter(KeyEvent.KEY_TYPED, new EventHandler<KeyEvent>() {
-        @Override
-        public void handle(KeyEvent event) {
-            if (!event.getCharacter().matches("\\d")) {
-                event.consume();
-            }
-        }
-    });
-
-    optSizeTextField.addEventFilter(KeyEvent.KEY_TYPED, new EventHandler<KeyEvent>() {
-        @Override
-        public void handle(KeyEvent event) {
-            if (!event.getCharacter().matches("\\d")) {
-                event.consume();
-            }
-        }
-    });
-
-    maxSizeTextField.addEventFilter(KeyEvent.KEY_TYPED, new EventHandler<KeyEvent>() {
-        @Override
-        public void handle(KeyEvent event) {
-            if (!event.getCharacter().matches("\\d")) {
-                event.consume();
-            }
-        }
-    });
-
-    maxDiffTextField.addEventFilter(KeyEvent.KEY_TYPED, new EventHandler<KeyEvent>() {
-        @Override
-        public void handle(KeyEvent event) {
-            if (!event.getCharacter().matches("\\d")) {
-                event.consume();
-            }
-        }
-    });
-
-    maxMisprimeTextField.addEventFilter(KeyEvent.KEY_TYPED, new EventHandler<KeyEvent>() {
-        @Override
-        public void handle(KeyEvent event) {
-            if (!event.getCharacter().matches("\\d")) {
-                event.consume();
-            }
-        }
-    });
-
-    sizeRangeTextField.addEventFilter(KeyEvent.KEY_TYPED, new EventHandler<KeyEvent>() {
-        @Override
-        public void handle(KeyEvent event) {
-            if (!event.getCharacter().matches("[\\d-\\s]")) {
-                event.consume();
-            }
-        }
-    });
-
-    minTmTextField.addEventFilter(KeyEvent.KEY_TYPED, new EventHandler<KeyEvent>() {
-        @Override
-        public void handle(KeyEvent event) {
-            if (!event.getCharacter().matches("[\\d.]")) {
-                event.consume();
-            }
-        }
-    });
-
-    optTmTextField.addEventFilter(KeyEvent.KEY_TYPED, new EventHandler<KeyEvent>() {
-        @Override
-        public void handle(KeyEvent event) {
-            if (!event.getCharacter().matches("[\\d.]")) {
-                event.consume();
-            }
-        }
-    });
-
-    maxTmTextField.addEventFilter(KeyEvent.KEY_TYPED, new EventHandler<KeyEvent>() {
-        @Override
-        public void handle(KeyEvent event) {
-            if (!event.getCharacter().matches("[\\d.]")) {
-                event.consume();
-            }
-        }
-    });
-
-    splitRegionsTextField.addEventFilter(KeyEvent.KEY_TYPED, new EventHandler<KeyEvent>() {
-        @Override
-        public void handle(KeyEvent event) {
-            if (!event.getCharacter().matches("\\d")) {
-                event.consume();
-            }
-        }
-    });
-
-    minDistanceTextField2.textProperty().bindBidirectional(minDistanceTextField.textProperty());
-    flankingRegionsTextField2.textProperty().bindBidirectional(flankingRegionsTextField.textProperty());
-    
-    resetValuesButton.setOnAction(new EventHandler<ActionEvent>() {
-        @Override
-        public void handle(ActionEvent actionEvent) {
-            resetPrimerSettings();
-        }
-    });
-}
 
 
 
@@ -715,28 +718,17 @@ public void initialize(URL url, ResourceBundle rb) {
         if (progressLabel.textProperty().isBound()) {
             return;
         }
-        int validRegions = 0;
-        int invalidRegions = 0;
-        String[] lines = regionsTextArea.getText().replaceAll("(?m)^\\s", "").split("\\n");
-        if (lines.length < 1) {
+        String[] lines = Arrays.stream(regionsTextArea.getText().split("\\r?\\n")).map(String::trim).filter(s -> !s.isEmpty()).toArray(String[]::new);
+        if (lines.length == 0) {
             return;
         }
-        if (lines.length == 1 && lines[0].isEmpty()) {
-            return;
-        }
-        for (String r: lines) {
-            if (RegionParser.readRegion(r) == null) {
-                invalidRegions++;
-            } else {
-                validRegions++;
-            }
-        }
-        StringBuilder lbl = new StringBuilder(validRegions + " valid regions");
-        if (invalidRegions > 0) {
-            lbl.append(" (").append(invalidRegions).append(" invalid)");
-        }
-        progressLabel.setText(lbl.toString());
+// More portable above
+        long validRegions = Arrays.stream(lines).filter(r -> RegionParser.readRegion(r) != null).count();
+        long invalidRegions = lines.length - validRegions;
+        String lbl = validRegions + " valid regions" + (invalidRegions > 0 ? " (" + invalidRegions + " invalid)" : "");
+        progressLabel.setText(lbl);
     }
+
 // Class related to handling mispriming logic
     class BuildToMisprimingLibrary {
         public String getMisprimingLibrary(String stub) {
@@ -809,6 +801,7 @@ public void initialize(URL url, ResourceBundle rb) {
             }
         }
     });
+
     getGenomesTask.setOnFailed(new EventHandler<WorkerStateEvent>() {
         @Override
         public void handle(WorkerStateEvent e) {
@@ -907,6 +900,7 @@ public void initialize(URL url, ResourceBundle rb) {
                 if (g.equals(genome)) {
                     // Update SNPs
                     String curSnp = (String) snpsChoiceBox.getSelectionModel().getSelectedItem();
+
                     snpsChoiceBox.getItems().clear();
                     snpsChoiceBox.getItems().add("No");
                     snpsChoiceBox.getItems().addAll(getSnpsFromTables(tables));
@@ -1207,8 +1201,10 @@ public void initialize(URL url, ResourceBundle rb) {
             primaryStage.setResizable(false);
             primaryStage.show();
             primaryStage.getIcons().add(new Image(this.getClass().getResourceAsStream("icon.png")));
+
             primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
                 @Override
+
                 public void handle(WindowEvent e) {
                     Platform.exit();
                     System.exit(0);
@@ -1506,6 +1502,7 @@ public void initialize(URL url, ResourceBundle rb) {
     }
                                                                       );
     sizeRangeTextField.focusedProperty().addListener(new ChangeListener<Boolean>() {
+
         @Override
         public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue ) {
             if (!newValue) {
@@ -1609,6 +1606,7 @@ public void initialize(URL url, ResourceBundle rb) {
         progressLabel.setText(lbl.toString());
     }
     private void checkUcscGenomes() {
+
         final Task<Void> task = getGenomesTask();
         new Thread(task).start();
     }
@@ -1805,6 +1803,7 @@ public void initialize(URL url, ResourceBundle rb) {
         errorAlert.setTitle(title);
         errorAlert.setHeaderText(header);
         errorAlert.setContentText(ex.getMessage());
+
         errorAlert.showAndWait();
         // Print the stack trace to the console for debugging
         ex.printStackTrace();
@@ -2009,6 +2008,7 @@ public void initialize(URL url, ResourceBundle rb) {
                 try {
                     LinkedHashSet<String> tables = ap3AConfig.readTableFile(doc);
                     ap3AConfig.getBuildToTables().put(id, tables);
+
                     if (!doc.asXML().equals(ap3AConfig.getBuildXmlDocument(id).asXML())) {
                         try {
                             ap3AConfig.writeTableXmlFile(doc, id);
@@ -2104,6 +2104,7 @@ public void initialize(URL url, ResourceBundle rb) {
             public void handle(ActionEvent actionEvent) {
                 getBuildsTask.cancel();
             }
+
         });
         progressLabel.setText("Connecting to UCSC...");
         new Thread(getBuildsTask).start();
@@ -2173,1049 +2174,1107 @@ public void initialize(URL url, ResourceBundle rb) {
         @Override
         public void handle(ActionEvent actionEvent) {
             getTablesTask.cancel();
+            progressIndicator.setProgress(-1);
+            new Thread(getTablesTask).start();
         }
-        progressIndicator.setProgress(-1);
-        new Thread(getTablesTask).start();
-        private void displaySizeRangeError() {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Invalid Size Range");
-            alert.setHeaderText("Invalid Primer Product Size Range values");
-            alert.setContentText("Primer Product Size Range field must be in the format " + "'100-200 200-400' etc.");
-            alert.showAndWait();
-        }
-        EventHandler<KeyEvent> checkNumeric() {
-            return new EventHandler<KeyEvent>() {
-                @Override
-                public void handle(KeyEvent ke) {
-                    if (!ke.getCharacter().matches("\\d")) {
-                        ke.consume();
-                    }
-                }
-            };
-        }
-//# end of question to chat gpt about too many open curly braces
-        EventHandler<KeyEvent> checkDecimal() {
-            return new EventHandler<KeyEvent>() {
-                @Override
-                public void handle(KeyEvent ke) {
-                    if (!ke.getCharacter().matches("[\\d.]")) {
-                        ke.consume();
-                    }
-                }
-            };
-        }
-        EventHandler<KeyEvent> checkRange() {
-            return new EventHandler<KeyEvent>() {
-                @Override
-                public void handle(KeyEvent ke) {
-                    if (!ke.getCharacter().matches("[\\d-\\s]")) {
-                        ke.consume();
-                    }
-                }
-            };
-        }
-        private boolean checkSizeRange(TextField field) {
-            List<String> split = Arrays.asList(field.getText().split("\\s+"));
-            for (String s: split) {
-                if (!s.matches("\\d+-\\d+")) {
-                    return false;
+        // Correctly closing the handle method directly above
+    });
+    private void displaySizeRangeError() {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Invalid Size Range");
+        alert.setHeaderText("Invalid Primer Product Size Range values");
+        alert.setContentText("Primer Product Size Range field must be in the format " + "'100-200 200-400' etc.");
+        alert.showAndWait();
+    }
+    EventHandler<KeyEvent> checkNumeric() {
+        return new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent ke) {
+                if (!ke.getCharacter().matches("\\d")) {
+                    ke.consume();
                 }
             }
-            return true;
+        };
+    }
+//# end of question to chat gpt about too many open curly braces
+    EventHandler<KeyEvent> checkDecimal() {
+        return new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent ke) {
+                if (!ke.getCharacter().matches("[\\d.]")) {
+                    ke.consume();
+                }
+            }
+        };
+    }
+    EventHandler<KeyEvent> checkRange() {
+        return new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent ke) {
+                if (!ke.getCharacter().matches("[\\d-\\s]")) {
+                    ke.consume();
+                }
+            }
+        };
+    }
+    private boolean checkSizeRange(TextField field) {
+        List<String> split = Arrays.asList(field.getText().split("\\s+"));
+        for (String s: split) {
+            if (!s.matches("\\d+-\\d+")) {
+                return false;
+            }
         }
-        private void resetPrimerSettings() {
-            for (TextField f: defaultPrimer3Values.keySet()) {
+        return true;
+    }
+    private void resetPrimerSettings() {
+        for (TextField f: defaultPrimer3Values.keySet()) {
+            f.setText(defaultPrimer3Values.get(f));
+        }
+    }
+    private void resetEmptyPrimerSettings() {
+        for (TextField f: defaultPrimer3Values.keySet()) {
+            if (f.getText().isEmpty()) {
+                f.setText(defaultPrimer3Values.get(f));
+            } else if (f.getText().trim().length() < 1) {
                 f.setText(defaultPrimer3Values.get(f));
             }
         }
-        private void resetEmptyPrimerSettings() {
-            for (TextField f: defaultPrimer3Values.keySet()) {
-                if (f.getText().isEmpty()) {
-                    f.setText(defaultPrimer3Values.get(f));
-                } else if (f.getText().trim().length() < 1) {
-                    f.setText(defaultPrimer3Values.get(f));
-                }
-            }
+    }
+    public void refreshDatabase() {
+        if (genomeChoiceBox.getSelectionModel().isEmpty()) {
+            //implies no connection to UCSC
+            connectToUcsc();
+        } else {
+            //we've got a connection to UCSC but want to refresh the database info for current build
+            final String id = (String) genomeChoiceBox.getSelectionModel().getSelectedItem();
+            getBuildTables(id, true);
         }
-        public void refreshDatabase() {
-            if (genomeChoiceBox.getSelectionModel().isEmpty()) {
-                //implies no connection to UCSC
-                connectToUcsc();
-            } else {
-                //we've got a connection to UCSC but want to refresh the database info for current build
-                final String id = (String) genomeChoiceBox.getSelectionModel().getSelectedItem();
-                getBuildTables(id, true);
-            }
-        }
-        public void loadRegionsFile() {
-            /*  we need to know how many regions we already have to make sure we don't go over
-                MAX_LINES_PER_DESIGN
-            */
-            final int regions = regionsTextArea.getText().split("\\n").length;
-            if (regions > MAX_LINES_PER_DESIGN) {
-                Alert alert = new Alert(Alert.AlertType.WARNING);
-                alert.setTitle("Max Regions Already Reached");
-                alert.setHeaderText("Maximum of " + MAX_LINES_PER_DESIGN + " lines allowed per design");
-                alert.setContentText("Cannot load file - you have already reached the maximum" + " number of lines allowed per design.  Delete some or " + "all regions if you want to load regions from a file.");
-                alert.showAndWait();
-            }
-            progressLabel.setText("Max regions reached.");
-            return;
-        }
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Select input file");
-        HashMap<String, ArrayList<String>> extFilters = new HashMap<>();
-        extFilters.put("Any Region file", new ArrayList<>(Arrays.asList("*.bed", "*.bed.gz", "*.vcf", "*vcf.gz", "*.txt", "*txt.gz", "*.BED", "*.BED.GZ", "*.VCF", "*VCF.GZ", "*.TXT", "*TXT.GZ") ) );
-        extFilters.put("BED file",  new ArrayList<>( Arrays.asList("*.bed", "*.bed.gz", "*.BED", "*.BED.GZ") ) );
-        extFilters.put("VCF file", new ArrayList<>( Arrays.asList("*.vcf", "*vcf.gz", "*.VCF", "*VCF.GZ") ) );
-        extFilters.put("Text file", new ArrayList<>( Arrays.asList("*.txt", "*txt.gz", "*.TXT", "*TXT.GZ") ) );
-        extFilters.put("Any", new ArrayList<>(Arrays.asList("*.*") ) );
-        ArrayList<String> keys = new ArrayList<>(extFilters.keySet());
-        Collections.sort(keys);
-        for (String ext: keys) {
-            fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(ext, extFilters.get(ext)));
-        }
-        fileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
-        setCanRun(false);
-        final File inFile = fileChooser.showOpenDialog(mainPane.getScene().getWindow());
-        if (inFile != null) {
-            final Task<ArrayList<String>> loadFileTask = new Task<ArrayList<String>>() {
-                @Override
-                protected ArrayList<String> call() {
-                    ArrayList<String> regionStrings = new ArrayList<>();
-                    int totalRegions = 0;
-                    int valid = 0;
-                    int invalid = 0;
-                    try {
-                        updateMessage("Opening " + inFile.getName());
-                        BufferedReader br;
-                        if (inFile.getName().endsWith(".gz")) {
-                            InputStream gzipStream = new GZIPInputStream(new FileInputStream(inFile));
-                            Reader decoder = new InputStreamReader(gzipStream);
-                            br = new BufferedReader(decoder);
-                        } else {
-                            br = new BufferedReader(new FileReader(inFile));
-                        }
-                        String line;
-                        int n = 0;
-                        while ((line = br.readLine()) != null) {
-                            n++;
-                            if (line.startsWith("#")) {
-                                // skip header lines
-                                continue;
-                            }
-                            updateMessage("Parsing line " + n + "...");
-                            GenomicRegionSummary region = RegionParser.readRegion(line);
-                            if (region != null) {
-                                String r = region.getChromosome() + ":" + region.getStartPos() + "-" + region.getEndPos();
-                                if (region.getName() != null && !region.getName().isEmpty()) {
-                                    r = r + " " + region.getName();
-                                }
-                                if (totalRegions > MAX_LINES_PER_DESIGN) {
-                                    final int lastLine = n - 1;
-                                    final int validRegions = valid;
-                                    Platform.runLater(() -> {
-                                        Alert alert = new Alert(Alert.AlertType.ERROR);
-                                        alert.setTitle("Error");
-                                        alert.setHeaderText("Maximum of " + MAX_LINES_PER_DESIGN + " lines allowed per design");
-                                        alert.setContentText("You have reached the maximum " + "number of lines allowed per " + "design while processing line " + lastLine + " of file " + inFile.getName() + ". " + validRegions + " valid regions added. " + "Remaining lines will not be " + "read.");
-                                        alert.showAndWait();
-                                    });
-                                    break;
-                                }
-                                regionStrings.add(r);
-                                valid++;
-                                totalRegions++;
-                            } else {
-                                invalid++;
-                            }
-                        }
-                        br.close();
-                    } catch (IOException ex) {
-                        Alert alert = new Alert(Alert.AlertType.ERROR);
-                        alert.setTitle("Error");
-                        alert.setHeaderText("Error Loading Region File");
-                        alert.setContentText("Could not read region file. " + "See exception below.");
-                        ex.printStackTrace();
-                        alert.showAndWait();
-                    }
-                    if (invalid > 0) {
-                        StringBuilder msg = new StringBuilder();
-                        msg.append(invalid).append(" invalid region");
-                        if (invalid > 1) {
-                            msg.append("s");
-                        }
-                        msg.append(" identified in file ").append(inFile.getName()).append(" (").append(valid).append(" valid region");
-                        if (valid != 1) {
-                            msg.append("s");
-                        }
-                        msg.append(" identified).");
-                        final String messageString = msg.toString();
-                        Platform.runLater(() -> {
-                            Alert alert = new Alert(Alert.AlertType.ERROR);
-                            alert.setTitle("Invalid Regions");
-                            alert.setHeaderText("Invalid Regions Identified");
-                            alert.setContentText(messageString);
-                            alert.showAndWait();
-                        });
-                    }
-                    return regionStrings;
-                }
-            };
-            new Thread(loadFileTask).start();
-        }
-        loadFileTask.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
-            @Override
-            public void handle (WorkerStateEvent e) {
-                setRunning(false);
-                progressIndicator.progressProperty().unbind();
-                progressIndicator.progressProperty().set(0);
-                progressLabel.textProperty().unbind();
-                ArrayList<String> loadedRegions = (ArrayList<String>)e.getSource().getValue();
-                int n = 0;
-                for (String r: loadedRegions) {
-                    n++;
-                    regionsTextArea.appendText(r + "\n");
-                }
-                progressLabel.setText("Added " + n + " regions from " + inFile.getName() + ".");
-            }
-        });
-        loadFileTask.setOnCancelled(new EventHandler<WorkerStateEvent>() {
-            @Override
-            public void handle (WorkerStateEvent e) {
-                setRunning(false);
-                progressLabel.textProperty().unbind();
-                progressLabel.setText("Loading cancelled");
-                progressIndicator.progressProperty().unbind();
-                progressIndicator.progressProperty().set(0);
-            }
-        });
-        loadFileTask.setOnFailed(new EventHandler<WorkerStateEvent>() {
-            @Override
-            public void handle (WorkerStateEvent e) {
-                setRunning(false);
-                progressLabel.textProperty().unbind();
-                progressLabel.setText("Loading failed!");
-                progressIndicator.progressProperty().unbind();
-                progressIndicator.progressProperty().set(0);
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Error");
-                alert.setHeaderText("Error Loading Region File");
-                alert.setContentText("Could not read region file. " + "See exception below.");
-                alert.showAndWait();
-            }
-        });
-        cancelButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent actionEvent) {
-                loadFileTask.cancel();
-            }
-        });
-        progressIndicator.progressProperty().unbind();
-        progressLabel.textProperty().unbind();
-        progressIndicator.progressProperty().bind(loadFileTask.progressProperty());
-        progressLabel.textProperty().bind(loadFileTask.messageProperty());
-        setRunning(true);
-        new Thread(loadFileTask).start();
-        public void clearRegions() {
-            regionsTextArea.clear();
-            if (! progressLabel.textProperty().isBound()) {
-                progressLabel.setText("");
-            }
-        }
-        private ArrayList<GenomicRegionSummary> getRegionsForDesign(String regionsInput) {
-            ArrayList<GenomicRegionSummary> regions = parseRegions(regionsInput);
-            if (regions.isEmpty()) {
-                showAlert("No Regions", "No valid regions found.", "No valid regions were found in your input.");
-                return null;
-            }
-            List<String> invalidRegions = findInvalidRegions(regionsInput);
-            if (!invalidRegions.isEmpty() && !handleInvalidRegions(invalidRegions)) {
-                return null;
-            }
-            ArrayList<GenomicRegionSummary> tooLongRegions = new ArrayList<>();
-            ArrayList<GenomicRegionSummary> validRegions = filterLongRegions(regions, tooLongRegions);
-            if (!tooLongRegions.isEmpty() && !handleTooLongRegions(tooLongRegions)) {
-                return null;
-            }
-            return validRegions;
-        }
-        private ArrayList<GenomicRegionSummary> parseRegions(String regionsInput) {
-            ArrayList<GenomicRegionSummary> regions = new ArrayList<>();
-            List<String> tempRegions = Arrays.asList(regionsInput.replaceAll("(?m)^\\s", "").split("\\n"));
-            int n = 1;
-            for (String r : tempRegions) {
-                if (!r.matches(".*\\w.*")) {
-                    continue;
-                }
-                GenomicRegionSummary region = RegionParser.readRegion(r);
-                if (region != null) {
-                    if (region.getName() == null || region.getName().isEmpty() || !useRegionNamesCheckBox.isSelected()) {
-                        region.setName("Region_" + n++);
-                    }
-                    region.setId(region.getChromosome() + ":" + region.getStartPos() + "-" + region.getEndPos());
-                    regions.add(region);
-                }
-            }
-            return regions;
-        }
-        private List<String> findInvalidRegions(String regionsInput) {
-            List<String> invalidRegions = new ArrayList<>();
-            List<String> tempRegions = Arrays.asList(regionsInput.replaceAll("(?m)^\\s", "").split("\\n"));
-            for (String r : tempRegions) {
-                if (!r.matches(".*\\w.*")) {
-                    continue;
-                }
-                if (RegionParser.readRegion(r) == null) {
-                    invalidRegions.add(r);
-                }
-            }
-            return invalidRegions;
-        }
-        private boolean handleInvalidRegions(List<String> invalidRegions) {
-            StringBuilder mh = new StringBuilder("Found " + invalidRegions.size() + " Invalid Region");
-            if (invalidRegions.size() > 1) {
-                mh.append("s");
-            }
-            mh.append(" in User Input");
-            StringBuilder msg = new StringBuilder("Invalid regions found - continue designing without these regions?\n");
-            if (invalidRegions.size() <= 10) {
-                msg.append(String.join("\n", invalidRegions));
-            } else {
-                msg.append(String.join("\n", invalidRegions.subList(0, 10)));
-                msg.append("\n...and ").append((invalidRegions.size() - 9)).append(" more.");
-            }
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-            alert.setTitle("Invalid Regions");
-            alert.setHeaderText(mh.toString());
-            alert.setContentText(msg.toString());
-            ButtonType yesButton = new ButtonType("Yes", ButtonBar.ButtonData.YES);
-            ButtonType noButton = new ButtonType("No", ButtonBar.ButtonData.NO);
-            alert.getButtonTypes().setAll(yesButton, noButton);
-            Optional<ButtonType> response = alert.showAndWait();
-            return response.isPresent() && response.get() == yesButton;
-        }
-        private ArrayList<GenomicRegionSummary> filterLongRegions(ArrayList<GenomicRegionSummary> regions, ArrayList<GenomicRegionSummary> tooLongRegions) {
-            ArrayList<GenomicRegionSummary> validRegions = new ArrayList<>();
-            for (GenomicRegionSummary r : regions) {
-                if (r.getLength() > MAX_REGION_SIZE) {
-                    tooLongRegions.add(r);
-                } else {
-                    validRegions.add(r);
-                }
-            }
-            return validRegions;
-        }
-        private boolean handleTooLongRegions(ArrayList<GenomicRegionSummary> tooLongRegions) {
-            StringBuilder mh = new StringBuilder("Found " + tooLongRegions.size() + " Region");
-            if (tooLongRegions.size() > 1) {
-                mh.append("s");
-            }
-            mh.append(" Exceeding Maximum Length in User Input");
-            StringBuilder msg = new StringBuilder("Maximum region size is ").append(MAX_REGION_SIZE).append(" bp. Continue designing without these regions?\n");
-            if (tooLongRegions.size() <= 10) {
-                for (GenomicRegionSummary l : tooLongRegions) {
-                    msg.append(l.getCoordinateString()).append("\n");
-                }
-            } else {
-                for (GenomicRegionSummary l : tooLongRegions.subList(0, 10)) {
-                    msg.append(l.getCoordinateString()).append("\n");
-                }
-                msg.append("\n...and ").append((tooLongRegions.size() - 9)).append(" more.");
-            }
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-            alert.setTitle("Invalid Regions");
-            alert.setHeaderText(mh.toString());
-            alert.setContentText(msg.toString());
-            ButtonType yesButton = new ButtonType("Yes", ButtonBar.ButtonData.YES);
-            ButtonType noButton = new ButtonType("No", ButtonBar.ButtonData.NO);
-            alert.getButtonTypes().setAll(yesButton, noButton);
-            Optional<ButtonType> response = alert.showAndWait();
-            return response.isPresent() && response.get() == yesButton;
-        }
-        private void showAlert(String title, String header, String content) {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle(title);
-            alert.setHeaderText(header);
-            alert.setContentText(content);
+    }
+    public void loadRegionsFile() {
+        /*  we need to know how many regions we already have to make sure we don't go over
+            MAX_LINES_PER_DESIGN
+        */
+        final int regions = regionsTextArea.getText().split("\\n").length;
+        if (regions > MAX_LINES_PER_DESIGN) {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Max Regions Already Reached");
+            alert.setHeaderText("Maximum of " + MAX_LINES_PER_DESIGN + " lines allowed per design");
+            alert.setContentText("Cannot load file - you have already reached the maximum" + " number of lines allowed per design.  Delete some or " + "all regions if you want to load regions from a file.");
             alert.showAndWait();
         }
-        public void designPrimersToCoordinates() {
-            final String regionsInput = regionsTextArea.getText();
-            final int optSize = Integer.valueOf(splitRegionsTextField.getText());
-            final int flanks = Integer.valueOf(flankingRegionsTextField.getText());
-            final int designBuffer = Integer.valueOf(minDistanceTextField.getText());
-            final String genome = (String) genomeChoiceBox.getSelectionModel().getSelectedItem();
-            if (regionsInput.isEmpty() || !checkDesignParameters()) {
-                return;
-            }
-            final ArrayList<GenomicRegionSummary> regs = getRegionsForDesign(regionsInput);
-            if (regs == null) {
-                return;
-            }
-        }
-        final Task<HashMap<String, ArrayList>> designTask = new Task<>() {
+        progressLabel.setText("Max regions reached.");
+        return;
+    }
+    FileChooser fileChooser = new FileChooser();
+    fileChooser.setTitle("Select input file");
+    HashMap<String, ArrayList<String>> extFilters = new HashMap<>();
+    extFilters.put("Any Region file", new ArrayList<>(Arrays.asList("*.bed", "*.bed.gz", "*.vcf", "*vcf.gz", "*.txt", "*txt.gz", "*.BED", "*.BED.GZ", "*.VCF", "*VCF.GZ", "*.TXT", "*TXT.GZ") ) );
+    extFilters.put("BED file",  new ArrayList<>( Arrays.asList("*.bed", "*.bed.gz", "*.BED", "*.BED.GZ") ) );
+    extFilters.put("VCF file", new ArrayList<>( Arrays.asList("*.vcf", "*vcf.gz", "*.VCF", "*VCF.GZ") ) );
+    extFilters.put("Text file", new ArrayList<>( Arrays.asList("*.txt", "*txt.gz", "*.TXT", "*TXT.GZ") ) );
+    extFilters.put("Any", new ArrayList<>(Arrays.asList("*.*") ) );
+    ArrayList<String> keys = new ArrayList<>(extFilters.keySet());
+    Collections.sort(keys);
+    for (String ext: keys) {
+    fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(ext, extFilters.get(ext)));
+    }
+    fileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
+    setCanRun(false);
+    final File inFile = fileChooser.showOpenDialog(mainPane.getScene().getWindow());
+    if (inFile != null) {
+    final Task<ArrayList<String>> loadFileTask = new Task<ArrayList<String>>() {
             @Override
-            protected HashMap<String, ArrayList> call() throws SQLException, IOException {
-                ArrayList<GenomicRegionSummary> regions = regs;
-                ArrayList<Primer3Result> primers = new ArrayList<>();
-                ArrayList<String> designs = new ArrayList<>();
-                SequenceFromDasUcsc seqFromDas = new SequenceFromDasUcsc();
-                GenomicRegionSummary merger = new GenomicRegionSummary();
-                merger.mergeRegionsByPosition(regions);
-                regions = splitLargeRegionsMergeSmallRegions(regions, optSize, designBuffer, false);
-                int p = 0;
-                updateProgress(0, regions.size() * 3);
-                for (GenomicRegionSummary r : regions) {
-                    int start = Math.max(r.getStartPos() - flanks, 0);
-                    int end = r.getEndPos() + flanks;
-                    updateMessage("Retrieving DNA for region...");
-                    String dna;
-                    try {
-                        dna = seqFromDas.retrieveSequence(genome, r.getChromosome(), start, end);
-                    } catch (DocumentException | MalformedURLException seqex) {
-                        showErrorAlert("Error retrieving DNA", "Failed to retrieve DNA for region " + r.getChromosome() + ":" + start + "-" + end, seqex);
-                        return null;
-                    }
-                    updateProgress(++p, regions.size() * 3);
-                    ArrayList<String> excludeRegions = getExcludeRegions(dna, start, end, genome, flanks, designBuffer, r);
-                    updateMessage("Designing primers...");
-                    String seqid = r.getName() + ": " + r.getId();
-                    ArrayList<String> result = designPrimers(seqid, dna, "", String.join(" ", excludeRegions));
-                    designs.add(String.join("\n", result));
-                    primers.add(parsePrimer3Output(++p, r.getName(), r.getId(), r.getChromosome(), start, result));
-                }
-                HashMap<String, ArrayList> primerResult = new HashMap<>();
-                primerResult.put("primers", primers);
-                primerResult.put("design", designs);
-                return primerResult;
-            }
-        };
-        progressIndicator.progressProperty().unbind();
-        progressIndicator.progressProperty().bind(designTask.progressProperty());
-        progressLabel.textProperty().bind(designTask.messageProperty());
-        designTask.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
-            @Override
-            public void handle(WorkerStateEvent e) {
-                progressIndicator.progressProperty().unbind();
-                progressIndicator.progressProperty().set(100);
-                progressLabel.textProperty().unbind();
-                setRunning(false);
-                HashMap<String, ArrayList> result = (HashMap<String, ArrayList>) e.getSource().getValue();
-                if (result == null) {
-                    return;
-                }
-                if (result.get("primers").isEmpty()) {
-                    progressLabel.setText("No primers designed.");
-                    Alert alert = new Alert(Alert.AlertType.ERROR);
-                    alert.setTitle("No primers found!");
-                    alert.setHeaderText("No primers found for your targets.");
-                    alert.setContentText("No primer designs were attempted for your targets.");
-                    alert.showAndWait();
-                    return;
-                }
-                progressLabel.setText(result.get("primers").size() + " primer pairs designed.");
-                FXMLLoader tableLoader;
-                if (System.getProperty("os.name").equals("Mac OS X")) {
-                    tableLoader = new FXMLLoader(getClass().getResource("Primer3ResultViewMac.fxml"));
-                } else {
-                    tableLoader = new FXMLLoader(getClass().getResource("Primer3ResultView.fxml"));
-                }
+            protected ArrayList<String> call() {
+                ArrayList<String> regionStrings = new ArrayList<>();
+                int totalRegions = 0;
+                int valid = 0;
+                int invalid = 0;
                 try {
-                    Pane tablePane = tableLoader.load();
-                    Primer3ResultViewController resultView = tableLoader.getController();
-                    Scene tableScene = new Scene(tablePane);
-                    Stage tableStage = new Stage();
-                    tableStage.setScene(tableScene);
-                    resultView.displayData(result.get("primers"), result.get("design"), (HashMap<String, String>) result.get("ref").get(0));
-                    tableStage.setTitle("MavenAutoPrimer Results");
-                    tableStage.getIcons().add(new Image(this.getClass().getResourceAsStream("icon.png")));
-                    tableStage.initModality(Modality.NONE);
-                    tableStage.show();
-                } catch (Exception ex) {
-                    Alert alert = new Alert(Alert.AlertType.ERROR);
-                    alert.setTitle("Error");
-                    alert.setHeaderText("Design Failed!");
-                    alert.setContentText("MavenAutoPrimer encountered an error attempting to display your results. See exception below.");
-                    alert.showAndWait();
-                }
-            }
-        });
-        new Thread(designTask).start();
-// Handling geneSearchTask cancellation
-        geneSearchTask.setOnCancelled(new EventHandler<WorkerStateEvent>() {
-            @Override
-            public void handle(WorkerStateEvent e) {
-                setRunning(false);
-                progressLabel.textProperty().unbind();
-                progressLabel.setText("Design cancelled");
-                progressIndicator.progressProperty().unbind();
-                progressIndicator.progressProperty().set(0);
-            }
-        });
-// Handling geneSearchTask failure
-        geneSearchTask.setOnFailed(new EventHandler<WorkerStateEvent>() {
-            @Override
-            public void handle(WorkerStateEvent e) {
-                setRunning(false);
-                progressLabel.textProperty().unbind();
-                progressLabel.setText("Search failed!");
-                progressIndicator.progressProperty().unbind();
-                progressIndicator.progressProperty().set(0);
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Error");
-                alert.setHeaderText("Gene Search Failed!");
-                alert.setContentText("MavenAutoPrimer encountered an error when searching for gene targets. See exception below.");
-                alert.showAndWait();
-            }
-        });
-// Cancel button action
-        cancelButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent actionEvent) {
-                geneSearchTask.cancel();
-            }
-        });
-        setRunning(true);
-        progressIndicator.progressProperty().unbind();
-        progressIndicator.progressProperty().bind(geneSearchTask.progressProperty());
-        progressLabel.textProperty().unbind();
-        progressLabel.textProperty().bind(geneSearchTask.messageProperty());
-        new Thread(geneSearchTask).start();
-    }
-// Creating reference sequence
-    private String createReferenceSequence(String dna, int offset, int flanks, ArrayList<GenomicRegionSummary> exons, boolean revComp) {
-        StringBuilder dnaTarget = new StringBuilder();
-        int prevEnd = 0;
-        for (int i = 0; i < exons.size(); i++) {
-            int tStart = exons.get(i).getStartPos() - offset;
-            int tEnd = 1 + exons.get(i).getEndPos() - offset;
-            int subsStart = tStart - flanks > 0 ? tStart - flanks : 0;
-            int subsEnd = tEnd + flanks - 1 < dna.length() ? tEnd + flanks - 1 : dna.length();
-            // Make sure we don't overlap end with next exon region
-            if (i < exons.size() - 1) {
-                subsEnd = subsEnd < exons.get(i + 1).getStartPos() - offset ? subsEnd : exons.get(i + 1).getStartPos() - offset;
-            }
-            // Make sure we don't overlap current flanks with previous flanks
-            if (prevEnd > 0) {
-                if (prevEnd > subsStart) {
-                    subsStart = prevEnd;
-                }
-            }
-            prevEnd = subsEnd;
-            dnaTarget.append(dna.substring(subsStart, tStart).toLowerCase());
-            dnaTarget.append(dna.substring(tStart, tEnd - 1).toUpperCase());
-            dnaTarget.append(dna.substring(tEnd - 1, subsEnd).toLowerCase());
-        }
-        if (revComp) {
-            return reverseComplement(dnaTarget.toString());
-        } else {
-            return dnaTarget.toString();
-        }
-    }
-    /*dup will always be an unedited gene name
-    we need to check whether we already have made an '(alt)' version
-    by checking in dupStorer
-    */
-    private String checkDuplicate(String dup, HashSet<String> dupStorer) {
-        String dedupped;
-        if (dupStorer.contains(dup)) {
-            dedupped =  dup + "(alt)";
-            if (dupStorer.contains(dedupped)) {
-                for (int i = 1; i < 999; i++) {
-                    dedupped = dup + "(alt" + i + ")";
-                    if (!dupStorer.contains(dedupped)) {
-                        break;
-                    }
-                }
-            }
-            dupStorer.add(dedupped);
-            return dedupped;
-        } else {
-            dupStorer.add(dup);
-            return dup;
-        }
-    }
-    private void numberExons(ArrayList<GenomicRegionSummary> exonRegions, boolean minusStrand) {
-        int n = 0;
-        if (minusStrand) {
-            Collections.reverse(exonRegions);
-        }
-        for (GenomicRegionSummary e: exonRegions) {
-            e.setName(e.getName() + "_ex" + (n+1));
-            n++;
-        }
-        if (minusStrand) {
-            //back to original order
-            Collections.reverse(exonRegions);
-        }
-    }
-    private ArrayList<GenomicRegionSummary> splitLargeRegionsMergeSmallRegions(ArrayList<GenomicRegionSummary> regions, Integer optSize, Integer buffer, boolean minusStrand) {
-        ArrayList<GenomicRegionSummary> splitRegions = new ArrayList<>();
-        for (GenomicRegionSummary r: regions) {
-            if (r.getLength() > optSize) {
-                //divide length by maxSize to determine no of products to make
-                Double products = Math.ceil(r.getLength().doubleValue()/optSize.doubleValue());
-                if (products.intValue() < 2) {
-                    splitRegions.add(r);
-                    continue;
-                }
-                //divide length by no. products and make each product
-                Double productSize = r.getLength().doubleValue()/products;
-                for (int i = 0; i < products.intValue(); i++) {
-                    int increment = i * productSize.intValue();
-                    int startPos = r.getStartPos() + increment;
-                    int endPos = startPos + productSize.intValue();
-                    endPos = endPos < r.getEndPos() ? endPos : r.getEndPos();
-                    String name;
-                    if (minusStrand) {
-                        name = r.getName() + "_part" + (products.intValue() - i);
+                    updateMessage("Opening " + inFile.getName());
+                    BufferedReader br;
+                    if (inFile.getName().endsWith(".gz")) {
+                        InputStream gzipStream = new GZIPInputStream(new FileInputStream(inFile));
+                        Reader decoder = new InputStreamReader(gzipStream);
+                        br = new BufferedReader(decoder);
                     } else {
-                        name = r.getName() + "_part" + (i+1);
+                        br = new BufferedReader(new FileReader(inFile));
                     }
-                    ArrayList<String> ids = new ArrayList<>();
-                    for (String id : r.getId().split("/")) {
-                        if (minusStrand) {
-                            ids.add(id + "_part" + (products.intValue() - i));
+                    String line;
+                    int n = 0;
+                    while ((line = br.readLine()) != null) {
+                        n++;
+                        if (line.startsWith("#")) {
+                            // skip header lines
+                            continue;
+                        }
+                        updateMessage("Parsing line " + n + "...");
+                        GenomicRegionSummary region = RegionParser.readRegion(line);
+                        if (region != null) {
+                            String r = region.getChromosome() + ":" + region.getStartPos() + "-" + region.getEndPos();
+                            if (region.getName() != null && !region.getName().isEmpty()) {
+                                r = r + " " + region.getName();
+                            }
+                            if (totalRegions > MAX_LINES_PER_DESIGN) {
+                                final int lastLine = n - 1;
+                                final int validRegions = valid;
+                                Platform.runLater(() -> {
+                                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                                    alert.setTitle("Error");
+                                    alert.setHeaderText("Maximum of " + MAX_LINES_PER_DESIGN + " lines allowed per design");
+                                    alert.setContentText("You have reached the maximum " + "number of lines allowed per " + "design while processing line " + lastLine + " of file " + inFile.getName() + ". " + validRegions + " valid regions added. " + "Remaining lines will not be " + "read.");
+                                    alert.showAndWait();
+                                });
+                                break;
+                            }
+                            regionStrings.add(r);
+                            valid++;
+                            totalRegions++;
                         } else {
-                            ids.add(id + "_part" + (i+1));
+                            invalid++;
                         }
                     }
-                    GenomicRegionSummary s = new GenomicRegionSummary(r.getChromosome(), startPos, endPos, r.getStartId(), r.getEndId(), String.join("/", ids), name);
-                    if (i == products.intValue() - 1) {
-                        s.setEndPos(r.getEndPos());
+                    br.close();
+                } catch (IOException ex) {
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Error");
+                    alert.setHeaderText("Error Loading Region File");
+                    alert.setContentText("Could not read region file. " + "See exception below.");
+                    ex.printStackTrace();
+                    alert.showAndWait();
+                }
+                if (invalid > 0) {
+                    StringBuilder msg = new StringBuilder();
+                    msg.append(invalid).append(" invalid region");
+                    if (invalid > 1) {
+                        msg.append("s");
                     }
-                    splitRegions.add(s);
-                }
-            } else {
-                splitRegions.add(r);
-            }
-        }
-        ArrayList<GenomicRegionSummary> splitAndMergedRegions = new ArrayList<>();
-        boolean smallRegion;
-        do {
-            smallRegion = false;
-            splitAndMergedRegions.clear();
-            for (int i = 0; i < splitRegions.size() - 1; i++) {
-                //merge any small and close regions
-                if (! splitRegions.get(i).getChromosome().equals( splitRegions.get(i+1).getChromosome())) {
-                    splitAndMergedRegions.add(splitRegions.get(i));
-                    continue;
-                }
-                int gap = splitRegions.get(i+1).getEndPos() - splitRegions.get(i).getStartPos();
-                if (gap + (2*buffer)  <= optSize) {
-                    smallRegion = true;
-                    String chrom = splitRegions.get(i).getChromosome();
-                    int start = splitRegions.get(i).getStartPos();
-                    int end = splitRegions.get(i+1).getEndPos();
-                    String name = mergeNames(splitRegions.get(i).getName(), splitRegions.get(i+1).getName());
-                    String id = mergeIds(splitRegions.get(i).getId(), splitRegions.get(i + 1).getId());
-                    splitAndMergedRegions.add(new GenomicRegionSummary(chrom, start, end, null, null, id, name));
-                    for (int j = i +2; j < splitRegions.size(); j++) {
-                        splitAndMergedRegions.add(splitRegions.get(j));
+                    msg.append(" identified in file ").append(inFile.getName()).append(" (").append(valid).append(" valid region");
+                    if (valid != 1) {
+                        msg.append("s");
                     }
-                    splitRegions.clear();
-                    splitRegions.addAll(splitAndMergedRegions);
-                    break;
-                } else {
-                    splitAndMergedRegions.add(splitRegions.get(i));
+                    msg.append(" identified).");
+                    final String messageString = msg.toString();
+                    Platform.runLater(() -> {
+                        Alert alert = new Alert(Alert.AlertType.ERROR);
+                        alert.setTitle("Invalid Regions");
+                        alert.setHeaderText("Invalid Regions Identified");
+                        alert.setContentText(messageString);
+                        alert.showAndWait();
+                    });
                 }
+                return regionStrings;
             }
-            splitAndMergedRegions.add(splitRegions.get(splitRegions.size()-1));
-        } while (smallRegion);
-        return splitAndMergedRegions;
+        };
+        new Thread(loadFileTask).start();
     }
-//create a new id from two genomic regions' ids
-    private String mergeIds(String id1, String id2) {
-        ArrayList<String> merged = new ArrayList<>();
-        List<String> ids1 = Arrays.asList(id1.split("/"));
-        List<String> ids2 = Arrays.asList(id2.split("/"));
-        LinkedHashMap<String, String> idToEx1 = new LinkedHashMap<>();
-        LinkedHashMap<String, String> idToEx2 = new LinkedHashMap<>();
-        for (String d: ids1) {
-            List<String> split = Arrays.asList(d.split("_ex"));
-            if (split.size() > 1) {
-                idToEx1.put(split.get(0), split.get(1));
-            } else {
-                idToEx1.put(d, d);
+    loadFileTask.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+        @Override
+        public void handle (WorkerStateEvent e) {
+            setRunning(false);
+            progressIndicator.progressProperty().unbind();
+            progressIndicator.progressProperty().set(0);
+            progressLabel.textProperty().unbind();
+            ArrayList<String> loadedRegions = (ArrayList<String>)e.getSource().getValue();
+            int n = 0;
+            for (String r: loadedRegions) {
+                n++;
+                regionsTextArea.appendText(r + "\n");
             }
+            progressLabel.setText("Added " + n + " regions from " + inFile.getName() + ".");
         }
-        for (String d: ids2) {
-            List<String> split = Arrays.asList(d.split("_ex"));
-            if (split.size() > 1) {
-                idToEx2.put(split.get(0), split.get(1));
-            } else {
-                idToEx2.put(d, d);
-            }
+    });
+    loadFileTask.setOnCancelled(new EventHandler<WorkerStateEvent>() {
+        @Override
+        public void handle (WorkerStateEvent e) {
+            setRunning(false);
+            progressLabel.textProperty().unbind();
+            progressLabel.setText("Loading cancelled");
+            progressIndicator.progressProperty().unbind();
+            progressIndicator.progressProperty().set(0);
         }
-        for (String d: idToEx1.keySet()) {
-            if (idToEx2.containsKey(d)) {
-                merged.add(d + "_ex" + idToEx1.get(d) + "-" + idToEx2.get(d));
-            } else {
-                if (d.equals(idToEx1.get(d))) {
-                    //if regions key and value will be identical
-                    merged.add(d);
-                } else {
-                    //if exons value will be exon number
-                    merged.add(d + "_ex" + idToEx1.get(d));
-                }
-            }
+    });
+    loadFileTask.setOnFailed(new EventHandler<WorkerStateEvent>() {
+        @Override
+        public void handle (WorkerStateEvent e) {
+            setRunning(false);
+            progressLabel.textProperty().unbind();
+            progressLabel.setText("Loading failed!");
+            progressIndicator.progressProperty().unbind();
+            progressIndicator.progressProperty().set(0);
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("Error Loading Region File");
+            alert.setContentText("Could not read region file. " + "See exception below.");
+            alert.showAndWait();
+
         }
-        for (String d: idToEx2.keySet()) {
-            if (! idToEx1.containsKey(d)) {
-                if (d.equals(idToEx2.get(d))) {
-                    //if regions key and value will be identical
-                    merged.add(d);
-                } else {
-                    //if exons value will be exon number
-                    merged.add(d + "_ex" + idToEx2.get(d));
-                }
-            }
+    });
+    cancelButton.setOnAction(new EventHandler<ActionEvent>() {
+        @Override
+        public void handle(ActionEvent actionEvent) {
+
+            loadFileTask.cancel();
         }
-        return String.join("/", merged);
-    }
-//create a new name from two genomic regions' names
-    private String mergeNames(String name1, String name2) {
-        String name;
-        List<String> geneName1 = Arrays.asList(name1.split("_ex"));
-        List<String> geneName2 = Arrays.asList(name2.split("_ex"));
-        if (geneName1.size() >= 2 && geneName2.size() >= 2 && geneName1.get(0).equalsIgnoreCase(geneName2.get(0))) {
-            ArrayList<Integer> sizes = new ArrayList<>();
-            for (int i = 1; i < geneName1.size(); i++) {
-                sizes.add(Integer.valueOf(geneName1.get(i)));
-            }
-            for (int i = 1; i < geneName2.size(); i++) {
-                sizes.add(Integer.valueOf(geneName2.get(i)));
-            }
-            Collections.sort(sizes);
-            name = geneName1.get(0) + "_ex" + sizes.get(0) + "-" + sizes.get(sizes.size()-1);
-        } else {
-            name = name1 + "/" +  name2;
-        }
-        return name;
-    }
-// get left and right primer from Primer3 output
-    private Primer3Result parsePrimer3Output(int index, String name, String id, String chrom, int baseCoordinate, ArrayList<String> output) {
-        String db = (String) genomeChoiceBox.getSelectionModel().getSelectedItem();
-        final Hyperlink pcrLink = new Hyperlink();
-        pcrLink.setText("in-silico PCR");
-        pcrLink.setTextFill(Color.BLUE);
-        pcrLink.setDisable(true);
-        String left = "NOT FOUND";
-        String right = "NOT FOUND";
-        Integer lpos = 0;
-        Integer rpos = 0;
-        Integer leftStart = 0;
-        Integer rightStart = 0;
-        String productSize = "0";
-        for (String res: output) {
-            if (res.startsWith("LEFT PRIMER")) {
-                List<String> split = Arrays.asList(res.split(" +"));
-                left = split.get(split.size() -1);
-                leftStart = Integer.valueOf(split.get(2));
-            } else if (res.startsWith("RIGHT PRIMER")) {
-                List<String> split = Arrays.asList(res.split(" +"));
-                right = split.get(split.size() -1);
-                rightStart = Integer.valueOf(split.get(2));
-            } else if (res.startsWith("PRODUCT SIZE:")) {
-                List<String> split = Arrays.asList(res.split(" +"));
-                productSize = split.get(2).replaceAll("[^\\d/]", "");
-                break;
-            }
-        }
-        Primer3Result res = new Primer3Result();
-        res.setLeftPrimer(left);
-        res.setRightPrimer(right);
-        res.setName(name);
-        res.setTranscripts(id);
-        res.setIndex(index);
-        res.setProductSize(Integer.valueOf(productSize));
-        if (Integer.valueOf(productSize) > 0) {
-            Integer wpSize = 4000 > Integer.valueOf(productSize) * 2 ? 4000 : Integer.valueOf(productSize) * 2;
-            lpos = baseCoordinate + leftStart;
-            rpos = baseCoordinate + rightStart;
-            final String pcrUrl = serverUrl + "/cgi-bin/hgPcr?db=" + db + "&wp_target=genome&wp_f=" + left + "&wp_r=" + right + "&wp_size=" + wpSize + "&wp_perfect=15&wp_good=15&boolshad.wp_flipReverse=0";
-            pcrLink.setOnAction(new EventHandler<ActionEvent>() {
-                @Override
-                public void handle(ActionEvent e) {
-                    getHostServices().showDocument(pcrUrl);
-                    pcrLink.setVisited(true);
-                    pcrLink.setUnderline(false);
-                }
-            });
-            pcrLink.setDisable(false);
-            pcrLink.setUnderline(true);
-            res.setIsPcrLink(pcrLink);
-            res.setIsPcrUrl(pcrUrl);
-            String region = chrom + ":" + lpos + "-" + rpos;
-            final String regionUrl = serverUrl + "/cgi-bin/hgTracks?db=" + db + "&position=" + region;
-            final Hyperlink regionLink = new Hyperlink();
-            regionLink.setText(region);
-            regionLink.setTextFill(Color.BLUE);
-            regionLink.setOnAction(new EventHandler<ActionEvent>() {
-                @Override
-                public void handle(ActionEvent e) {
-                    getHostServices().showDocument(regionUrl);
-                    pcrLink.setVisited(true);
-                    pcrLink.setUnderline(false);
-                }
-            });
-            res.setRegion(region);
-            res.setRegionLink(regionLink);
-        } else {
-            res.setIsPcrLink(null);
-            res.setIsPcrUrl(null);
-            res.setRegion(null);
-        }
-        return res;
-    }
-//for given parameters design primers and return result as an array of strings
-    private ArrayList<String> designPrimers(String name, String dna, String target, String exclude) throws IOException {
-        ArrayList<String> result = new ArrayList<>();
-        StringBuilder error = new StringBuilder();
-        StringBuilder p3_job = new StringBuilder("SEQUENCE_TARGET=");
-        p3_job.append(target).append("\n");
-        p3_job.append("SEQUENCE_EXCLUDED_REGION=").append(exclude).append("\n");
-        p3_job.append("SEQUENCE_ID=").append(name).append("\n");
-        p3_job.append("SEQUENCE_TEMPLATE=").append(dna).append("\n");
-        p3_job.append("PRIMER_TASK=pick_pcr_primers\n");
-        p3_job.append("PRIMER_OPT_SIZE=").append(optSizeTextField.getText()).append("\n");
-        p3_job.append("PRIMER_MIN_SIZE=").append(minSizeTextField.getText()).append("\n");
-        p3_job.append("PRIMER_MAX_SIZE=").append(maxSizeTextField.getText()).append("\n");
-        p3_job.append("PRIMER_PRODUCT_SIZE_RANGE=").append(sizeRangeTextField.getText()).append("\n");
-        p3_job.append("PRIMER_MIN_TM=").append(minTmTextField.getText()).append("\n");
-        p3_job.append("PRIMER_OPT_TM=").append(optTmTextField.getText()).append("\n");
-        p3_job.append("PRIMER_MAX_TM=").append(maxTmTextField.getText()).append("\n");
-        p3_job.append("PRIMER_PAIR_MAX_DIFF_TM=").append(maxDiffTextField.getText()).append("\n");
-        p3_job.append("PRIMER_THERMODYNAMIC_PARAMETERS_PATH=").append(thermoConfig.toString()).append(System.getProperty("file.separator")).append("\n");
-        String misprimeLibrary = (String)misprimingLibraryChoiceBox.getSelectionModel().getSelectedItem();
-        if (!misprimeLibrary.isEmpty()) {
-            if (! misprimeLibrary.matches("none")) {
-                p3_job.append("PRIMER_MISPRIMING_LIBRARY=").append(misprimeDir.toString()).append(System.getProperty("file.separator")).append(misprimeLibrary).append("\n");
-                p3_job.append("PRIMER_MAX_LIBRARY_MISPRIMING=").append(maxMisprimeTextField.getText()).append("\n");
-            }
-        }
-        p3_job.append("=");
-        System.out.println(p3_job.toString());
-        //debug only
-        ArrayList<String> command = new ArrayList<>();
-        command.add(primer3ex.getAbsolutePath());
-        command.add("-format_output");
-        Process ps = new ProcessBuilder(command).start();
-        try {
-            BufferedReader errorbuf = new BufferedReader(new InputStreamReader( ps.getErrorStream()));
-            BufferedReader inbuf = new BufferedReader(new InputStreamReader( ps.getInputStream()));
-            BufferedWriter out = new BufferedWriter(new OutputStreamWriter(ps.getOutputStream()));
-            out.write(p3_job.toString());
-            out.flush();
-            out.close();
-            String line;
-            while ((line = inbuf.readLine()) != null) {
-                //System.out.println(line);//debug only
-                result.add(line);
-            }
-            while ((line = errorbuf.readLine()) != null) {
-                //System.out.println(line);//debug only
-                error.append(line);
-            }
-            int exit = ps.waitFor();
-            //System.out.println(exit);//debug only
-        } catch(InterruptedException ex) {
-            ex.printStackTrace();
-            /*this should have been caused by user pressing cancel
-            could do with a way of checking though and throwing if
-            not caused by user cancel
-            */
-        }
-        return result;
-    }
-    /*this method gets the start coordinates of a gene based on
-    the values for the designToChoiceBox and the Flanking region choice box
-    */
-    private int getGeneStart(GeneDetails g, int flanks) {
-        int start;
-        if (designToChoiceBox.getSelectionModel().getSelectedItem().equals("Coding regions")) {
-            start = g.getCdsStart();
-        } else {
-            start = g.getTxStart();
-        }
-        start -= flanks;
-        if (start > 0) {
-            return start;
-        } else {
-            return 0;
+    });
+    progressIndicator.progressProperty().unbind();
+    progressLabel.textProperty().unbind();
+    progressIndicator.progressProperty().bind(loadFileTask.progressProperty());
+    progressLabel.textProperty().bind(loadFileTask.messageProperty());
+    setRunning(true);
+    new Thread(loadFileTask).start();
+    public void clearRegions() {
+        regionsTextArea.clear();
+        if (! progressLabel.textProperty().isBound()) {
+            progressLabel.setText("");
         }
     }
-    private int getGeneEnd(GeneDetails g, int flanks) {
-        int end;
-        if (designToChoiceBox.getSelectionModel().getSelectedItem().equals("Coding regions")) {
-            end = g.getCdsEnd();
-        } else {
-            end = g.getTxEnd();
-        }
-        end += flanks;
-        return end;
-    }
-    private GeneCoordinatesFetcher getGeneSearcher() {
-        if (databaseChoiceBox.getSelectionModel().getSelectedItem().equals("refGene") || databaseChoiceBox.getSelectionModel().getSelectedItem().equals("xenoRefGene")) {
-            return new GeneCoordinatesFetcher();
-        } else if (databaseChoiceBox.getSelectionModel().getSelectedItem().equals("knownGene")) {
-            return new GetUcscGeneCoordinates();
-        } else if (databaseChoiceBox.getSelectionModel().getSelectedItem().equals("ensGene")) {
-            return new GetEnsemblGeneCoordinates();
-        } else {
+    private ArrayList<GenomicRegionSummary> getRegionsForDesign(String regionsInput) {
+        ArrayList<GenomicRegionSummary> regions = parseRegions(regionsInput);
+        if (regions.isEmpty()) {
+            showAlert("No Regions", "No valid regions found.", "No valid regions were found in your input.");
             return null;
         }
+        List<String> invalidRegions = findInvalidRegions(regionsInput);
+        if (!invalidRegions.isEmpty() && !handleInvalidRegions(invalidRegions)) {
+            return null;
+        }
+        ArrayList<GenomicRegionSummary> tooLongRegions = new ArrayList<>();
+        ArrayList<GenomicRegionSummary> validRegions = filterLongRegions(regions, tooLongRegions);
+        if (!tooLongRegions.isEmpty() && !handleTooLongRegions(tooLongRegions)) {
+            return null;
+        }
+        return validRegions;
     }
-    private ArrayList<GeneDetails> getGeneDetails(String searchString, GeneCoordinatesFetcher geneSearcher) throws SQLException, GeneCoordinatesFetcher.GetGeneExonException, GenomicBase.GetGeneFromIDException, GeneCoordinatesFetcher.GetGeneFromSymbolException {
-        ArrayList<GeneDetails> genes = new ArrayList<>();
-        if (databaseChoiceBox.getSelectionModel().getSelectedItem().equals("refGene") || databaseChoiceBox.getSelectionModel().getSelectedItem().equals("xenoRefGene")) {
-            if (searchString.matches("[NX][MR]_\\w+(.\\d)*")) {
-                // Is accession, need to remove the version number if present
-                searchString = searchString.replaceAll("\\.\\d$", "");
-               GenomicBase base = new GenomicBase();
-              genes.addAll(base.getGeneFromID(searchString, (String) genomeChoiceBox.getSelectionModel().getSelectedItem(), (String) databaseChoiceBox.getSelectionModel().getSelectedItem()));
-            } else {
-                // Is gene symbol (?)
-                genes.addAll(geneSearcher.getGeneFromSymbol(searchString, (String) genomeChoiceBox.getSelectionModel().getSelectedItem(), (String) databaseChoiceBox.getSelectionModel().getSelectedItem()));
+    private ArrayList<GenomicRegionSummary> parseRegions(String regionsInput) {
+        ArrayList<GenomicRegionSummary> regions = new ArrayList<>();
+        List<String> tempRegions = Arrays.asList(regionsInput.replaceAll("(?m)^\\s", "").split("\\n"));
+        int n = 1;
+        for (String r : tempRegions) {
+            if (!r.matches(".*\\w.*")) {
+                continue;
             }
-        } else if (databaseChoiceBox.getSelectionModel().getSelectedItem().equals("knownGene")) {
-            if (searchString.matches("uc\\d{3}[a-z]{3}\\.\\d")) {
-                // Is accession
-                genes.addAll(geneSearcher.getGeneFromId(searchString, (String) genomeChoiceBox.getSelectionModel().getSelectedItem(), (String) databaseChoiceBox.getSelectionModel().getSelectedItem()));
-            } else {
-                // Is gene symbol (?)
-                genes.addAll(geneSearcher.getGeneFromSymbol(searchString, (String) genomeChoiceBox.getSelectionModel().getSelectedItem(), (String) databaseChoiceBox.getSelectionModel().getSelectedItem()));
-            }
-        } else if (databaseChoiceBox.getSelectionModel().getSelectedItem().equals("ensGene")) {
-            if (searchString.matches("ENS\\w*T\\d{11}.*\\d*")) {
-                // Is accession
-                genes.addAll(geneSearcher.getGeneFromId(searchString, (String) genomeChoiceBox.getSelectionModel().getSelectedItem(), (String) databaseChoiceBox.getSelectionModel().getSelectedItem()));
-            } else {
-                // Is gene symbol (?)
-                genes.addAll(geneSearcher.getGeneFromSymbol(searchString, (String) genomeChoiceBox.getSelectionModel().getSelectedItem(), (String) databaseChoiceBox.getSelectionModel().getSelectedItem()));
+            GenomicRegionSummary region = RegionParser.readRegion(r);
+            if (region != null) {
+                if (region.getName() == null || region.getName().isEmpty() || !useRegionNamesCheckBox.isSelected()) {
+                    region.setName("Region_" + n++);
+                }
+                region.setId(region.getChromosome() + ":" + region.getStartPos() + "-" + region.getEndPos());
+                regions.add(region);
             }
         }
-        // Debugging output
-        for (int i = 0; i < genes.size(); i++) {
-            System.out.println(genes.get(i).getSymbol() + ":" + genes.get(i).getId() + ":" + genes.get(i).getChromosome() + ":" + genes.get(i).getTxStart() + "-" + genes.get(i).getTxEnd());
+        return regions;
+    }
+    private List<String> findInvalidRegions(String regionsInput) {
+        List<String> invalidRegions = new ArrayList<>();
+        List<String> tempRegions = Arrays.asList(regionsInput.replaceAll("(?m)^\\s", "").split("\\n"));
+        for (String r : tempRegions) {
+            if (!r.matches(".*\\w.*")) {
+                continue;
+            }
+            if (RegionParser.readRegion(r) == null) {
+                invalidRegions.add(r);
+            }
         }
-        return genes;
+        return invalidRegions;
     }
-    private void setCanRun(boolean designable) {
-        CANRUN = designable;
-        runButton.setDisable(!CANRUN);
-        cancelButton.setDisable(CANRUN);
-        runButton2.setDisable(!CANRUN);
-        cancelButton2.setDisable(CANRUN);
-    }
-    private void setRunning(boolean running) {
-        setCanRun(!running);
-        refreshButton.setDisable(running);
-        refreshMenuItem.setDisable(running);
-        genomeChoiceBox.setDisable(running);
-        genomeChoiceBox2.setDisable(running);
-        databaseChoiceBox.setDisable(running);
-        snpsChoiceBox.setDisable(running);
-        snpsChoiceBox2.setDisable(running);
-        designToChoiceBox.setDisable(running);
-        minDistanceTextField.setDisable(running);
-        minDistanceTextField2.setDisable(running);
-        flankingRegionsTextField.setDisable(running);
-        flankingRegionsTextField2.setDisable(running);
-        genesTextField.setDisable(running);
-        refreshButton.setDisable(running);
-        loadFileButton.setDisable(running);
-    }
-    private void setLoading(boolean loading) {
-        setCanRun(!loading);
-        setRunning(loading);
-        if (loading) {
-            progressIndicator.setProgress(-1);
+    private boolean handleInvalidRegions(List<String> invalidRegions) {
+        StringBuilder mh = new StringBuilder("Found " + invalidRegions.size() + " Invalid Region");
+        if (invalidRegions.size() > 1) {
+            mh.append("s");
+        }
+        mh.append(" in User Input");
+        StringBuilder msg = new StringBuilder("Invalid regions found - continue designing without these regions?\n");
+        if (invalidRegions.size() <= 10) {
+            msg.append(String.join("\n", invalidRegions));
         } else {
-            progressIndicator.setProgress(0);
+            msg.append(String.join("\n", invalidRegions.subList(0, 10)));
+            msg.append("\n...and ").append((invalidRegions.size() - 9)).append(" more.");
         }
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Invalid Regions");
+        alert.setHeaderText(mh.toString());
+        alert.setContentText(msg.toString());
+        ButtonType yesButton = new ButtonType("Yes", ButtonBar.ButtonData.YES);
+        ButtonType noButton = new ButtonType("No", ButtonBar.ButtonData.NO);
+        alert.getButtonTypes().setAll(yesButton, noButton);
+        Optional<ButtonType> response = alert.showAndWait();
+        return response.isPresent() && response.get() == yesButton;
     }
-    public void showHelp() {
-        try {
-            File instructionsPdf = File.createTempFile("mavenautoprimer_instructions", ".pdf");
-            instructionsPdf.deleteOnExit();
-            InputStream inputStream = this.getClass().getResourceAsStream("instructions.pdf");
-            OutputStream outputStream = new FileOutputStream(instructionsPdf);
-            int read = 0;
-            byte[] bytes = new byte[1024];
-            while ((read = inputStream.read(bytes)) != -1) {
-                outputStream.write(bytes, 0, read);
-            }
-            inputStream.close();
-            outputStream.close();
-            openFile(instructionsPdf);
-        } catch(IOException ex) {
-            Alert errorAlert = new Alert(Alert.AlertType.ERROR);
-            errorAlert.setTitle("Open failed");
-            errorAlert.setHeaderText("Could not open instructions PDF");
-            errorAlert.setContentText(ex.getMessage("Exception encountered when attempting to open " + "AutoPrimer3's help pdf. See below:"));
-            errorAlert.showAndWait();
-            ex.printStackTrace();
-        }
-    }
-// Method to compare SNP and gene tables
-    private boolean configTablesDiffer(LinkedHashSet<String> tables, LinkedHashSet<String> configTables) {
-        ArrayList<String> tableComp = new ArrayList<>();
-        ArrayList<String> configComp = new ArrayList<>();
-        for (String t : tables) {
-            if (matchesGeneTable(t) || matchesSnpTable(t)) {
-                tableComp.add(t);
+    private ArrayList<GenomicRegionSummary> filterLongRegions(ArrayList<GenomicRegionSummary> regions, ArrayList<GenomicRegionSummary> tooLongRegions) {
+        ArrayList<GenomicRegionSummary> validRegions = new ArrayList<>();
+        for (GenomicRegionSummary r : regions) {
+            if (r.getLength() > MAX_REGION_SIZE) {
+                tooLongRegions.add(r);
+            } else {
+                validRegions.add(r);
             }
         }
-        for (String t : configTables) {
-            if (matchesGeneTable(t) || matchesSnpTable(t)) {
-                configComp.add(t);
+        return validRegions;
+    }
+    private boolean handleTooLongRegions(ArrayList<GenomicRegionSummary> tooLongRegions) {
+        StringBuilder mh = new StringBuilder("Found " + tooLongRegions.size() + " Region");
+        if (tooLongRegions.size() > 1) {
+            mh.append("s");
+        }
+        mh.append(" Exceeding Maximum Length in User Input");
+        StringBuilder msg = new StringBuilder("Maximum region size is ").append(MAX_REGION_SIZE).append(" bp. Continue designing without these regions?\n");
+        if (tooLongRegions.size() <= 10) {
+            for (GenomicRegionSummary l : tooLongRegions) {
+                msg.append(l.getCoordinateString()).append("\n");
+            }
+        } else {
+            for (GenomicRegionSummary l : tooLongRegions.subList(0, 10)) {
+                msg.append(l.getCoordinateString()).append("\n");
+            }
+            msg.append("\n...and ").append((tooLongRegions.size() - 9)).append(" more.");
+        }
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Invalid Regions");
+        alert.setHeaderText(mh.toString());
+        alert.setContentText(msg.toString());
+        ButtonType yesButton = new ButtonType("Yes", ButtonBar.ButtonData.YES);
+        ButtonType noButton = new ButtonType("No", ButtonBar.ButtonData.NO);
+        alert.getButtonTypes().setAll(yesButton, noButton);
+        Optional<ButtonType> response = alert.showAndWait();
+        return response.isPresent() && response.get() == yesButton;
+    }
+    private void showAlert(String title, String header, String content) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(header);
+        alert.setContentText(content);
+        alert.showAndWait();
+    }
+    public void designPrimersToCoordinates() {
+        final String regionsInput = regionsTextArea.getText();
+        final int optSize = Integer.valueOf(splitRegionsTextField.getText());
+        final int flanks = Integer.valueOf(flankingRegionsTextField.getText());
+        final int designBuffer = Integer.valueOf(minDistanceTextField.getText());
+        final String genome = (String) genomeChoiceBox.getSelectionModel().getSelectedItem();
+        if (regionsInput.isEmpty() || !checkDesignParameters()) {
+            return;
+        }
+        final ArrayList<GenomicRegionSummary> regs = getRegionsForDesign(regionsInput);
+        if (regs == null) {
+            return;
+        }
+    }
+    final Task<HashMap<String, ArrayList>> designTask = new Task<>() {
+        @Override
+        protected HashMap<String, ArrayList> call() throws SQLException, IOException {
+            ArrayList<GenomicRegionSummary> regions = regs;
+            ArrayList<Primer3Result> primers = new ArrayList<>();
+            ArrayList<String> designs = new ArrayList<>();
+            SequenceFromDasUcsc seqFromDas = new SequenceFromDasUcsc();
+            GenomicRegionSummary merger = new GenomicRegionSummary();
+            merger.mergeRegionsByPosition(regions);
+            regions = splitLargeRegionsMergeSmallRegions(regions, optSize, designBuffer, false);
+            int p = 0;
+            updateProgress(0, regions.size() * 3);
+            for (GenomicRegionSummary r : regions) {
+                int start = Math.max(r.getStartPos() - flanks, 0);
+                int end = r.getEndPos() + flanks;
+                updateMessage("Retrieving DNA for region...");
+                String dna;
+                try {
+                    dna = seqFromDas.retrieveSequence(genome, r.getChromosome(), start, end);
+                } catch (DocumentException | MalformedURLException seqex) {
+                    showErrorAlert("Error retrieving DNA", "Failed to retrieve DNA for region " + r.getChromosome() + ":" + start + "-" + end, seqex);
+                    return null;
+                }
+                updateProgress(++p, regions.size() * 3);
+                ArrayList<String> excludeRegions = getExcludeRegions(dna, start, end, genome, flanks, designBuffer, r);
+                updateMessage("Designing primers...");
+                String seqid = r.getName() + ": " + r.getId();
+                ArrayList<String> result = designPrimers(seqid, dna, "", String.join(" ", excludeRegions));
+                designs.add(String.join("\n", result));
+                primers.add(parsePrimer3Output(++p, r.getName(), r.getId(), r.getChromosome(), start, result));
+            }
+            HashMap<String, ArrayList> primerResult = new HashMap<>();
+            primerResult.put("primers", primers);
+            primerResult.put("design", designs);
+            return primerResult;
+        }
+    };
+    progressIndicator.progressProperty().unbind();
+    progressIndicator.progressProperty().bind(designTask.progressProperty());
+    progressLabel.textProperty().bind(designTask.messageProperty());
+    designTask.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+        @Override
+        public void handle(WorkerStateEvent e) {
+            progressIndicator.progressProperty().unbind();
+            progressIndicator.progressProperty().set(100);
+            progressLabel.textProperty().unbind();
+            setRunning(false);
+            HashMap<String, ArrayList> result = (HashMap<String, ArrayList>) e.getSource().getValue();
+            if (result == null) {
+                return;
+            }
+            if (result.get("primers").isEmpty()) {
+                progressLabel.setText("No primers designed.");
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("No primers found!");
+                alert.setHeaderText("No primers found for your targets.");
+                alert.setContentText("No primer designs were attempted for your targets.");
+                alert.showAndWait();
+                return;
+            }
+            progressLabel.setText(result.get("primers").size() + " primer pairs designed.");
+            FXMLLoader tableLoader;
+            if (System.getProperty("os.name").equals("Mac OS X")) {
+                tableLoader = new FXMLLoader(getClass().getResource("Primer3ResultViewMac.fxml"));
+            } else {
+                tableLoader = new FXMLLoader(getClass().getResource("Primer3ResultView.fxml"));
+            }
+            try {
+                Pane tablePane = tableLoader.load();
+                Primer3ResultViewController resultView = tableLoader.getController();
+                Scene tableScene = new Scene(tablePane);
+                Stage tableStage = new Stage();
+                tableStage.setScene(tableScene);
+                resultView.displayData(result.get("primers"), result.get("design"), (HashMap<String, String>) result.get("ref").get(0));
+                tableStage.setTitle("MavenAutoPrimer Results");
+                tableStage.getIcons().add(new Image(this.getClass().getResourceAsStream("icon.png")));
+                tableStage.initModality(Modality.NONE);
+                tableStage.show();
+            } catch (Exception ex) {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Error");
+                alert.setHeaderText("Design Failed!");
+                alert.setContentText("MavenAutoPrimer encountered an error attempting to display your results. See exception below.");
+                alert.showAndWait();
             }
         }
-        return !(tableComp.containsAll(configComp) && configComp.containsAll(tableComp));
-    }
-// Helper method to extract genes from tables
-    private LinkedHashSet<String> getGenesFromTables(LinkedHashSet<String> tables) {
-        LinkedHashSet<String> genes = new LinkedHashSet<>();
-        for (String t : tables) {
-            if (matchesGeneTable(t)) {
-                genes.add(t);
+    });
+    new Thread(designTask).start();
+// Handling geneSearchTask cancellation
+    geneSearchTask.setOnCancelled(new EventHandler<WorkerStateEvent>() {
+        @Override
+        public void handle(WorkerStateEvent e) {
+            setRunning(false);
+            progressLabel.textProperty().unbind();
+            progressLabel.setText("Design cancelled");
+            progressIndicator.progressProperty().unbind();
+            progressIndicator.progressProperty().set(0);
+        }
+    });
+// Handling geneSearchTask failure
+    geneSearchTask.setOnFailed(new EventHandler<WorkerStateEvent>() {
+        @Override
+        public void handle(WorkerStateEvent e) {
+            setRunning(false);
+            progressLabel.textProperty().unbind();
+            progressLabel.setText("Search failed!");
+            progressIndicator.progressProperty().unbind();
+            progressIndicator.progressProperty().set(0);
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("Gene Search Failed!");
+            alert.setContentText("MavenAutoPrimer encountered an error when searching for gene targets. See exception below.");
+            alert.showAndWait();
+        }
+    });
+// Cancel button action
+    cancelButton.setOnAction(new EventHandler<ActionEvent>() {
+        @Override
+        public void handle(ActionEvent actionEvent) {
+            geneSearchTask.cancel();
+        }
+    });
+    setRunning(true);
+    progressIndicator.progressProperty().unbind();
+    progressIndicator.progressProperty().bind(geneSearchTask.progressProperty());
+    progressLabel.textProperty().unbind();
+    progressLabel.textProperty().bind(geneSearchTask.messageProperty());
+    new Thread(geneSearchTask).start();
+}
+// Creating reference sequence
+private String createReferenceSequence(String dna, int offset, int flanks, ArrayList<GenomicRegionSummary> exons, boolean revComp) {
+    StringBuilder dnaTarget = new StringBuilder();
+    int prevEnd = 0;
+    for (int i = 0; i < exons.size(); i++) {
+        int tStart = exons.get(i).getStartPos() - offset;
+        int tEnd = 1 + exons.get(i).getEndPos() - offset;
+        int subsStart = tStart - flanks > 0 ? tStart - flanks : 0;
+        int subsEnd = tEnd + flanks - 1 < dna.length() ? tEnd + flanks - 1 : dna.length();
+        // Make sure we don't overlap end with next exon region
+        if (i < exons.size() - 1) {
+            subsEnd = subsEnd < exons.get(i + 1).getStartPos() - offset ? subsEnd : exons.get(i + 1).getStartPos() - offset;
+        }
+        // Make sure we don't overlap current flanks with previous flanks
+        if (prevEnd > 0) {
+            if (prevEnd > subsStart) {
+                subsStart = prevEnd;
             }
         }
-        return genes;
+
+        prevEnd = subsEnd;
+        dnaTarget.append(dna.substring(subsStart, tStart).toLowerCase());
+        dnaTarget.append(dna.substring(tStart, tEnd - 1).toUpperCase());
+        dnaTarget.append(dna.substring(tEnd - 1, subsEnd).toLowerCase());
     }
-// Helper method to check if a table matches SNP
-    private boolean matchesSnpTable(String t) {
-        return t.matches("^snp\\d+(\\w+)*");
-    }
-// Helper method to extract SNPs from tables
-    private LinkedHashSet<String> getSnpsFromTables(LinkedHashSet<String> tables) {
-        LinkedHashSet<String> snps = new LinkedHashSet<>();
-        for (String t : tables) {
-            if (matchesSnpTable(t)) {
-                snps.add(t);
-            }
-        }
-        return snps;
-    }
-// Helper method to check if a table matches a gene
-    private boolean matchesGeneTable(String t) {
-        return t.equals("refGene") || t.equals("knownGene") || t.equals("ensGene") || t.equals("xenoRefGene");
-    }
-// MAIN CLASS
-    public static void main(String[] args) {
-        launch(args);
-    }
-    class AutoPrimer3Config {
-        public void setBuildToDescription(LinkedHashMap<String, String> map) {
-            // Placeholder
-        }
-        public void setBuildToMapMaster(Object map) {
-            // Placeholder
-        }
-        public void writeGenomeXmlFile() throws Exception {
-            // Placeholder
-        }
+    if (revComp) {
+        return reverseComplement(dnaTarget.toString());
+    } else {
+        return dnaTarget.toString();
     }
 }
+/*dup will always be an unedited gene name
+we need to check whether we already have made an '(alt)' version
+by checking in dupStorer
+*/
+private String checkDuplicate(String dup, HashSet<String> dupStorer) {
+    String dedupped;
+    if (dupStorer.contains(dup)) {
+        dedupped =  dup + "(alt)";
+        if (dupStorer.contains(dedupped)) {
+            for (int i = 1; i < 999; i++) {
+                dedupped = dup + "(alt" + i + ")";
+                if (!dupStorer.contains(dedupped)) {
+                    break;
+                }
+            }
+        }
+        dupStorer.add(dedupped);
+        return dedupped;
+    } else {
+        dupStorer.add(dup);
+        return dup;
+    }
+}
+private void numberExons(ArrayList<GenomicRegionSummary> exonRegions, boolean minusStrand) {
+    int n = 0;
+    if (minusStrand) {
+        Collections.reverse(exonRegions);
+    }
+    for (GenomicRegionSummary e: exonRegions) {
+        e.setName(e.getName() + "_ex" + (n+1));
+        n++;
+    }
+    if (minusStrand) {
+        //back to original order
+        Collections.reverse(exonRegions);
+    }
+}
+private ArrayList<GenomicRegionSummary> splitLargeRegionsMergeSmallRegions(ArrayList<GenomicRegionSummary> regions, Integer optSize, Integer buffer, boolean minusStrand) {
+    ArrayList<GenomicRegionSummary> splitRegions = new ArrayList<>();
+    for (GenomicRegionSummary r: regions) {
+        if (r.getLength() > optSize) {
+            //divide length by maxSize to determine no of products to make
+            Double products = Math.ceil(r.getLength().doubleValue()/optSize.doubleValue());
+            if (products.intValue() < 2) {
+                splitRegions.add(r);
+                continue;
+            }
+            //divide length by no. products and make each product
+            Double productSize = r.getLength().doubleValue()/products;
+            for (int i = 0; i < products.intValue(); i++) {
+                int increment = i * productSize.intValue();
+                int startPos = r.getStartPos() + increment;
+                int endPos = startPos + productSize.intValue();
+                endPos = endPos < r.getEndPos() ? endPos : r.getEndPos();
+                String name;
+                if (minusStrand) {
+                    name = r.getName() + "_part" + (products.intValue() - i);
+                } else {
+                    name = r.getName() + "_part" + (i+1);
+                }
+                ArrayList<String> ids = new ArrayList<>();
+                for (String id : r.getId().split("/")) {
+                    if (minusStrand) {
+                        ids.add(id + "_part" + (products.intValue() - i));
+                    } else {
+                        ids.add(id + "_part" + (i+1));
+                    }
+                }
+                GenomicRegionSummary s = new GenomicRegionSummary(r.getChromosome(), startPos, endPos, r.getStartId(), r.getEndId(), String.join("/", ids), name);
+                if (i == products.intValue() - 1) {
+                    s.setEndPos(r.getEndPos());
+                }
+                splitRegions.add(s);
+            }
+        } else {
+            splitRegions.add(r);
+        }
+    }
+    ArrayList<GenomicRegionSummary> splitAndMergedRegions = new ArrayList<>();
+    boolean smallRegion;
+    do {
+        smallRegion = false;
+        splitAndMergedRegions.clear();
+        for (int i = 0; i < splitRegions.size() - 1; i++) {
+            //merge any small and close regions
+            if (! splitRegions.get(i).getChromosome().equals( splitRegions.get(i+1).getChromosome())) {
+                splitAndMergedRegions.add(splitRegions.get(i));
+                continue;
+            }
+            int gap = splitRegions.get(i+1).getEndPos() - splitRegions.get(i).getStartPos();
+            if (gap + (2*buffer)  <= optSize) {
+                smallRegion = true;
+                String chrom = splitRegions.get(i).getChromosome();
+                int start = splitRegions.get(i).getStartPos();
+                int end = splitRegions.get(i+1).getEndPos();
+
+                String name = mergeNames(splitRegions.get(i).getName(), splitRegions.get(i+1).getName());
+                String id = mergeIds(splitRegions.get(i).getId(), splitRegions.get(i + 1).getId());
+                splitAndMergedRegions.add(new GenomicRegionSummary(chrom, start, end, null, null, id, name));
+                for (int j = i +2; j < splitRegions.size(); j++) {
+                    splitAndMergedRegions.add(splitRegions.get(j));
+                }
+                splitRegions.clear();
+                splitRegions.addAll(splitAndMergedRegions);
+                break;
+            } else {
+                splitAndMergedRegions.add(splitRegions.get(i));
+            }
+        }
+        splitAndMergedRegions.add(splitRegions.get(splitRegions.size()-1));
+    } while (smallRegion);
+    return splitAndMergedRegions;
+}
+//create a new id from two genomic regions' ids
+private String mergeIds(String id1, String id2) {
+    ArrayList<String> merged = new ArrayList<>();
+    List<String> ids1 = Arrays.asList(id1.split("/"));
+    List<String> ids2 = Arrays.asList(id2.split("/"));
+    LinkedHashMap<String, String> idToEx1 = new LinkedHashMap<>();
+    LinkedHashMap<String, String> idToEx2 = new LinkedHashMap<>();
+    for (String d: ids1) {
+        List<String> split = Arrays.asList(d.split("_ex"));
+        if (split.size() > 1) {
+            idToEx1.put(split.get(0), split.get(1));
+        } else {
+            idToEx1.put(d, d);
+        }
+    }
+    for (String d: ids2) {
+        List<String> split = Arrays.asList(d.split("_ex"));
+        if (split.size() > 1) {
+            idToEx2.put(split.get(0), split.get(1));
+        } else {
+            idToEx2.put(d, d);
+        }
+    }
+    for (String d: idToEx1.keySet()) {
+        if (idToEx2.containsKey(d)) {
+            merged.add(d + "_ex" + idToEx1.get(d) + "-" + idToEx2.get(d));
+        } else {
+            if (d.equals(idToEx1.get(d))) {
+                //if regions key and value will be identical
+                merged.add(d);
+            } else {
+                //if exons value will be exon number
+                merged.add(d + "_ex" + idToEx1.get(d));
+            }
+        }
+    }
+    for (String d: idToEx2.keySet()) {
+        if (! idToEx1.containsKey(d)) {
+            if (d.equals(idToEx2.get(d))) {
+                //if regions key and value will be identical
+                merged.add(d);
+            } else {
+                //if exons value will be exon number
+                merged.add(d + "_ex" + idToEx2.get(d));
+            }
+        }
+    }
+    return String.join("/", merged);
+}
+//create a new name from two genomic regions' names
+private String mergeNames(String name1, String name2) {
+    String name;
+    List<String> geneName1 = Arrays.asList(name1.split("_ex"));
+    List<String> geneName2 = Arrays.asList(name2.split("_ex"));
+    if (geneName1.size() >= 2 && geneName2.size() >= 2 && geneName1.get(0).equalsIgnoreCase(geneName2.get(0))) {
+        ArrayList<Integer> sizes = new ArrayList<>();
+        for (int i = 1; i < geneName1.size(); i++) {
+            sizes.add(Integer.valueOf(geneName1.get(i)));
+        }
+        for (int i = 1; i < geneName2.size(); i++) {
+            sizes.add(Integer.valueOf(geneName2.get(i)));
+        }
+        Collections.sort(sizes);
+        name = geneName1.get(0) + "_ex" + sizes.get(0) + "-" + sizes.get(sizes.size()-1);
+    } else {
+        name = name1 + "/" +  name2;
+    }
+    return name;
+}
+// get left and right primer from Primer3 output
+private Primer3Result parsePrimer3Output(int index, String name, String id, String chrom, int baseCoordinate, ArrayList<String> output) {
+    String db = (String) genomeChoiceBox.getSelectionModel().getSelectedItem();
+    final Hyperlink pcrLink = new Hyperlink();
+    pcrLink.setText("in-silico PCR");
+    pcrLink.setTextFill(Color.BLUE);
+    pcrLink.setDisable(true);
+    String left = "NOT FOUND";
+    String right = "NOT FOUND";
+    Integer lpos = 0;
+    Integer rpos = 0;
+    Integer leftStart = 0;
+    Integer rightStart = 0;
+    String productSize = "0";
+    for (String res: output) {
+        if (res.startsWith("LEFT PRIMER")) {
+            List<String> split = Arrays.asList(res.split(" +"));
+            left = split.get(split.size() -1);
+            leftStart = Integer.valueOf(split.get(2));
+        } else if (res.startsWith("RIGHT PRIMER")) {
+            List<String> split = Arrays.asList(res.split(" +"));
+            right = split.get(split.size() -1);
+            rightStart = Integer.valueOf(split.get(2));
+        } else if (res.startsWith("PRODUCT SIZE:")) {
+            List<String> split = Arrays.asList(res.split(" +"));
+            productSize = split.get(2).replaceAll("[^\\d/]", "");
+            break;
+        }
+    }
+    Primer3Result res = new Primer3Result();
+    res.setLeftPrimer(left);
+    res.setRightPrimer(right);
+    res.setName(name);
+    res.setTranscripts(id);
+    res.setIndex(index);
+    res.setProductSize(Integer.valueOf(productSize));
+    if (Integer.valueOf(productSize) > 0) {
+        Integer wpSize = 4000 > Integer.valueOf(productSize) * 2 ? 4000 : Integer.valueOf(productSize) * 2;
+        lpos = baseCoordinate + leftStart;
+        rpos = baseCoordinate + rightStart;
+        final String pcrUrl = serverUrl + "/cgi-bin/hgPcr?db=" + db + "&wp_target=genome&wp_f=" + left + "&wp_r=" + right + "&wp_size=" + wpSize + "&wp_perfect=15&wp_good=15&boolshad.wp_flipReverse=0";
+        pcrLink.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent e) {
+                getHostServices().showDocument(pcrUrl);
+                pcrLink.setVisited(true);
+                pcrLink.setUnderline(false);
+            }
+        });
+        pcrLink.setDisable(false);
+        pcrLink.setUnderline(true);
+        res.setIsPcrLink(pcrLink);
+        res.setIsPcrUrl(pcrUrl);
+        String region = chrom + ":" + lpos + "-" + rpos;
+        final String regionUrl = serverUrl + "/cgi-bin/hgTracks?db=" + db + "&position=" + region;
+        final Hyperlink regionLink = new Hyperlink();
+        regionLink.setText(region);
+        regionLink.setTextFill(Color.BLUE);
+        regionLink.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent e) {
+                getHostServices().showDocument(regionUrl);
+                pcrLink.setVisited(true);
+                pcrLink.setUnderline(false);
+            }
+        });
+        res.setRegion(region);
+        res.setRegionLink(regionLink);
+    } else {
+        res.setIsPcrLink(null);
+        res.setIsPcrUrl(null);
+        res.setRegion(null);
+    }
+    return res;
+}
+//for given parameters design primers and return result as an array of strings
+private ArrayList<String> designPrimers(String name, String dna, String target, String exclude) throws IOException {
+    ArrayList<String> result = new ArrayList<>();
+    StringBuilder error = new StringBuilder();
+    StringBuilder p3_job = new StringBuilder("SEQUENCE_TARGET=");
+    p3_job.append(target).append("\n");
+    p3_job.append("SEQUENCE_EXCLUDED_REGION=").append(exclude).append("\n");
+    p3_job.append("SEQUENCE_ID=").append(name).append("\n");
+    p3_job.append("SEQUENCE_TEMPLATE=").append(dna).append("\n");
+    p3_job.append("PRIMER_TASK=pick_pcr_primers\n");
+    p3_job.append("PRIMER_OPT_SIZE=").append(optSizeTextField.getText()).append("\n");
+    p3_job.append("PRIMER_MIN_SIZE=").append(minSizeTextField.getText()).append("\n");
+    p3_job.append("PRIMER_MAX_SIZE=").append(maxSizeTextField.getText()).append("\n");
+    p3_job.append("PRIMER_PRODUCT_SIZE_RANGE=").append(sizeRangeTextField.getText()).append("\n");
+    p3_job.append("PRIMER_MIN_TM=").append(minTmTextField.getText()).append("\n");
+    p3_job.append("PRIMER_OPT_TM=").append(optTmTextField.getText()).append("\n");
+    p3_job.append("PRIMER_MAX_TM=").append(maxTmTextField.getText()).append("\n");
+    p3_job.append("PRIMER_PAIR_MAX_DIFF_TM=").append(maxDiffTextField.getText()).append("\n");
+    p3_job.append("PRIMER_THERMODYNAMIC_PARAMETERS_PATH=").append(thermoConfig.toString()).append(System.getProperty("file.separator")).append("\n");
+    String misprimeLibrary = (String)misprimingLibraryChoiceBox.getSelectionModel().getSelectedItem();
+    if (!misprimeLibrary.isEmpty()) {
+        if (! misprimeLibrary.matches("none")) {
+            p3_job.append("PRIMER_MISPRIMING_LIBRARY=").append(misprimeDir.toString()).append(System.getProperty("file.separator")).append(misprimeLibrary).append("\n");
+            p3_job.append("PRIMER_MAX_LIBRARY_MISPRIMING=").append(maxMisprimeTextField.getText()).append("\n");
+        }
+    }
+    p3_job.append("=");
+    System.out.println(p3_job.toString());
+    //debug only
+    ArrayList<String> command = new ArrayList<>();
+    command.add(primer3ex.getAbsolutePath());
+    command.add("-format_output");
+
+    Process ps = new ProcessBuilder(command).start();
+    try {
+        BufferedReader errorbuf = new BufferedReader(new InputStreamReader( ps.getErrorStream()));
+        BufferedReader inbuf = new BufferedReader(new InputStreamReader( ps.getInputStream()));
+        BufferedWriter out = new BufferedWriter(new OutputStreamWriter(ps.getOutputStream()));
+        out.write(p3_job.toString());
+        out.flush();
+        out.close();
+        String line;
+        while ((line = inbuf.readLine()) != null) {
+            //System.out.println(line);//debug only
+            result.add(line);
+        }
+        while ((line = errorbuf.readLine()) != null) {
+            //System.out.println(line);//debug only
+            error.append(line);
+        }
+        int exit = ps.waitFor();
+        //System.out.println(exit);//debug only
+    } catch(InterruptedException ex) {
+        ex.printStackTrace();
+        /*this should have been caused by user pressing cancel
+        could do with a way of checking though and throwing if
+        not caused by user cancel
+        */
+    }
+    return result;
+}
+/*this method gets the start coordinates of a gene based on
+the values for the designToChoiceBox and the Flanking region choice box
+*/
+private int getGeneStart(GeneDetails g, int flanks) {
+    int start;
+    if (designToChoiceBox.getSelectionModel().getSelectedItem().equals("Coding regions")) {
+        start = g.getCdsStart();
+    } else {
+        start = g.getTxStart();
+    }
+    start -= flanks;
+    if (start > 0) {
+        return start;
+    } else {
+        return 0;
+    }
+}
+private int getGeneEnd(GeneDetails g, int flanks) {
+    int end;
+    if (designToChoiceBox.getSelectionModel().getSelectedItem().equals("Coding regions")) {
+        end = g.getCdsEnd();
+    } else {
+        end = g.getTxEnd();
+    }
+    end += flanks;
+    return end;
+}
+private GeneCoordinatesFetcher getGeneSearcher() {
+    if (databaseChoiceBox.getSelectionModel().getSelectedItem().equals("refGene") || databaseChoiceBox.getSelectionModel().getSelectedItem().equals("xenoRefGene")) {
+        return new GeneCoordinatesFetcher();
+    } else if (databaseChoiceBox.getSelectionModel().getSelectedItem().equals("knownGene")) {
+        return new GetUcscGeneCoordinates();
+    } else if (databaseChoiceBox.getSelectionModel().getSelectedItem().equals("ensGene")) {
+        return new GetEnsemblGeneCoordinates();
+    } else {
+        return null;
+    }
+}
+private ArrayList<GeneDetails> getGeneDetails(String searchString, GeneCoordinatesFetcher geneSearcher) throws SQLException, GeneCoordinatesFetcher.GetGeneExonException, GenomicBase.GetGeneFromIDException, GeneCoordinatesFetcher.GetGeneFromSymbolException {
+    ArrayList<GeneDetails> genes = new ArrayList<>();
+    if (databaseChoiceBox.getSelectionModel().getSelectedItem().equals("refGene") || databaseChoiceBox.getSelectionModel().getSelectedItem().equals("xenoRefGene")) {
+        if (searchString.matches("[NX][MR]_\\w+(.\\d)*")) {
+            // Is accession, need to remove the version number if present
+            searchString = searchString.replaceAll("\\.\\d$", "");
+            GenomicBase base = new GenomicBase();
+            genes.addAll(base.getGeneFromID(searchString, (String) genomeChoiceBox.getSelectionModel().getSelectedItem(), (String) databaseChoiceBox.getSelectionModel().getSelectedItem()));
+        } else {
+            // Is gene symbol (?)
+            genes.addAll(geneSearcher.getGeneFromSymbol(searchString, (String) genomeChoiceBox.getSelectionModel().getSelectedItem(), (String) databaseChoiceBox.getSelectionModel().getSelectedItem()));
+        }
+    } else if (databaseChoiceBox.getSelectionModel().getSelectedItem().equals("knownGene")) {
+        if (searchString.matches("uc\\d{3}[a-z]{3}\\.\\d")) {
+            // Is accession
+            genes.addAll(geneSearcher.getGeneFromId(searchString, (String) genomeChoiceBox.getSelectionModel().getSelectedItem(), (String) databaseChoiceBox.getSelectionModel().getSelectedItem()));
+        } else {
+            // Is gene symbol (?)
+            genes.addAll(geneSearcher.getGeneFromSymbol(searchString, (String) genomeChoiceBox.getSelectionModel().getSelectedItem(), (String) databaseChoiceBox.getSelectionModel().getSelectedItem()));
+        }
+    } else if (databaseChoiceBox.getSelectionModel().getSelectedItem().equals("ensGene")) {
+        if (searchString.matches("ENS\\w*T\\d{11}.*\\d*")) {
+            // Is accession
+            genes.addAll(geneSearcher.getGeneFromId(searchString, (String) genomeChoiceBox.getSelectionModel().getSelectedItem(), (String) databaseChoiceBox.getSelectionModel().getSelectedItem()));
+        } else {
+            // Is gene symbol (?)
+            genes.addAll(geneSearcher.getGeneFromSymbol(searchString, (String) genomeChoiceBox.getSelectionModel().getSelectedItem(), (String) databaseChoiceBox.getSelectionModel().getSelectedItem()));
+        }
+    }
+    // Debugging output
+    for (int i = 0; i < genes.size(); i++) {
+        System.out.println(genes.get(i).getSymbol() + ":" + genes.get(i).getId() + ":" + genes.get(i).getChromosome() + ":" + genes.get(i).getTxStart() + "-" + genes.get(i).getTxEnd());
+    }
+    return genes;
+}
+private void setCanRun(boolean designable) {
+    CANRUN = designable;
+    runButton.setDisable(!CANRUN);
+    cancelButton.setDisable(CANRUN);
+    runButton2.setDisable(!CANRUN);
+    cancelButton2.setDisable(CANRUN);
+}
+private void setRunning(boolean running) {
+    setCanRun(!running);
+    refreshButton.setDisable(running);
+    refreshMenuItem.setDisable(running);
+    genomeChoiceBox.setDisable(running);
+    genomeChoiceBox2.setDisable(running);
+    databaseChoiceBox.setDisable(running);
+    snpsChoiceBox.setDisable(running);
+    snpsChoiceBox2.setDisable(running);
+    designToChoiceBox.setDisable(running);
+    minDistanceTextField.setDisable(running);
+    minDistanceTextField2.setDisable(running);
+    flankingRegionsTextField.setDisable(running);
+    flankingRegionsTextField2.setDisable(running);
+    genesTextField.setDisable(running);
+    refreshButton.setDisable(running);
+    loadFileButton.setDisable(running);
+}
+private void setLoading(boolean loading) {
+    setCanRun(!loading);
+    setRunning(loading);
+    if (loading) {
+        progressIndicator.setProgress(-1);
+    } else {
+        progressIndicator.setProgress(0);
+    }
+}
+public void showHelp() {
+    try {
+        File instructionsPdf = File.createTempFile("mavenautoprimer_instructions", ".pdf");
+        instructionsPdf.deleteOnExit();
+        InputStream inputStream = this.getClass().getResourceAsStream("instructions.pdf");
+        OutputStream outputStream = new FileOutputStream(instructionsPdf);
+        int read = 0;
+        byte[] bytes = new byte[1024];
+        while ((read = inputStream.read(bytes)) != -1) {
+            outputStream.write(bytes, 0, read);
+        }
+        inputStream.close();
+        outputStream.close();
+        openFile(instructionsPdf);
+    } catch(IOException ex) {
+        Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+        errorAlert.setTitle("Open failed");
+        errorAlert.setHeaderText("Could not open instructions PDF");
+        errorAlert.setContentText(ex.getMessage("Exception encountered when attempting to open " + "AutoPrimer3's help pdf. See below:"));
+        errorAlert.showAndWait();
+        ex.printStackTrace();
+    }
+}
+// Method to compare SNP and gene tables
+private boolean configTablesDiffer(LinkedHashSet<String> tables, LinkedHashSet<String> configTables) {
+    ArrayList<String> tableComp = new ArrayList<>();
+    ArrayList<String> configComp = new ArrayList<>();
+    for (String t : tables) {
+        if (matchesGeneTable(t) || matchesSnpTable(t)) {
+            tableComp.add(t);
+        }
+    }
+    for (String t : configTables) {
+        if (matchesGeneTable(t) || matchesSnpTable(t)) {
+            configComp.add(t);
+        }
+    }
+    return !(tableComp.containsAll(configComp) && configComp.containsAll(tableComp));
+}
+// Helper method to extract genes from tables
+private LinkedHashSet<String> getGenesFromTables(LinkedHashSet<String> tables) {
+    LinkedHashSet<String> genes = new LinkedHashSet<>();
+    for (String t : tables) {
+        if (matchesGeneTable(t)) {
+            genes.add(t);
+        }
+    }
+    return genes;
+}
+// Helper method to check if a table matches SNP
+private boolean matchesSnpTable(String t) {
+    return t.matches("^snp\\d+(\\w+)*");
+}
+// Helper method to extract SNPs from tables
+private LinkedHashSet<String> getSnpsFromTables(LinkedHashSet<String> tables) {
+    LinkedHashSet<String> snps = new LinkedHashSet<>();
+    for (String t : tables) {
+        if (matchesSnpTable(t)) {
+            snps.add(t);
+        }
+    }
+    return snps;
+}
+// Helper method to check if a table matches a gene
+private boolean matchesGeneTable(String t) {
+    return t.equals("refGene") || t.equals("knownGene") || t.equals("ensGene") || t.equals("xenoRefGene");
+}
+// MAIN CLASS
+public static void main(String[] args) {
+    launch(args);
+}
+class AutoPrimer3Config {
+}
+
+"""
+
+
+class Java8u40(object):
+
+    def __init__(self, text):
+    self.text = text
+
+                def get_corrected_code(self):
+                """
+                Return corrected code.
+                """
+                return re.sub(r"// Placeholder", r"// Nothing here", self.text)
+
+                              def get_error_log(self):
+                              """
+                              Return a list of errors in the code.
+                              """
+                              errors = []
+                                       for i, line in enumerate(self.text.splitlines()):
+                              m = re.search(r"// *Error:", line)
+                                            if m:
+                                                errors.append(Error(i, m.start(), m.end(), self.text[m.start(): m.end()]))
+
+                                                return errors
+
+                                                    @staticmethod
+                                                    def get_incorrect_code():
+                                                    """
+                                                    Return incorrect code.
+                                                    """
+                                                    return text
+
+
+                                                        class Error(object):
+
+                                                            def __init__(self, line_num, start_index, end_index, text):
+                                                            self.line_num = line_num
+            self.start_index = start_index
+            self.end_index = end_index
+            self.text = text
+
+                                                                def __repr__(self):
+                                                                return "Error on line %d: %s" % (self.line_num + 1, self.text)
+
+
+                                                                    class CodeFormatter(object):
+
+                                                                        def __init__(self, text):
+                                                                        self.text = text
+
+                                                                            def format(self, errors):
+                                                                            """
+                                                                            Return code with errors replaced with placeholders.
+                                                                            """
+                                                                            result = []
+                                                                                line_number = 0
+
+                                                                                    for line in self.text.splitlines():
+                                                                                        line_number

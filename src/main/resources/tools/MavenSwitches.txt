@@ -1,0 +1,5 @@
+This command: mvn clean compile -e -X -Dmaven.compiler.showWarnings=true -Dmaven.compiler.showDeprecation=true gives errors in ControllerRegistry.java, FastaSequenceRetriever.java, and ApplicationMain.java; each of which I have uploaded to the MavenAutoPrimer Project Folder in chatGPT.   javac -Xlint:unchecked -cp ".:target/classes:$CLASSPATH" src/main/java/com/github/mavenautoprimer/*.java                
+gives errors only in ApplicationMain.java For now, let's focus on ApplicationMain.java errors and see if we can diminish them. First, how do I list all the errors in ApplicationMain.java without the 100 error limitation?
+
+
+meta-llama/CodeLlama-13b-hf
