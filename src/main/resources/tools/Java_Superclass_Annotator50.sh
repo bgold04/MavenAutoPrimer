@@ -1,6 +1,8 @@
 #!/bin/bash
 
 # Initial Maven cleanup
+cd ~/MavenAutoPrimer/src/main/resources/temp
+rm *.*
 cd ~/MavenAutoPrimer
 mvn clean
 
@@ -146,21 +148,40 @@ retrieve_classpath() {
 
     echo "Classpath: $CLASSPATH"
 }
-
-# Function: Compile Java files
+#
+# Function: Compile Java files and capture all errors
 compile_java_files() {
     echo "Compiling all Java files..."
-    javac -d "$TARGET_DIR" -cp ".:$CLASSPATH" "$JAVA_DIR/GetUcscBuildsAndTables.java"
-    javac -d "$TARGET_DIR" -cp "target/classes:$CLASSPATH" "$JAVA_DIR/ApplicationConfig.java"
-    javac -d "$TARGET_DIR" -cp "target/classes:$CLASSPATH" $(find "$JAVA_DIR" -name "*.java") 2>> "$TEMP_OUTPUT"
-    # Do not exit early; just print errors
-    if [[ -s "$TEMP_OUTPUT" ]]; then
+    
+    # Ensure the log file is empty before compilation
+    > errors.log
+
+    # Compile Java files and capture all errors in the log file
+    javac -d "$TARGET_DIR" -cp ".:$CLASSPATH" "$JAVA_DIR/GetUcscBuildsAndTables.java" 2>> errors.log
+    javac -d "$TARGET_DIR" -cp "target/classes:$CLASSPATH" "$JAVA_DIR/ApplicationConfig.java" 2>> errors.log
+    javac -d "$TARGET_DIR" -cp "target/classes:$CLASSPATH" $(find "$JAVA_DIR" -name "*.java") 2>> errors.log
+
+    # Display all errors (not truncated to 100)
+    if [[ -s "errors.log" ]]; then
         echo "Compilation errors detected!"
-        cat "$TEMP_OUTPUT"
+        tail -n +1 errors.log  # This prints all errors, bypassing default limits
     else
         echo "✅ Compilation successful!"
     fi
 }
+#compile_java_files() {
+#    echo "Compiling all Java files..."
+#    javac -J-Xmaxerrs=500 -d "$TARGET_DIR" -cp ".:$CLASSPATH" "$JAVA_DIR/GetUcscBuildsAndTables.java"
+#    javac -J-Xmaxerrs=500 -d "$TARGET_DIR" -cp "target/classes:$CLASSPATH" "$JAVA_DIR/ApplicationConfig.java"
+#    javac -J-Xmaxerrs=500 -d "$TARGET_DIR" -cp "target/classes:$CLASSPATH" $(find "$JAVA_DIR" -name "*.java") 2>> "$TEMP_OUTPUT"
+#    # Do not exit early; just print errors
+#    if [[ -s "$TEMP_OUTPUT" ]]; then
+#        echo "Compilation errors detected!"
+#        cat "$TEMP_OUTPUT"
+#    else
+#        echo "✅ Compilation successful!"
+#    fi
+#}
 
 # MAIN EXECUTION
 main() {
@@ -191,6 +212,7 @@ rm -rf /Users/bgold/MavenAutoPrimer/src/main/java/com/github/mavenautoprimer/*.o
 
     echo "\nReview these duplicates and move shared logic to GenomicBase.java where appropriate."
 }
+cat errors.log
 
 # Run the script
 main

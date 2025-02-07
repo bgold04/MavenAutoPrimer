@@ -165,17 +165,6 @@ public abstract class GenomicBase {
             super(cause);
         }
     }
-    public class GetGeneFromSymbolException extends Exception {
-        public GetGeneFromSymbolException() {
-            super();
-        } public GetGeneFromSymbolException(String message) {
-            super(message);
-        } public GetGeneFromSymbolException(String message, Throwable cause) {
-            super(message, cause);
-        } public GetGeneFromSymbolException(Throwable cause) {
-            super(cause);
-        }
-    }
     public class GetSnpCoordinatesException extends Exception {
         public GetSnpCoordinatesException() {
             super();
