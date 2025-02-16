@@ -26,15 +26,21 @@ package com.github.mavenautoprimer;
  *
  */
 
-
+import com.github.mavenautoprimer.GeneCoordinatesFetcher;
+import com.github.mavenautoprimer.UcscGeneCoordinatesFetcher;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.*;
 import java.util.*;
 
-public class EnsemblGeneCoordinatesFetcher extends GeneCoordinatesFetcher {
+
+public class EnsemblGeneCoordinatesFetcher extends UcscGeneCoordinatesFetcher {
     private static final List<String> FIELDS = Arrays.asList("name", "chrom", "txStart", "txEnd", "cdsStart", "cdsEnd", "exonCount", "exonStarts", "exonEnds", "strand");
 
     @Override
-    public ArrayList<GeneDetails> getGeneFromSymbol(String symbol, String build, String db) throws SQLException, GetGeneFromSymbolException {
+    public ArrayList<GeneDetails> getGeneFromSymbol(String symbol, String build, String db) throws SQLException {
         ArrayList<GeneDetails> transcripts = new ArrayList<>();
 
         try (Connection conn = getConnection()) {
@@ -65,7 +71,7 @@ public class EnsemblGeneCoordinatesFetcher extends GeneCoordinatesFetcher {
             stmt.setString(1, symbol);
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
-                    transcripts.addAll(super.getGeneFromID(rs.getString("name"), build, db));
+                    transcripts.addAll(super.getGeneFromId(rs.getString("name"), build, db));
                 }
             }
         }
@@ -129,15 +135,15 @@ public class EnsemblGeneCoordinatesFetcher extends GeneCoordinatesFetcher {
                 stmt.setString(i + 1, ensemblIDs.get(i));
             }
             try (ResultSet rs = stmt.executeQuery()) {
-                transcripts.addAll(getTranscriptsFromResultSet(rs, new ArrayList<>(Arrays.asList(fieldsToRetrieve.split(", ")))));
+                transcripts.addAll(getTranscriptsFromResultSet(rs));
             }
         }
         return transcripts;
     }
 
     @Override
-    public ArrayList<GeneDetails> getGeneFromID(String id, String build, String db) throws SQLException, GetGeneFromIDException {
-        ArrayList<GeneDetails> transcripts = super.getGeneFromID(id, build, db);
+    public ArrayList<GeneDetails> getGeneFromId(String id, String build, String db) throws SQLException {
+        ArrayList<GeneDetails> transcripts = super.getGeneFromId(id, build, db);
         if (transcripts.isEmpty()) {
             String symbol = getSymbolFromEnsemblToName(id, build);
             System.out.println("Fallback to Ensembl symbol resolution for " + id + ": " + symbol);
