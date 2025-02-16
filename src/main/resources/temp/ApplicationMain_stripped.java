@@ -1,236 +1,12 @@
-/*things to add:
-    server choice
-
-*/
-
-/*
  * Copyright (C) 2014 David A. Parry <d.a.parry@leeds.ac.uk>
- * Edited by Bert Gold, PhD <bgold04@gmail.com> and ChatGPT
- *
- * Revised February 6, 2025
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
-
-package com.github.mavenautoprimer;
-
-import com.github.mavenautoprimer.GeneCoordinatesFetcher;
-import com.github.mavenautoprimer.UcscGeneCoordinatesFetcher;
-import com.github.mavenautoprimer.EnsemblGeneCoordinatesFetcher;
-import com.github.mavenautoprimer.UcscBuildAndTableFetcher;
-import com.github.mavenautoprimer.GenomicBase;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.Reader;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.zip.GZIPInputStream;
-import javafx.application.Application;
-import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.concurrent.Task;
-import javafx.concurrent.WorkerStateEvent;
-import javafx.event.ActionEvent;
-import javafx.event.Event;
-import javafx.event.EventHandler;
-import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.fxml.Initializable;
-import java.io.IOException;
-import javafx.scene.Scene;
-import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonBar;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.MenuBar;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.ProgressIndicator;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TabPane;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
-import javafx.scene.control.Tooltip;
-import javafx.scene.image.Image;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyCodeCombination;
-import javafx.scene.input.KeyCombination;
-import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Pane;
-import javafx.stage.FileChooser;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
-import net.lingala.zip4j.exception.ZipException;
-import org.dom4j.Document;
-import org.dom4j.DocumentException;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import com.sun.javafx.collections.annotations;
-import org.eclipse.swt.widgets;
-import org.eclipse.swt.dnd;
-import org.eclipse.swt.events;
-import org.eclipse.swt.widgets;
-import org.eclipse.swt.graphics;
 public class ApplicationMain extends Application {
-    /*
-    * @param args the command line arguments
-    */
-    @FXML
-    AnchorPane mainPane;
-    //menus
-    @FXML
-    MenuBar menuBar;
-    @FXML
-    MenuItem refreshMenuItem;
-    @FXML
-    MenuItem quitMenuItem;
-    @FXML
-    MenuItem helpMenuItem;
-    @FXML
-    MenuItem aboutMenuItem;
-    //tabs
-    @FXML
-    TabPane mainTabPane;
-    @FXML
-    Tab genesTab;
-    @FXML
-    Tab primerTab;
-    @FXML
-    Tab coordTab;
-    //Genes tab components
-    @FXML
-    Button runButton;
-    @FXML
-    Button cancelButton;
-    @FXML
-    Button refreshButton;
-    @FXML
-    ChoiceBox genomeChoiceBox;
-    @FXML
-    ChoiceBox databaseChoiceBox;
-    @FXML
-    ChoiceBox snpsChoiceBox;
-    @FXML
-    ChoiceBox designToChoiceBox;
-    @FXML
-    TextField minDistanceTextField;
-    @FXML
-    TextField flankingRegionsTextField;
-    @FXML
-    TextField genesTextField;
-    @FXML
     ProgressIndicator progressIndicator = new ProgressIndicator();
-    @FXML
-    Label progressLabel;
-    //Coordinates tab components
-    @FXML
-    TextArea regionsTextArea;
-    @FXML
-    ChoiceBox genomeChoiceBox2;
-    @FXML
-    ChoiceBox snpsChoiceBox2;
-    @FXML
-    TextField minDistanceTextField2;
-    @FXML
-    TextField flankingRegionsTextField2;
-    @FXML
     ProgressIndicator progressIndicator2 = new ProgressIndicator();
-    @FXML
-    Label progressLabel2;
-    @FXML
-    Button runButton2;
-    @FXML
-    Button cancelButton2;
-    @FXML
-    Button loadFileButton;
-    @FXML
-    Button clearButton;
-    @FXML
-    Label regionsLabel;
-    @FXML
-    CheckBox useRegionNamesCheckBox;
-    //Primer3 Settings tab components
-    @FXML
-    TextField minSizeTextField;
-    @FXML
-    TextField optSizeTextField;
-    @FXML
-    TextField maxSizeTextField;
-    @FXML
-    TextField maxDiffTextField;
-    @FXML
-    TextField sizeRangeTextField;
-    @FXML
-    TextField maxMisprimeTextField;
-    @FXML
-    TextField minTmTextField;
-    @FXML
-    TextField optTmTextField;
-    @FXML
-    TextField maxTmTextField;
-    @FXML
-    TextField splitRegionsTextField;
-    @FXML
-    ChoiceBox misprimingLibraryChoiceBox;
-    @FXML
-    Button resetValuesButton;
-    @FXML
-    CheckBox autoSelectMisprimingLibraryCheckBox;
-    String VERSION = "4";
-    Boolean CANRUN = false;
     final BuildToMisprimingLibrary buildToMisprime = new BuildToMisprimingLibrary();
-    Boolean autoSelectMisprime = true;
     final UcscBuildAndTableFetcher buildsAndTables = new UcscBuildAndTableFetcher();
-    File primer3ex;
-    File thermoConfig;
-    String defaultSizeRange = "150-250 100-300 301-400 401-500 501-600 601-700 701-850 851-1000 1000-2000";
     HashMap<TextField, String> defaultPrimer3Values = new HashMap<>();
-    String serverUrl = "http://genome.ucsc.edu";
-    File configDirectory;
-    MavenAutoPrimerConfig mvaConfig;
-    File misprimeDir;
     HashSet<String> checkedAlready = new HashSet<>();
-    int MAX_GENES_PER_DESIGN = 10;
-    int MAX_LINES_PER_DESIGN = 100;
-    int MAX_REGION_SIZE = 100000;
-    // Method to show error alerts
     private void showErrorAlert(String title, String content, Exception ex) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle(title);
@@ -238,47 +14,25 @@ public class ApplicationMain extends Application {
         alert.setContentText(content + "\n\nSee exception below:\n" + ex.getMessage());
         alert.showAndWait();
     }
-// TODO: Move UCSC-related logic to a utility class after migrating to Java 11 and Maven.
-    /**
-     * Checks UCSC tables for the given genome in a background task.
-     * Handles success and failure scenarios, including updating the UI
-     * and displaying alerts for errors.
-     *
-     * @param genome The genome for which tables are being checked.
-     */
-
-// Override JavaFX Application start method
-    @Override
     public void start(final Stage primaryStage) {
         try {
-            // Load the appropriate FXML file based on the OS
             String fxmlFile = System.getProperty("os.name").equals("Mac OS X")
-                              ? "/Users/bgold/MavenAutoPrimer/src/main/resources/fxml/MavenAutoPrimerMac.fxml"
-                              : "/Users/bgold/MavenAutoPrimer/src/main/resources/fxml/MavenAutoPrimer.fxml";
             AnchorPane page = FXMLLoader.load(new File(fxmlFile).toURI().toURL());
-
-            // Create the scene and set it on the stage
             Scene scene = new Scene(page);
             primaryStage.setScene(scene);
             primaryStage.setTitle("MavenAutoPrimer");
             primaryStage.setResizable(false);
             primaryStage.getIcons().add(new Image(new File("/Users/bgold/MavenAutoPrimer/src/main/resources/images/icon.png").toURI().toURL().toString()));
             primaryStage.show();
-
-            // Set close request handler
             primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-                @Override
                 public void handle(WindowEvent e) {
                     Platform.exit();
                     System.exit(0);
                 }
             });
-
-            // Handle macOS-specific close key combination
             if (System.getProperty("os.name").equals("Mac OS X")) {
                 final KeyCombination macCloseKeyComb = new KeyCodeCombination(KeyCode.W, KeyCombination.SHORTCUT_DOWN);
                 scene.addEventHandler(KeyEvent.KEY_RELEASED, new EventHandler<KeyEvent>() {
-                    @Override
                     public void handle(KeyEvent ev) {
                         if (macCloseKeyComb.match(ev)) {
                             primaryStage.close();
@@ -286,12 +40,10 @@ public class ApplicationMain extends Application {
                     }
                 });
             }
-
         } catch (Exception ex) {
             Logger.getLogger(MavenAutoPrimer.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-
 // Ensure this method is called inside initialize()
     public void initialize(URL url, ResourceBundle rb) {
         menuBar.setUseSystemMenuBar(true);
@@ -309,13 +61,11 @@ public class ApplicationMain extends Application {
         try {
             mvaConfig = new ApplicationConfig();
         } catch (IOException ex) {
-            // Create an error alert
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Config Error");
             alert.setHeaderText("Error Preparing MavenAutoPrimer Files");
             alert.setContentText("MavenAutoPrimer encountered an error when trying to prepare " + "required temporary files. See exception details below:\n\n" + ex.getMessage());
             // Optionally log the exception details somewhere (e.g., console or log file)
-            // Show the alert
             alert.showAndWait();
         }
         try {
@@ -327,13 +77,11 @@ public class ApplicationMain extends Application {
             mvaConfig.readGenomeXmlFile();
             //mvaConfig.readTablesXmlFiles();
         } catch (IOException|DocumentException ex) {
-            // Create an error alert
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Config Error");
             alert.setHeaderText("Error Reading MavenAutoPrimer Genome Database");
             alert.setContentText("MavenAutoPrimer encountered an error reading local stored " + "genome details - see exception below.:\n\n" + ex.getMessage());
             // Optionally log the exception details somewhere (e.g., console or log file)
-            // Show the alert
             alert.showAndWait();
         }
         try {
@@ -342,57 +90,46 @@ public class ApplicationMain extends Application {
             thermoConfig = mvaConfig.extractThermoConfig();
             mvaConfig.extractTableXml();
         } catch(IOException|ZipException ex) {
-// Create an error alert
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Config Error");
             alert.setHeaderText("Error Extracting Primer3 Files");
             alert.setContentText("MavenAutoPrimer encountered an error while trying to extract" + " the primer3 executable and primer3 config files. " + "MavenAutoPrimer will have to exit. If this reoccurs you may" + " need to reinstall MavenAutoPrimer." + "See exception below.:\n\n" + ex.getMessage());
             // Optionally log the exception details somewhere (e.g., console or log file)
-            // Show the alert
             alert.showAndWait();
         }
         designToChoiceBox.getSelectionModel().selectFirst();
         refreshButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
             public void handle(ActionEvent actionEvent) {
                 refreshDatabase();
             }
         });
         refreshMenuItem.setOnAction(new EventHandler<ActionEvent>() {
-
-            @Override
             public void handle(ActionEvent actionEvent) {
                 refreshDatabase();
             }
         });
         quitMenuItem.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
             public void handle(ActionEvent e) {
                 Platform.exit();
             }
         });
         helpMenuItem.setOnAction(new EventHandler() {
-            @Override
             public void handle (Event ev) {
                 showHelp();
             }
         });
         aboutMenuItem.setOnAction(new EventHandler() {
-            @Override
             public void handle (Event ev) {
                 showAbout(ev);
             }
         });
-
         genomeChoiceBox.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
-            @Override
             public void changed (ObservableValue ov, Number value, final Number new_value) {
                 if (new_value.intValue() >= 0) {
                     final String id = (String) genomeChoiceBox.getItems().get(new_value.intValue());
                     genomeChoiceBox.setTooltip(new Tooltip (mvaConfig.getBuildToDescription().get(id)));
                     if (autoSelectMisprime) {
                         Platform.runLater(new Runnable() {
-                            @Override
                             public void run() {
                                 selectMisprimingLibrary(id);
                             }
@@ -403,7 +140,6 @@ public class ApplicationMain extends Application {
             }
         });
         genomeChoiceBox.addEventFilter(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>() {
-            @Override
             public void handle(KeyEvent event) {
                 if (event.getCode() == KeyCode.UP || event.getCode() == KeyCode.DOWN) {
                     event.consume();
@@ -414,21 +150,17 @@ public class ApplicationMain extends Application {
                     for (int i = s + 1; i < items.size(); i++) {
                         if (items.get(i).toString().toLowerCase().startsWith(c)) {
                             genomeChoiceBox.getSelectionModel().select(i);
-                            return;
                         }
                     }
                     for (int i = 0; i < s; i++) {
-                        //wrap around
                         if (items.get(i).toString().toLowerCase().startsWith(c)) {
                             genomeChoiceBox.getSelectionModel().select(i);
-                            return;
                         }
                     }
                 }
             }
         });
         genomeChoiceBox2.addEventFilter(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>() {
-            @Override
             public void handle(KeyEvent event) {
                 if (event.getCode() == KeyCode.UP || event.getCode() == KeyCode.DOWN) {
                     event.consume();
@@ -439,26 +171,20 @@ public class ApplicationMain extends Application {
                     for (int i = s + 1; i < items.size(); i++) {
                         if (items.get(i).toString().toLowerCase().startsWith(c)) {
                             genomeChoiceBox2.getSelectionModel().select(i);
-                            return;
                         }
                     }
                     for (int i = 0; i < s; i++) {
-                        //wrap around
                         if (items.get(i).toString().toLowerCase().startsWith(c)) {
                             genomeChoiceBox2.getSelectionModel().select(i);
-                            return;
                         }
                     }
                 }
             }
         });
         autoSelectMisprimingLibraryCheckBox.selectedProperty().addListener(new ChangeListener<Boolean>() {
-            @Override
             public void changed (ObservableValue ov, Boolean value, final Boolean newValue) {
-                autoSelectMisprime = newValue;
                 final String id = (String) genomeChoiceBox.getSelectionModel().getSelectedItem();
                 Platform.runLater(new Runnable() {
-                    @Override
                     public void run() {
                         if (newValue) {
                             selectMisprimingLibrary(id);
@@ -467,7 +193,6 @@ public class ApplicationMain extends Application {
                         }
                     }
                 });
-
             }
         });
         genomeChoiceBox.getItems().clear();
@@ -505,20 +230,17 @@ public class ApplicationMain extends Application {
         minDistanceTextField2.textProperty().bindBidirectional(minDistanceTextField.textProperty());
         flankingRegionsTextField2.textProperty().bindBidirectional(flankingRegionsTextField.textProperty());
         resetValuesButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
             public void handle(ActionEvent actionEvent) {
                 resetPrimerSettings();
             }
         });
         mainTabPane.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Tab>() {
-            @Override
             public void changed (ObservableValue<? extends Tab> ov, Tab ot, Tab nt) {
                 if (ot.equals(primerTab)) {
                     resetEmptyPrimerSettings();
                 }
                 if (nt.equals(genesTab)) {
                     Platform.runLater(new Runnable() {
-                        @Override
                         public void run() {
                             genesTextField.requestFocus();
                             if (!progressLabel.textProperty().isBound()) {
@@ -529,7 +251,6 @@ public class ApplicationMain extends Application {
                     });
                 } else if (nt.equals(coordTab)) {
                     Platform.runLater(new Runnable() {
-                        @Override
                         public void run() {
                             if (!progressLabel.textProperty().isBound()) {
                                 progressLabel.setText("");
@@ -540,9 +261,7 @@ public class ApplicationMain extends Application {
                 }
             }
         });
-
         sizeRangeTextField.focusedProperty().addListener(new ChangeListener<Boolean>() {
-            @Override
             public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue ) {
                 if (!newValue) {
                     if (!checkSizeRange(sizeRangeTextField)) {
@@ -551,16 +270,12 @@ public class ApplicationMain extends Application {
                 }
             }
         });
-
         regionsTextArea.textProperty().addListener(new ChangeListener<String>() {
-            @Override
             public void changed(ObservableValue<? extends String> observable, final String oldValue, final String newValue ) {
                 //newValue = newValue.trim();
                 Platform.runLater(new Runnable() {
-                    @Override
                     public void run() {
                         if (progressLabel.textProperty().isBound()) {
-                            return;
                         }
                         String reg = newValue.replaceAll("(?m)^\\s", "");
                         int regions = reg.split("\\n").length;
@@ -569,13 +284,10 @@ public class ApplicationMain extends Application {
                 });
             }
         });
-
         regionsTextArea.focusedProperty().addListener(new ChangeListener<Boolean>() {
-            @Override
             public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue ) {
                 if (!newValue) {
                     Platform.runLater(new Runnable() {
-                        @Override
                         public void run() {
                             displayValidRegions();
                         }
@@ -584,21 +296,16 @@ public class ApplicationMain extends Application {
                 }
             }
         });
-
         genesTextField.textProperty().addListener(new ChangeListener<String>() {
-            @Override
             public void changed(ObservableValue<? extends String> observable, final String oldValue, final String newValue) {
                 //newValue = newValue.trim();
                 Platform.runLater(new Runnable() {
-                    @Override
                     public void run() {
                         checkGeneTextField();
                     }
                 });
-
             }
         });
-
         if (mvaConfig.getBuildToDescription().isEmpty()) {
             connectToUcsc();
         } else {
@@ -606,18 +313,15 @@ public class ApplicationMain extends Application {
             checkUcscGenomes();
         }
         Platform.runLater(new Runnable() {
-            @Override
             public void run() {
                 genesTextField.requestFocus();
             }
         }
                          );
     }
-
     private void checkGeneTextField() {
         progressLabel.setText("");
         if (!genesTextField.getText().matches(".*\\w.*")) {
-            return;
         }
         String[] genes = genesTextField.getText().split("\\s+");
         if (genes.length > MAX_GENES_PER_DESIGN) {
@@ -626,26 +330,17 @@ public class ApplicationMain extends Application {
             progressLabel.setText(genes.length + " genes entered.");
         }
     }
-
     private void displayValidRegions() {
         if (progressLabel.textProperty().isBound()) {
-            return;
         }
-        int validRegions = 0;
-        int invalidRegions = 0;
         String[] lines = regionsTextArea.getText().replaceAll("(?m)^\\s", "").split("\\n");
         if (lines.length < 1) {
-            return;
         }
         if (lines.length == 1 && lines[0].isEmpty()) {
-            return;
         }
-
         for (String r: lines) {
             if (RegionParser.readRegion(r) == null) {
-                invalidRegions++;
             } else {
-                validRegions++;
             }
         }
         StringBuilder lbl = new StringBuilder(validRegions + " valid regions");
@@ -662,17 +357,13 @@ public class ApplicationMain extends Application {
     }
     private void checkUcscGenomes() {
         final Task<Void> getGenomesTask = new Task<Void>() {
-            @Override
             protected Void call() throws DocumentException, MalformedURLException {
                 System.out.println("Checking genome list.");
                 buildsAndTables.connectToUcsc();
-                return null;
             }
         };
         getGenomesTask.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
-            @Override
             public void handle(WorkerStateEvent e) {
-                boolean rewriteConfig = false;
                 if (!mvaConfig.getBuildToDescription().keySet().equals(buildsAndTables.getBuildToDescription().keySet()) && buildsAndTables.getBuildToDescription() != null) {
                     Alert alert = new Alert(Alert.AlertType.WARNING);
                     alert.setTitle("Warning");
@@ -680,7 +371,6 @@ public class ApplicationMain extends Application {
                     alert.setContentText("The available genomes have changed. MavenAutoPrimer " + "will now repopulate the genome menu.");
                     alert.showAndWait();
                     System.out.println("Genome list has changed - repopulating genome choice box");
-                    rewriteConfig = true;
                     mvaConfig.setBuildToDescription(buildsAndTables.getBuildToDescription());
                     String currentSel = (String) genomeChoiceBox.getSelectionModel().getSelectedItem();
                     genomeChoiceBox.getItems().clear();
@@ -696,7 +386,6 @@ public class ApplicationMain extends Application {
                 if (buildsAndTables.getBuildToMapMaster() != null && !mvaConfig.getBuildToMapMaster().equals(buildsAndTables.getBuildToMapMaster())) {
                     mvaConfig.setBuildToMapMaster(buildsAndTables.getBuildToMapMaster());
                     System.out.println("Build-to-map master has changed - will rewrite.");
-                    rewriteConfig = true;
                 }
                 if (rewriteConfig) {
                     try {
@@ -714,7 +403,6 @@ public class ApplicationMain extends Application {
             }
         });
         getGenomesTask.setOnFailed(new EventHandler<WorkerStateEvent>() {
-            @Override
             public void handle(WorkerStateEvent e) {
                 progressIndicator.setProgress(0);
                 System.out.println(e.getSource().getException());
@@ -728,20 +416,14 @@ public class ApplicationMain extends Application {
         });
         new Thread(checkUcscTablesTask).start();
     }
-// Method to check UCSC tables
     private void checkUcscTables(final String genome) {
-        // Create a background task to check UCSC tables
         final Task<Document> checkUcscTablesTask = new Task<Document>() {
-            @Override
             protected Document call() throws DocumentException, MalformedURLException {
                 System.out.println("Checking tables for " + genome);
                 return buildsAndTables.getTableXmlDocument(genome);
-                // Retrieve the document
             }
         };
-
         checkUcscTablesTask.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
-            @Override
             public void handle(WorkerStateEvent e) {
                 System.out.println("Finished getting tables for " + genome);
                 Document doc = (Document) e.getSource().getValue();
@@ -772,10 +454,7 @@ public class ApplicationMain extends Application {
                 }
             }
         });
-
-
         checkUcscTablesTask.setOnFailed(new EventHandler<WorkerStateEvent>() {
-            @Override
             public void handle(WorkerStateEvent e) {
                 Throwable exception = e.getSource().getException();
                 if (exception != null) {
@@ -790,7 +469,6 @@ public class ApplicationMain extends Application {
         });
         new Thread(checkUcscTablesTask).start();
     }
-    //only checks snp and gene tables in lists to see if they are the same
     private boolean configTablesDiffer(LinkedHashSet<String> tables, LinkedHashSet<String> configTables) {
         ArrayList<String> tableComp = new ArrayList<>();
         ArrayList<String> configComp = new ArrayList<>();
@@ -806,7 +484,6 @@ public class ApplicationMain extends Application {
         }
         return (! (tableComp.containsAll(configComp) && configComp.containsAll(tableComp)));
     }
-// Helper method to extract genes from tables
     private LinkedHashSet<String> getGenesFromTables(LinkedHashSet<String> tables) {
         LinkedHashSet<String> genes = new LinkedHashSet<>();
         for (String t : tables) {
@@ -814,7 +491,6 @@ public class ApplicationMain extends Application {
                 genes.add(t);
             }
         }
-        return genes;
     }
     private LinkedHashSet<String> getSnpsFromTables(LinkedHashSet<String> tables) {
         LinkedHashSet<String> snps = new LinkedHashSet<>();
@@ -823,42 +499,30 @@ public class ApplicationMain extends Application {
                 snps.add(t);
             }
         }
-        return snps;
     }
-
-// Helper methods to check if a table matches a gene
     private boolean matchesGeneTable(String t) {
         return t.equals("refGene") || t.equals("knownGene") || t.equals("ensGene") || t.equals("xenoRefGene");
     }
-
     private boolean matchesSnpTable(String t) {
         return t.matches("^snp\\d+(\\w+)*");
     }
     private void connectToUcsc() {
         progressIndicator.setProgress(-1);
-
         final Task<LinkedHashMap<String, String>> getBuildsTask = new Task<LinkedHashMap<String, String>>() {
-            @Override
             protected LinkedHashMap<String, String> call() throws DocumentException, MalformedURLException {
                 buildsAndTables.fetchUcscData();
-                // Calls UCSC Fetcher
                 return buildsAndTables.getBuildToDescription();
             }
         };
-
         getBuildsTask.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
-            @Override
             public void handle(WorkerStateEvent e) {
                 LinkedHashMap<String, String> buildIds = getBuildsTask.getValue();
-
                 if (buildIds != null && !buildIds.isEmpty()) {
                     genomeChoiceBox.getItems().clear();
                     genomeChoiceBox.getItems().addAll(buildIds.keySet());
                     genomeChoiceBox.getSelectionModel().selectFirst();
-
                     mvaConfig.setBuildToDescription(buildIds);
                     mvaConfig.setBuildToMapMaster(buildsAndTables.getBuildToMapMaster());
-
                     try {
                         System.out.println("Writing new XML database file...");
                         mvaConfig.writeGenomeXmlFile();
@@ -868,13 +532,10 @@ public class ApplicationMain extends Application {
                 } else {
                     showWarningDialog("UCSC Connection", "No genome builds found.", "The UCSC server did not return any genome builds.");
                 }
-
                 setLoading(false);
             }
         });
-
         getBuildsTask.setOnFailed(new EventHandler<WorkerStateEvent>() {
-            @Override
             public void handle(WorkerStateEvent e) {
                 Throwable exception = getBuildsTask.getException();
                 if (exception != null) {
@@ -884,7 +545,6 @@ public class ApplicationMain extends Application {
                 setLoading(false);
             }
         });
-
         new Thread(getBuildsTask).start();
     }
     public void handle(WorkerStateEvent e) {
@@ -897,7 +557,6 @@ public class ApplicationMain extends Application {
         setLoading(false);
         setCanRun(false);
         getBuildsTask.setOnCancelled(new EventHandler<WorkerStateEvent>() {
-            @Override
             public void handle(WorkerStateEvent e) {
                 progressIndicator.setProgress(0);
                 progressLabel.setText("UCSC connection cancelled.");
@@ -906,7 +565,6 @@ public class ApplicationMain extends Application {
             }
         });
         cancelButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
             public void handle(ActionEvent actionEvent) {
                 getBuildsTask.cancel();
             }
@@ -914,13 +572,11 @@ public class ApplicationMain extends Application {
         progressLabel.setText("Connecting to UCSC...");
         new Thread(getBuildsTask).start();
         getTablesTask.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
-            @Override
             public void handle(WorkerStateEvent e) {
                 Document doc = (Document) e.getSource().getValue();
                 try {
                     LinkedHashSet<String> tables = mvaConfig.readTableFile(doc);
                     mvaConfig.getBuildToTables().put(id, tables);
-
                     if (!doc.asXML().equals(mvaConfig.getBuildXmlDocument(id).asXML())) {
                         try {
                             mvaConfig.writeTableXmlFile(doc, id);
@@ -946,7 +602,6 @@ public class ApplicationMain extends Application {
             }
         });
         getTablesTask.setOnFailed(new EventHandler<WorkerStateEvent>() {
-            @Override
             public void handle(WorkerStateEvent e) {
                 progressLabel.setText("Get Tables Task Failed");
                 Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -957,7 +612,6 @@ public class ApplicationMain extends Application {
             }
         });
         getTablesTask.setOnCancelled(new EventHandler<WorkerStateEvent>() {
-            @Override
             public void handle(WorkerStateEvent e) {
                 progressLabel.setText("Get Tables Task Cancelled");
                 setLoading(false);
@@ -965,7 +619,6 @@ public class ApplicationMain extends Application {
             }
         });
         cancelButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
             public void handle(ActionEvent actionEvent) {
                 getTablesTask.cancel();
             }
@@ -982,7 +635,6 @@ public class ApplicationMain extends Application {
     }
     EventHandler<KeyEvent> checkNumeric() {
         return new EventHandler<KeyEvent>() {
-            @Override
             public void handle(KeyEvent ke) {
                 if (!ke.getCharacter().matches("\\d")) {
                     ke.consume();
@@ -991,10 +643,8 @@ public class ApplicationMain extends Application {
         };
     }
     private void handleUcscGenomesUpdate() {
-        boolean rewriteConfig = false;
         if (buildsAndTables.getBuildToDescription() != null && !mvaConfig.getBuildToDescription().keySet().equals(buildsAndTables.getBuildToDescription().keySet())) {
             showWarningDialog("Warning", "Repopulating Genomes", "The available genomes have changed. MavenAutoPrimer will now repopulate the genome menu.");
-            rewriteConfig = true;
             mvaConfig.setBuildToDescription(buildsAndTables.getBuildToDescription());
             String currentSel = (String) genomeChoiceBox.getSelectionModel().getSelectedItem();
             genomeChoiceBox.getItems().clear();
@@ -1007,7 +657,6 @@ public class ApplicationMain extends Application {
         }
         if (buildsAndTables.getBuildToMapMaster() != null && !mvaConfig.getBuildToMapMaster().equals(buildsAndTables.getBuildToMapMaster())) {
             mvaConfig.setBuildToMapMaster(buildsAndTables.getBuildToMapMaster());
-            rewriteConfig = true;
         }
         if (rewriteConfig) {
             try {
@@ -1037,19 +686,16 @@ public class ApplicationMain extends Application {
     }
     private void setupGenomesTaskHandlers(Task<Void> getGenomesTask) {
         getGenomesTask.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
-            @Override
             public void handle(WorkerStateEvent e) {
                 handleUcscGenomesUpdate();
             }
         });
         getGenomesTask.setOnFailed(new EventHandler<WorkerStateEvent>() {
-            @Override
             public void handle(WorkerStateEvent e) {
                 handleUcscGenomesError(e.getSource().getException());
             }
         });
     }
-// Helper method to display error alerts
     private void showErrorAlert(String title, String content, Exception ex) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle(title);
@@ -1057,8 +703,6 @@ public class ApplicationMain extends Application {
         alert.setContentText(content + "\n\nSee exception below:\n" + ex.getMessage());
         alert.showAndWait();
     }
-
-// Method to compare SNP and gene tables
     private boolean configTablesDiffer(LinkedHashSet<String> tables, LinkedHashSet<String> configTables) {
         ArrayList<String> tableComp = new ArrayList<>();
         ArrayList<String> configComp = new ArrayList<>();
@@ -1074,14 +718,8 @@ public class ApplicationMain extends Application {
         }
         return !(tableComp.containsAll(configComp) && configComp.containsAll(tableComp));
     }
-
-
-
-//######################## CLASS BEGINS #######################
-// Corrected setupBuildsTaskHandlers method
     private void setupBuildsTaskHandlers(Task<LinkedHashMap<String, String>> getBuildsTask) {
         getBuildsTask.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
-            @Override
             public void handle(WorkerStateEvent e) {
                 LinkedHashMap<String, String> buildIds = (LinkedHashMap<String, String>) e.getSource().getValue();
                 genomeChoiceBox.getItems().clear();
@@ -1099,7 +737,6 @@ public class ApplicationMain extends Application {
             }
         });
         getBuildsTask.setOnFailed(new EventHandler<WorkerStateEvent>() {
-            @Override
             public void handle(WorkerStateEvent e) {
                 progressIndicator.setProgress(0);
                 Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -1113,7 +750,6 @@ public class ApplicationMain extends Application {
             }
         });
         getBuildsTask.setOnCancelled(new EventHandler<WorkerStateEvent>() {
-            @Override
             public void handle(WorkerStateEvent e) {
                 progressIndicator.setProgress(0);
                 progressLabel.setText("UCSC connection cancelled.");
@@ -1122,14 +758,12 @@ public class ApplicationMain extends Application {
             }
         });
         cancelButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
             public void handle(ActionEvent actionEvent) {
                 getBuildsTask.cancel();
             }
         });
         progressLabel.setText("Connecting to UCSC...");
         new Thread(getBuildsTask).start();
-        // Correctly start the thread outside all blocks
     }
     private void setTables(LinkedHashSet<String> tables) {
         LinkedHashSet<String> genes = getGenesFromTables(tables);
@@ -1153,7 +787,6 @@ public class ApplicationMain extends Application {
         snpsChoiceBox.getItems().addAll(snps);
         snpsChoiceBox.getSelectionModel().selectFirst();
     }
-
     private void getBuildTables(final String id, final boolean forceRefresh) {
         databaseChoiceBox.getItems().clear();
         snpsChoiceBox.getItems().clear();
@@ -1163,7 +796,6 @@ public class ApplicationMain extends Application {
                 checkUcscTables(id);
                 checkedAlready.add(id);
             }
-            return;
         }
         if (!mvaConfig.getBuildXmlFile(id).exists()) {
             checkedAlready.add(id);
@@ -1171,13 +803,11 @@ public class ApplicationMain extends Application {
         setLoading(true);
         progressLabel.setText("Getting database information for " + id);
         final Task<Document> getTablesTask = new Task<Document>() {
-            @Override
             protected Document call() throws DocumentException, MalformedURLException, IOException {
                 return mvaConfig.getBuildXmlDocument(id, forceRefresh);
             }
         };
         getTablesTask.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
-            @Override
             public void handle(WorkerStateEvent e) {
                 Document doc = (Document) e.getSource().getValue();
                 try {
@@ -1198,7 +828,6 @@ public class ApplicationMain extends Application {
             }
         });
         getTablesTask.setOnFailed(new EventHandler<WorkerStateEvent>() {
-            @Override
             public void handle(WorkerStateEvent e) {
                 progressLabel.setText("Get Tables Task Failed");
                 showErrorAlert("Error Retrieving Gene/SNP Tables", "Failed to retrieve available gene/SNP tables for genome " + id, e.getSource().getException());
@@ -1207,7 +836,6 @@ public class ApplicationMain extends Application {
             }
         });
         getTablesTask.setOnCancelled(new EventHandler<WorkerStateEvent>() {
-            @Override
             public void handle(WorkerStateEvent e) {
                 progressLabel.setText("Get Tables Task Cancelled");
                 setLoading(false);
@@ -1215,7 +843,6 @@ public class ApplicationMain extends Application {
             }
         });
         cancelButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
             public void handle(ActionEvent actionEvent) {
                 getTablesTask.cancel();
             }
@@ -1232,7 +859,6 @@ public class ApplicationMain extends Application {
     }
     EventHandler<KeyEvent> checkNumeric() {
         return new EventHandler<KeyEvent>() {
-            @Override
             public void handle(KeyEvent ke) {
                 if (!ke.getCharacter().matches("\\d")) {
                     ke.consume();
@@ -1242,7 +868,6 @@ public class ApplicationMain extends Application {
     }
     EventHandler<KeyEvent> checkDecimal() {
         return new EventHandler<KeyEvent>() {
-            @Override
             public void handle(KeyEvent ke) {
                 if (!ke.getCharacter().matches("[\\d.]")) {
                     ke.consume();
@@ -1252,7 +877,6 @@ public class ApplicationMain extends Application {
     }
     EventHandler<KeyEvent> checkRange() {
         return new EventHandler<KeyEvent>() {
-            @Override
             public void handle(KeyEvent ke) {
                 if (!ke.getCharacter().matches("[\\d-\\s]")) {
                     ke.consume();
@@ -1264,15 +888,11 @@ public class ApplicationMain extends Application {
         List<String> split = Arrays.asList(field.getText().split("\\s+"));
         for (String s: split) {
             if (!s.matches("\\d+-\\d+")) {
-                return false;
             }
         }
-        return true;
     }
-    @Override
     public void start(final Stage primaryStage) {
         try {
-            AnchorPane page;
             if (System.getProperty("os.name").equals("Mac OS X")) {
                 page = (AnchorPane) FXMLLoader.load(com.github.mavenautoprimer.MavenAutoPrimer.class.getResource("MavenAutoPrimerMac.fxml"));
             } else {
@@ -1286,10 +906,7 @@ public class ApplicationMain extends Application {
             primaryStage.setResizable(false);
             primaryStage.show();
             primaryStage.getIcons().add(new Image(this.getClass().getResourceAsStream("icon.png")));
-
             primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-                @Override
-
                 public void handle(WindowEvent e) {
                     Platform.exit();
                     System.exit(0);
@@ -1298,7 +915,6 @@ public class ApplicationMain extends Application {
             final KeyCombination macCloseKeyComb = new KeyCodeCombination(KeyCode.W, KeyCombination.SHORTCUT_DOWN);
             if (System.getProperty("os.name").equals("Mac OS X")) {
                 scene.addEventHandler(KeyEvent.KEY_RELEASED, new EventHandler<KeyEvent>() {
-                    @Override
                     public void handle(KeyEvent ev) {
                         if (macCloseKeyComb.match(ev)) {
                             primaryStage.close();
@@ -1310,10 +926,6 @@ public class ApplicationMain extends Application {
             Logger.getLogger(MavenAutoPrimer.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    @Override
-
-
-// Start the task
     private void showTablesUpdatedAlert() {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Tables Updated");
@@ -1321,11 +933,7 @@ public class ApplicationMain extends Application {
         alert.setContentText("The Gene/SNP tables for your currently selected genome have been updated.");
         alert.showAndWait();
     }
-
     public void loadRegionsFile() {
-        /*  we need to know how many regions we already have to make sure we don't go over
-            MAX_LINES_PER_DESIGN
-        */
         final int regions = regionsTextArea.getText().split("\\n").length;
         if (regions > MAX_LINES_PER_DESIGN) {
             Alert alert = new Alert(Alert.AlertType.WARNING);
@@ -1334,7 +942,6 @@ public class ApplicationMain extends Application {
             alert.setContentText("Cannot load file - you have already reached the maximum" + " number of lines allowed per design.  Delete some or " + "all regions if you want to load regions from a file.");
             alert.showAndWait();
             progressLabel.setText("Max regions reached.");
-            return;
         }
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Select input file");
@@ -1354,15 +961,10 @@ public class ApplicationMain extends Application {
         final File inFile = fileChooser.showOpenDialog(mainPane.getScene().getWindow());
         if (inFile != null) {
             final Task<ArrayList<String>> loadFileTask = new Task<ArrayList<String>>() {
-                @Override
                 protected ArrayList<String> call() {
                     ArrayList<String> regionStrings = new ArrayList<>();
-                    int totalRegions = 0;
-                    int valid = 0;
-                    int invalid = 0;
                     try {
                         updateMessage("Opening " + inFile.getName());
-                        BufferedReader br;
                         if (inFile.getName().endsWith(".gz")) {
                             InputStream gzipStream = new GZIPInputStream(new FileInputStream(inFile));
                             Reader decoder = new InputStreamReader(gzipStream);
@@ -1370,13 +972,8 @@ public class ApplicationMain extends Application {
                         } else {
                             br = new BufferedReader(new FileReader(inFile));
                         }
-                        String line;
-                        int n = 0;
                         while ((line = br.readLine()) != null) {
-                            n++;
                             if (line.startsWith("#")) {
-                                // skip header lines
-                                continue;
                             }
                             updateMessage("Parsing line " + n + "...");
                             GenomicRegionSummary region = RegionParser.readRegion(line);
@@ -1386,8 +983,6 @@ public class ApplicationMain extends Application {
                                     r = r + " " + region.getName();
                                 }
                                 if (totalRegions > MAX_LINES_PER_DESIGN) {
-                                    final int lastLine = n - 1;
-                                    final int validRegions = valid;
                                     Platform.runLater(() -> {
                                         Alert alert = new Alert(Alert.AlertType.ERROR);
                                         alert.setTitle("Error");
@@ -1395,13 +990,9 @@ public class ApplicationMain extends Application {
                                         alert.setContentText("You have reached the maximum " + "number of lines allowed per " + "design while processing line " + lastLine + " of file " + inFile.getName() + ". " + validRegions + " valid regions added. " + "Remaining lines will not be " + "read.");
                                         alert.showAndWait();
                                     });
-                                    break;
                                 }
                                 regionStrings.add(r);
-                                valid++;
-                                totalRegions++;
                             } else {
-                                invalid++;
                             }
                         }
                         br.close();
@@ -1433,14 +1024,12 @@ public class ApplicationMain extends Application {
                             alert.showAndWait();
                         });
                     }
-                    return regionStrings;
                 }
             };
         }
         new Thread(loadFileTask).start();
     }
     loadFileTask.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
-        @Override
         public void handle (WorkerStateEvent e) {
             setRunning(false);
             progressIndicator.progressProperty().unbind();
@@ -1451,7 +1040,6 @@ public class ApplicationMain extends Application {
         }
     });
     loadFileTask.setOnCancelled(new EventHandler<WorkerStateEvent>() {
-        @Override
         public void handle (WorkerStateEvent e) {
             setRunning(false);
             progressLabel.textProperty().unbind();
@@ -1461,7 +1049,6 @@ public class ApplicationMain extends Application {
         }
     });
     loadFileTask.setOnFailed(new EventHandler<WorkerStateEvent>() {
-        @Override
         public void handle (WorkerStateEvent e) {
             setRunning(false);
             progressLabel.textProperty().unbind();
@@ -1476,7 +1063,6 @@ public class ApplicationMain extends Application {
             alert.showAndWait();
         });
         cancelButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
             public void handle(ActionEvent actionEvent) {
                 loadFileTask.cancel();
             }
@@ -1485,15 +1071,12 @@ public class ApplicationMain extends Application {
         progressIndicator.progressProperty().set(0);
         progressLabel.textProperty().unbind();
         ArrayList<String> loadedRegions = (ArrayList<String>)e.getSource().getValue();
-        int n = 0;
         for (String r: loadedRegions) {
-        n++;
         regionsTextArea.appendText(r + "\n");
         }
         progressLabel.setText("Added " + n + " regions from " + inFile.getName() + ".");
     }
     loadFileTask.setOnCancelled(new EventHandler<WorkerStateEvent>() {
-        @Override
         public void handle (WorkerStateEvent e) {
             setRunning(false);
             progressLabel.textProperty().unbind();
@@ -1503,7 +1086,6 @@ public class ApplicationMain extends Application {
         }
     });
     loadFileTask.setOnFailed(new EventHandler<WorkerStateEvent>() {
-        @Override
         public void handle (WorkerStateEvent e) {
             setRunning(false);
             progressLabel.textProperty().unbind();
@@ -1518,7 +1100,6 @@ public class ApplicationMain extends Application {
         }
     });
     cancelButton.setOnAction(new EventHandler<ActionEvent>() {
-        @Override
         public void handle(ActionEvent actionEvent) {
             loadFileTask.cancel();
         }
@@ -1539,26 +1120,20 @@ public class ApplicationMain extends Application {
         ArrayList<GenomicRegionSummary> regions = parseRegions(regionsInput);
         if (regions.isEmpty()) {
             showAlert("No Regions", "No valid regions found.", "No valid regions were found in your input.");
-            return null;
         }
         List<String> invalidRegions = findInvalidRegions(regionsInput);
         if (!invalidRegions.isEmpty() && !handleInvalidRegions(invalidRegions)) {
-            return null;
         }
         ArrayList<GenomicRegionSummary> tooLongRegions = new ArrayList<>();
         ArrayList<GenomicRegionSummary> validRegions = filterLongRegions(regions, tooLongRegions);
         if (!tooLongRegions.isEmpty() && !handleTooLongRegions(tooLongRegions)) {
-            return null;
         }
-        return validRegions;
     }
     private ArrayList<GenomicRegionSummary> parseRegions(String regionsInput) {
         ArrayList<GenomicRegionSummary> regions = new ArrayList<>();
         List<String> tempRegions = Arrays.asList(regionsInput.replaceAll("(?m)^\\s", "").split("\\n"));
-        int n = 1;
         for (String r : tempRegions) {
             if (!r.matches(".*\\w.*")) {
-                continue;
             }
             GenomicRegionSummary region = RegionParser.readRegion(r);
             if (region != null) {
@@ -1569,20 +1144,17 @@ public class ApplicationMain extends Application {
                 regions.add(region);
             }
         }
-        return regions;
     }
     private List<String> findInvalidRegions(String regionsInput) {
         List<String> invalidRegions = new ArrayList<>();
         List<String> tempRegions = Arrays.asList(regionsInput.replaceAll("(?m)^\\s", "").split("\\n"));
         for (String r : tempRegions) {
             if (!r.matches(".*\\w.*")) {
-                continue;
             }
             if (RegionParser.readRegion(r) == null) {
                 invalidRegions.add(r);
             }
         }
-        return invalidRegions;
     }
     private boolean handleInvalidRegions(List<String> invalidRegions) {
         StringBuilder mh = new StringBuilder("Found " + invalidRegions.size() + " Invalid Region");
@@ -1616,7 +1188,6 @@ public class ApplicationMain extends Application {
                 validRegions.add(r);
             }
         }
-        return validRegions;
     }
     private boolean handleTooLongRegions(ArrayList<GenomicRegionSummary> tooLongRegions) {
         StringBuilder mh = new StringBuilder("Found " + tooLongRegions.size() + " Region");
@@ -1652,7 +1223,6 @@ public class ApplicationMain extends Application {
         alert.setContentText(content);
         alert.showAndWait();
     }
-// XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX START HERE
     public void designPrimersToCoordinates() {
         final String regionsInput = regionsTextArea.getText();
         final int optSize = Integer.valueOf(splitRegionsTextField.getText());
@@ -1660,44 +1230,32 @@ public class ApplicationMain extends Application {
         final int designBuffer = Integer.valueOf(minDistanceTextField.getText());
         final String genome = (String) genomeChoiceBox.getSelectionModel().getSelectedItem();
         if (regionsInput.isEmpty()) {
-            return;
         }
         if (! checkDesignParameters()) {
-            return;
         }
         final ArrayList<GenomicRegionSummary> regs = getRegionsForDesign(regionsInput);
         if (regs == null) {
-            return;
         }
         final Task<HashMap<String, ArrayList>> designTask = new Task<HashMap<String, ArrayList>>() {
-            @Override
             protected HashMap<String, ArrayList> call() throws SQLException, IOException {
-                ArrayList<GenomicRegionSummary> regions = regs;
-                GetGeneCoordinates geneSearcher = null;
                 ArrayList<Primer3Result> primers = new ArrayList<>();
                 ArrayList<String> designs = new ArrayList<>();
                 SequenceFromDasUcsc seqFromDas = new SequenceFromDasUcsc();
                 GenomicRegionSummary merger = new GenomicRegionSummary();
                 merger.mergeRegionsByPosition(regions);
                 regions = splitLargeRegionsMergeSmallRegions(regions, optSize, designBuffer, false);
-                int pair = 0;
-                int n = 0;
-                int p = 0;
                 updateProgress(0, regions.size() * 3);
                 for (GenomicRegionSummary r: regions) {
-                    n++;
                     int start = r.getStartPos() - flanks > 0 ? r.getStartPos() - flanks : 0;
                     int end = r.getEndPos() + flanks;
                     System.out.println("Region " + r.getChromosome() + ":" + r.getStartPos() + "-" + r.getEndPos());
                     System.out.println("Using start = " + start + " and end = " + end);
                     updateMessage("Retrieving DNA for region " + n + " of " + regions.size() + "...");
-                    String dna;
                     try {
                         dna= seqFromDas.retrieveSequence( genome, r.getChromosome(), start, end);
                     } catch(DocumentException | MalformedURLException seqex) {
                         final String rString = r.getChromosome() + ":" + start + "-" + end;
                         Platform.runLater(new Runnable() {
-                            @Override
                             public void run() {
                                 private void showErrorAlert(String title, String content, Exception ex) {
                                     Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -1707,7 +1265,6 @@ public class ApplicationMain extends Application {
                                     alert.showAndWait(ex.getMessage());
                                 }
                             });
-                            return null;
                         }
                         updateProgress(++p, regions.size() * 3);
                         //System.out.println(dna);//debug only
@@ -1724,13 +1281,10 @@ public class ApplicationMain extends Application {
                         ArrayList<String> excludeRegions = new ArrayList<>();
                         for (GenomicRegionSummary s: snps) {
                         if (s.getStartPos() < start) {
-                                continue;
                             } else if(s.getEndPos() > end) {
-                                break;
                             }
                             Integer excludeStart = s.getStartPos() - start - 1;
                             Integer excludeEnd = s.getEndPos() - start - 1;
-                            Integer excludeLength = 1 +  excludeEnd - excludeStart;
                             if (excludeStart + excludeLength < dna.length()) {
                                 excludeRegions.add(excludeStart + "," + excludeLength);
                             } else if (excludeStart < dna.length() - 1 ) {
@@ -1738,32 +1292,27 @@ public class ApplicationMain extends Application {
                                 excludeRegions.add(excludeStart + "," + diff);
                             }
                         }
-                        //get info from text fields for primer3 options
                         String target = Integer.toString(flanks - designBuffer - 1) + "," + Integer.toString(r.getLength() + 2*designBuffer);
                                         StringBuilder dnaTarget = new StringBuilder( dna.substring(0, flanks -1).toLowerCase());
                                         dnaTarget.append(dna.substring(flanks -1, flanks + r.getLength() - 1).toUpperCase());
                                         dnaTarget.append(dna.substring(flanks + r.getLength() -1) .toLowerCase());
                                         String seqid = (r.getName() + ": " + r.getId());
-                                        //design primers
                                         updateMessage("Designing primers for region " + n + " of " + regions.size() + "...");
                                         ArrayList<String> result = designPrimers(seqid, dnaTarget.toString(), target, String.join(" ", excludeRegions));
                                         updateProgress(++p, regions.size() * 3);
                                         //updateProgress(prog, 100);
                                         designs.add(String.join("\n", result));
-                                        //parse primer3 output and write our output
                                         primers.add(parsePrimer3Output(++pair,  r.getName(), r.getId(), r.getChromosome(), 1 + r.getStartPos() - flanks, result));
                     }
                     HashMap<String, ArrayList> primerResult = new HashMap<>();
                     primerResult.put("primers", primers);
                     primerResult.put("design", designs);
-                    return primerResult;
                 }
             };
             progressIndicator.progressProperty().unbind();
             progressIndicator.progressProperty().bind(designTask.progressProperty());
             progressLabel.textProperty().bind(designTask.messageProperty());
             designTask.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
-                @Override
                 public void handle (WorkerStateEvent e) {
                     progressIndicator.progressProperty().unbind();
                     progressIndicator.progressProperty().set(100);
@@ -1771,7 +1320,6 @@ public class ApplicationMain extends Application {
                     setRunning(false);
                     HashMap<String, ArrayList> result = (HashMap<String, ArrayList>) e.getSource().getValue();
                     if (result == null) {
-                        return;
                     }
                     if (result.get("primers").isEmpty()) {
                         progressLabel.setText("No primers designed.");
@@ -1784,7 +1332,6 @@ public class ApplicationMain extends Application {
                         }
                         noPrimersError.showError();
                         progressIndicator.progressProperty().set(0);
-                        return;
                     }
                     if (result.get("design").isEmpty()) {
                         progressLabel.setText("No primers designed.");
@@ -1796,10 +1343,8 @@ public class ApplicationMain extends Application {
                             alert.showAndWait();
                         }
                         progressIndicator.progressProperty().set(0);
-                        return;
                     }
                     progressLabel.setText(result.get("primers").size() + " primer pairs designed.");
-                    FXMLLoader tableLoader;
                     if (System.getProperty("os.name").equals("Mac OS X")) {
                         tableLoader = new FXMLLoader(getClass().getResource("Primer3ResultViewMac.fxml"));
                     } else {
@@ -1831,7 +1376,6 @@ public class ApplicationMain extends Application {
                 }
             });
             designTask.setOnCancelled(new EventHandler<WorkerStateEvent>() {
-                @Override
                 public void handle (WorkerStateEvent e) {
                     setRunning(false);
                     progressLabel.textProperty().unbind();
@@ -1841,7 +1385,6 @@ public class ApplicationMain extends Application {
                 }
             });
             designTask.setOnFailed(new EventHandler<WorkerStateEvent>() {
-                @Override
                 public void handle (WorkerStateEvent e) {
                     setRunning(false);
                     e.getSource().getException().printStackTrace();
@@ -1850,7 +1393,6 @@ public class ApplicationMain extends Application {
                     progressIndicator.progressProperty().unbind();
                     progressIndicator.progressProperty().set(0);
                     if (e.getSource().getException() instanceof SQLException) {
-// Helper method to display alerts with exceptions
                         private void showAlert(String title, String header, Throwable ex) {
                             Alert errorAlert = new Alert(Alert.AlertType.ERROR);
                             errorAlert.setTitle("SQL Error");
@@ -1860,7 +1402,6 @@ public class ApplicationMain extends Application {
                             ex.printStackTrace();
                         }
                     }
-// Helper method to display alerts with exceptions
                     private void showAlert(String title, String header, Throwable ex) {
                         Alert errorAlert = new Alert(Alert.AlertType.ERROR);
                         errorAlert.setTitle("Error");
@@ -1872,7 +1413,6 @@ public class ApplicationMain extends Application {
                 }
             });
             cancelButton.setOnAction(new EventHandler<ActionEvent>() {
-                @Override
                 public void handle(ActionEvent actionEvent) {
                     designTask.cancel();
                 }
@@ -1880,29 +1420,7 @@ public class ApplicationMain extends Application {
             setRunning(true);
             new Thread(designTask).start();
         }
-//XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX PASTE Here
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Handling geneSearchTask cancellation
         geneSearchTask.setOnCancelled(new EventHandler<WorkerStateEvent>() {
-            @Override
             public void handle(WorkerStateEvent e) {
                 setRunning(false);
                 progressLabel.textProperty().unbind();
@@ -1911,9 +1429,7 @@ public class ApplicationMain extends Application {
                 progressIndicator.progressProperty().set(0);
             }
         });
-// Handling geneSearchTask failure
         geneSearchTask.setOnFailed(new EventHandler<WorkerStateEvent>() {
-            @Override
             public void handle(WorkerStateEvent e) {
                 setRunning(false);
                 progressLabel.textProperty().unbind();
@@ -1927,9 +1443,7 @@ public class ApplicationMain extends Application {
                 alert.showAndWait();
             }
         });
-// Cancel button action
         cancelButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
             public void handle(ActionEvent actionEvent) {
                 geneSearchTask.cancel();
             }
@@ -1941,26 +1455,19 @@ public class ApplicationMain extends Application {
         progressLabel.textProperty().bind(geneSearchTask.messageProperty());
         new Thread(geneSearchTask).start();
     }
-// Creating reference sequence
     private String createReferenceSequence(String dna, int offset, int flanks, ArrayList<GenomicRegionSummary> exons, boolean revComp) {
         StringBuilder dnaTarget = new StringBuilder();
-        int prevEnd = 0;
         for (int i = 0; i < exons.size(); i++) {
             int tStart = exons.get(i).getStartPos() - offset;
             int tEnd = 1 + exons.get(i).getEndPos() - offset;
-            int subsStart = tStart - flanks > 0 ? tStart - flanks : 0;
             int subsEnd = tEnd + flanks - 1 < dna.length() ? tEnd + flanks - 1 : dna.length();
-            // Make sure we don't overlap end with next exon region
             if (i < exons.size() - 1) {
                 subsEnd = subsEnd < exons.get(i + 1).getStartPos() - offset ? subsEnd : exons.get(i + 1).getStartPos() - offset;
             }
-            // Make sure we don't overlap current flanks with previous flanks
             if (prevEnd > 0) {
                 if (prevEnd > subsStart) {
-                    subsStart = prevEnd;
                 }
             }
-            prevEnd = subsEnd;
             dnaTarget.append(dna.substring(subsStart, tStart).toLowerCase());
             dnaTarget.append(dna.substring(tStart, tEnd - 1).toUpperCase());
             dnaTarget.append(dna.substring(tEnd - 1, subsEnd).toLowerCase());
@@ -1971,40 +1478,30 @@ public class ApplicationMain extends Application {
             return dnaTarget.toString();
         }
     }
-    /*dup will always be an unedited gene name
     we need to check whether we already have made an '(alt)' version
-    by checking in dupStorer
-    */
     private String checkDuplicate(String dup, HashSet<String> dupStorer) {
-        String dedupped;
         if (dupStorer.contains(dup)) {
             dedupped =  dup + "(alt)";
             if (dupStorer.contains(dedupped)) {
                 for (int i = 1; i < 999; i++) {
                     dedupped = dup + "(alt" + i + ")";
                     if (!dupStorer.contains(dedupped)) {
-                        break;
                     }
                 }
             }
             dupStorer.add(dedupped);
-            return dedupped;
         } else {
             dupStorer.add(dup);
-            return dup;
         }
     }
     private void numberExons(ArrayList<GenomicRegionSummary> exonRegions, boolean minusStrand) {
-        int n = 0;
         if (minusStrand) {
             Collections.reverse(exonRegions);
         }
         for (GenomicRegionSummary e: exonRegions) {
             e.setName(e.getName() + "_ex" + (n+1));
-            n++;
         }
         if (minusStrand) {
-            //back to original order
             Collections.reverse(exonRegions);
         }
     }
@@ -2012,20 +1509,16 @@ public class ApplicationMain extends Application {
         ArrayList<GenomicRegionSummary> splitRegions = new ArrayList<>();
         for (GenomicRegionSummary r: regions) {
             if (r.getLength() > optSize) {
-                //divide length by maxSize to determine no of products to make
                 Double products = Math.ceil(r.getLength().doubleValue()/optSize.doubleValue());
                 if (products.intValue() < 2) {
                     splitRegions.add(r);
-                    continue;
                 }
-                //divide length by no. products and make each product
                 Double productSize = r.getLength().doubleValue()/products;
                 for (int i = 0; i < products.intValue(); i++) {
                     int increment = i * productSize.intValue();
                     int startPos = r.getStartPos() + increment;
                     int endPos = startPos + productSize.intValue();
                     endPos = endPos < r.getEndPos() ? endPos : r.getEndPos();
-                    String name;
                     if (minusStrand) {
                         name = r.getName() + "_part" + (products.intValue() - i);
                     } else {
@@ -2050,23 +1543,17 @@ public class ApplicationMain extends Application {
             }
         }
         ArrayList<GenomicRegionSummary> splitAndMergedRegions = new ArrayList<>();
-        boolean smallRegion;
         do {
-            smallRegion = false;
             splitAndMergedRegions.clear();
             for (int i = 0; i < splitRegions.size() - 1; i++) {
-                //merge any small and close regions
                 if (! splitRegions.get(i).getChromosome().equals( splitRegions.get(i+1).getChromosome())) {
                     splitAndMergedRegions.add(splitRegions.get(i));
-                    continue;
                 }
                 int gap = splitRegions.get(i+1).getEndPos() - splitRegions.get(i).getStartPos();
                 if (gap + (2*buffer)  <= optSize) {
-                    smallRegion = true;
                     String chrom = splitRegions.get(i).getChromosome();
                     int start = splitRegions.get(i).getStartPos();
                     int end = splitRegions.get(i+1).getEndPos();
-
                     String name = mergeNames(splitRegions.get(i).getName(), splitRegions.get(i+1).getName());
                     String id = mergeIds(splitRegions.get(i).getId(), splitRegions.get(i + 1).getId());
                     splitAndMergedRegions.add(new GenomicRegionSummary(chrom, start, end, null, null, id, name));
@@ -2075,16 +1562,13 @@ public class ApplicationMain extends Application {
                     }
                     splitRegions.clear();
                     splitRegions.addAll(splitAndMergedRegions);
-                    break;
                 } else {
                     splitAndMergedRegions.add(splitRegions.get(i));
                 }
             }
             splitAndMergedRegions.add(splitRegions.get(splitRegions.size()-1));
         } while (smallRegion);
-        return splitAndMergedRegions;
     }
-//create a new id from two genomic regions' ids
     private String mergeIds(String id1, String id2) {
         ArrayList<String> merged = new ArrayList<>();
         List<String> ids1 = Arrays.asList(id1.split("/"));
@@ -2112,10 +1596,8 @@ public class ApplicationMain extends Application {
                 merged.add(d + "_ex" + idToEx1.get(d) + "-" + idToEx2.get(d));
             } else {
                 if (d.equals(idToEx1.get(d))) {
-                    //if regions key and value will be identical
                     merged.add(d);
                 } else {
-                    //if exons value will be exon number
                     merged.add(d + "_ex" + idToEx1.get(d));
                 }
             }
@@ -2123,19 +1605,15 @@ public class ApplicationMain extends Application {
         for (String d: idToEx2.keySet()) {
             if (! idToEx1.containsKey(d)) {
                 if (d.equals(idToEx2.get(d))) {
-                    //if regions key and value will be identical
                     merged.add(d);
                 } else {
-                    //if exons value will be exon number
                     merged.add(d + "_ex" + idToEx2.get(d));
                 }
             }
         }
         return String.join("/", merged);
     }
-//create a new name from two genomic regions' names
     private String mergeNames(String name1, String name2) {
-        String name;
         List<String> geneName1 = Arrays.asList(name1.split("_ex"));
         List<String> geneName2 = Arrays.asList(name2.split("_ex"));
         if (geneName1.size() >= 2 && geneName2.size() >= 2 && geneName1.get(0).equalsIgnoreCase(geneName2.get(0))) {
@@ -2149,24 +1627,14 @@ public class ApplicationMain extends Application {
             Collections.sort(sizes);
             name = geneName1.get(0) + "_ex" + sizes.get(0) + "-" + sizes.get(sizes.size()-1);
         } else {
-            name = name1 + "/" +  name2;
         }
-        return name;
     }
-// get left and right primer from Primer3 output
     private Primer3Result parsePrimer3Output(int index, String name, String id, String chrom, int baseCoordinate, ArrayList<String> output) {
         String db = (String) genomeChoiceBox.getSelectionModel().getSelectedItem();
         final Hyperlink pcrLink = new Hyperlink();
         pcrLink.setText("in-silico PCR");
         pcrLink.setTextFill(Color.BLUE);
         pcrLink.setDisable(true);
-        String left = "NOT FOUND";
-        String right = "NOT FOUND";
-        Integer lpos = 0;
-        Integer rpos = 0;
-        Integer leftStart = 0;
-        Integer rightStart = 0;
-        String productSize = "0";
         for (String res: output) {
             if (res.startsWith("LEFT PRIMER")) {
                 List<String> split = Arrays.asList(res.split(" +"));
@@ -2179,7 +1647,6 @@ public class ApplicationMain extends Application {
             } else if (res.startsWith("PRODUCT SIZE:")) {
                 List<String> split = Arrays.asList(res.split(" +"));
                 productSize = split.get(2).replaceAll("[^\\d/]", "");
-                break;
             }
         }
         Primer3Result res = new Primer3Result();
@@ -2191,11 +1658,7 @@ public class ApplicationMain extends Application {
         res.setProductSize(Integer.valueOf(productSize));
         if (Integer.valueOf(productSize) > 0) {
             Integer wpSize = 4000 > Integer.valueOf(productSize) * 2 ? 4000 : Integer.valueOf(productSize) * 2;
-            lpos = baseCoordinate + leftStart;
-            rpos = baseCoordinate + rightStart;
-            final String pcrUrl = serverUrl + "/cgi-bin/hgPcr?db=" + db + "&wp_target=genome&wp_f=" + left + "&wp_r=" + right + "&wp_size=" + wpSize + "&wp_perfect=15&wp_good=15&boolshad.wp_flipReverse=0";
             pcrLink.setOnAction(new EventHandler<ActionEvent>() {
-                @Override
                 public void handle(ActionEvent e) {
                     getHostServices().showDocument(pcrUrl);
                     pcrLink.setVisited(true);
@@ -2206,13 +1669,10 @@ public class ApplicationMain extends Application {
             pcrLink.setUnderline(true);
             res.setIsPcrLink(pcrLink);
             res.setIsPcrUrl(pcrUrl);
-            String region = chrom + ":" + lpos + "-" + rpos;
-            final String regionUrl = serverUrl + "/cgi-bin/hgTracks?db=" + db + "&position=" + region;
             final Hyperlink regionLink = new Hyperlink();
             regionLink.setText(region);
             regionLink.setTextFill(Color.BLUE);
             regionLink.setOnAction(new EventHandler<ActionEvent>() {
-                @Override
                 public void handle(ActionEvent e) {
                     getHostServices().showDocument(regionUrl);
                     pcrLink.setVisited(true);
@@ -2226,9 +1686,7 @@ public class ApplicationMain extends Application {
             res.setIsPcrUrl(null);
             res.setRegion(null);
         }
-        return res;
     }
-//for given parameters design primers and return result as an array of strings
     private ArrayList<String> designPrimers(String name, String dna, String target, String exclude) throws IOException {
         ArrayList<String> result = new ArrayList<>();
         StringBuilder error = new StringBuilder();
@@ -2256,7 +1714,6 @@ public class ApplicationMain extends Application {
         }
         p3_job.append("=");
         System.out.println(p3_job.toString());
-        //debug only
         ArrayList<String> command = new ArrayList<>();
         command.add(primer3ex.getAbsolutePath());
         command.add("-format_output");
@@ -2268,7 +1725,6 @@ public class ApplicationMain extends Application {
             out.write(p3_job.toString());
             out.flush();
             out.close();
-            String line;
             while ((line = inbuf.readLine()) != null) {
                 //System.out.println(line);//debug only
                 result.add(line);
@@ -2281,57 +1737,34 @@ public class ApplicationMain extends Application {
             //System.out.println(exit);//debug only
         } catch(InterruptedException ex) {
             ex.printStackTrace();
-            /*this should have been caused by user pressing cancel
-            could do with a way of checking though and throwing if
-            not caused by user cancel
-            */
         }
-        return result;
     }
-    /*this method gets the start coordinates of a gene based on
-    the values for the designToChoiceBox and the Flanking region choice box
-    */
     private int getGeneStart(GeneDetails g, int flanks) {
-        int start;
         if (designToChoiceBox.getSelectionModel().getSelectedItem().equals("Coding regions")) {
             start = g.getCdsStart();
         } else {
             start = g.getTxStart();
         }
-        start -= flanks;
         if (start > 0) {
-            return start;
         } else {
-            return 0;
         }
     }
-// this method gets the end coordinates of a gene based on
-// values for the designToChoiceBox and the Flanking region choice box
     private int getGeneEnd(GeneDetails g, int flanks) {
-        int end;
         if (designToChoiceBox.getSelectionModel().getSelectedItem().equals("Coding regions")) {
             end = g.getCdsEnd();
         } else {
             end = g.getTxEnd();
         }
-        end += flanks;
-        return end;
     }
-
     private GeneCoordinatesFetcher getGeneSearcher() {
         String selectedDatabase = databaseChoiceBox.getSelectionModel().getSelectedItem();
         if (selectedDatabase == null) {
             throw new IllegalStateException("No database selected");
         }
         switch (selectedDatabase) {
-        case "refGene":
-        case "xenoRefGene":
             return new GeneCoordinatesFetcher();
-        case "knownGene":
             return new UcscGeneCoordinatesFetcher();
-        case "ensGene":
             return new EnsemblGeneCoordinatesFetcher();
-        default:
             throw new IllegalArgumentException("Unsupported database: " + selectedDatabase);
         }
     }
@@ -2343,7 +1776,6 @@ public class ApplicationMain extends Application {
         }
         if (databaseChoiceBox.getSelectionModel().getSelectedItem().equals("refGene") || databaseChoiceBox.getSelectionModel().getSelectedItem().equals("xenoRefGene")) {
             if (searchString.matches("[NX][MR]_\\w+(.\\d)*")) {
-                // Is accession, need to remove the version number if present
                 searchString = searchString.replaceAll("\\.\\d$", "");
                 GenomicBase base = new GenomicBase();
                 genes.addAll(base.getGeneFromID(searchString, (String) genomeChoiceBox.getSelectionModel().getSelectedItem(), (String) databaseChoiceBox.getSelectionModel().getSelectedItem()));
@@ -2353,7 +1785,6 @@ public class ApplicationMain extends Application {
             }
         } else if (databaseChoiceBox.getSelectionModel().getSelectedItem().equals("knownGene")) {
             if (searchString.matches("uc\\d{3}[a-z]{3}\\.\\d")) {
-                // Is accession
                 genes.addAll(geneSearcher.getGeneFromId(searchString, (String) genomeChoiceBox.getSelectionModel().getSelectedItem(), (String) databaseChoiceBox.getSelectionModel().getSelectedItem()));
             } else {
                 // Is gene symbol (?)
@@ -2361,22 +1792,17 @@ public class ApplicationMain extends Application {
             }
         } else if (databaseChoiceBox.getSelectionModel().getSelectedItem().equals("ensGene")) {
             if (searchString.matches("ENS\\w*T\\d{11}.*\\d*")) {
-                // Is accession
                 genes.addAll(geneSearcher.getGeneFromId(searchString, (String) genomeChoiceBox.getSelectionModel().getSelectedItem(), (String) databaseChoiceBox.getSelectionModel().getSelectedItem()));
             } else {
                 // Is gene symbol (?)
                 genes.addAll(geneSearcher.getGeneFromSymbol(searchString, (String) genomeChoiceBox.getSelectionModel().getSelectedItem(), (String) databaseChoiceBox.getSelectionModel().getSelectedItem()));
             }
         }
-
-        // Debugging output
         for (int i = 0; i < genes.size(); i++) {
             System.out.println(genes.get(i).getSymbol() + ":" + genes.get(i).getId() + ":" + genes.get(i).getChromosome() + ":" + genes.get(i).getTxStart() + "-" + genes.get(i).getTxEnd());
         }
-        return genes;
     }
     private void setCanRun(boolean designable) {
-        CANRUN = designable;
         runButton.setDisable(!CANRUN);
         cancelButton.setDisable(CANRUN);
         runButton2.setDisable(!CANRUN);
@@ -2415,8 +1841,6 @@ public class ApplicationMain extends Application {
             instructionsPdf.deleteOnExit();
             InputStream inputStream = this.getClass().getResourceAsStream("instructions.pdf");
             OutputStream outputStream = new FileOutputStream(instructionsPdf);
-            int read = 0;
-            byte[] bytes = new byte[1024];
             while ((read = inputStream.read(bytes)) != -1) {
                 outputStream.write(bytes, 0, read);
             }
@@ -2432,7 +1856,6 @@ public class ApplicationMain extends Application {
             ex.printStackTrace();
         }
     }
-// Method to compare SNP and gene tables
     private boolean configTablesDiffer(LinkedHashSet<String> tables, LinkedHashSet<String> configTables) {
         ArrayList<String> tableComp = new ArrayList<>();
         ArrayList<String> configComp = new ArrayList<>();
@@ -2448,7 +1871,6 @@ public class ApplicationMain extends Application {
         }
         return !(tableComp.containsAll(configComp) && configComp.containsAll(tableComp));
     }
-// Helper method to extract genes from tables
     private LinkedHashSet<String> getGenesFromTables(LinkedHashSet<String> tables) {
         LinkedHashSet<String> genes = new LinkedHashSet<>();
         for (String t : tables) {
@@ -2456,74 +1878,27 @@ public class ApplicationMain extends Application {
                 genes.add(t);
             }
         }
-        return genes;
     }
 }
-
-// MAIN CLASS
 public static void main(String[] args) {
     launch(args);
 }
 class MavenAutoPrimerConfig {
 }
-
-"""
-
-
 class Java8u40(object):
-
     def __init__(self, text):
-    self.text = text
-
                 def get_corrected_code(self):
-                """
-                Return corrected code.
-                """
                 return re.sub(r"// Placeholder", r"// Nothing here", self.text)
-
                               def get_error_log(self):
-                              """
-                              Return a list of errors in the code.
-                              """
-                              errors = []
                                        for i, line in enumerate(self.text.splitlines()):
                               m = re.search(r"// *Error:", line)
-                                            if m:
                                                 errors.append(Error(i, m.start(), m.end(), self.text[m.start(): m.end()]))
-
-                                                return errors
-
-                                                    @staticmethod
                                                     def get_incorrect_code():
-                                                    """
-                                                    Return incorrect code.
-                                                    """
-                                                    return text
-
-
                                                         class Error(object):
-
                                                             def __init__(self, line_num, start_index, end_index, text):
-                                                            self.line_num = line_num
-            self.start_index = start_index
-            self.end_index = end_index
-            self.text = text
-
                                                                 def __repr__(self):
                                                                 return "Error on line %d: %s" % (self.line_num + 1, self.text)
-
-
                                                                     class CodeFormatter(object):
-
                                                                         def __init__(self, text):
-                                                                        self.text = text
-
                                                                             def format(self, errors):
-                                                                            """
-                                                                            Return code with errors replaced with placeholders.
-                                                                            """
-                                                                            result = []
-                                                                                line_number = 0
-
                                                                                     for line in self.text.splitlines():
-                                                                                        line_number

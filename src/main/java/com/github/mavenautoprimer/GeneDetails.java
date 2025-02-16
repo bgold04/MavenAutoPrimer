@@ -27,7 +27,7 @@ import java.util.List;
  */
 
 // all coordinates are 0-based
-public class GeneDetailsModel {
+public class GeneDetails {
     private String symbol;
     private String id;
     private String chrom;

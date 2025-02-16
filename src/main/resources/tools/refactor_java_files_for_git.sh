@@ -8,7 +8,7 @@ cd /Users/bgold/MavenAutoPrimer
 git add src/main/java/com/github/EnsemblGeneCoordinatesFetcher.java
 git add src/main/java/com/github/FastaSequenceRetriever.java
 git add src/main/java/com/github/GeneCoordinatesFetcher.java
-git add src/main/java/com/github/GeneDetailsModel.java
+git add src/main/java/com/github/GeneDetails.java
 git add src/main/java/com/github/GeneSearchResultModel.java
 git add src/main/java/com/github/GenomicRegionParser.java
 git add src/main/java/com/github/GenomicRegionSummaryModel.java
