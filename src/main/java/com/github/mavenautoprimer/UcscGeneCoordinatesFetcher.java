@@ -1,5 +1,4 @@
 
-package com.github.mavenautoprimer;
 /*
  * Copyright (C) 2014 David A. Parry <d.a.parry@leeds.ac.uk>
  *
@@ -20,6 +19,8 @@ package com.github.mavenautoprimer;
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+package com.github.mavenautoprimer;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -30,32 +31,63 @@ import java.util.HashMap;
 import java.util.List;
 
 public class UcscGeneCoordinatesFetcher extends GeneCoordinatesFetcher {
+
     private static final List<String> FIELDS = Arrays.asList("name", "chrom", "txStart", "txEnd", "cdsStart", "cdsEnd", "exonCount", "exonStarts", "exonEnds", "strand");
+
     @Override
     public ArrayList<GeneDetails> getGeneFromSymbol(String symbol, String build, String db) throws SQLException {
         ArrayList<GeneDetails> transcripts = new ArrayList<>();
-        String query = "SELECT kgID, " + String.join(", ", FIELDS) + " FROM " + build + "." + db + " WHERE geneSymbol=?";
+        String query = "SELECT kgID FROM " + build + ".kgXref WHERE geneSymbol=?";
+
         try (Connection conn = getConnection();
                     PreparedStatement ps = conn.prepareStatement(query)) {
             ps.setString(1, symbol);
+            try (ResultSet rs2 = ps.executeQuery()) {
+                while (rs2.next()) {
+                    String kgID = rs2.getString("kgID");
+                    transcripts.addAll(getGeneFromId(kgID, build, db));
+                }
+            }
+        }
+        return transcripts;
+    }
+
+    @Override
+    public ArrayList<GeneDetails> getGeneFromId(String id, String build, String db) throws SQLException {
+        ArrayList<GeneDetails> transcripts = new ArrayList<>();
+        String query = "SELECT " + String.join(", ", FIELDS) + " FROM " + build + "." + db + " WHERE name=?";
+        String symbol = "";
+
+        try (Connection conn = getConnection();
+                    PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setString(1, id);
             try (ResultSet rs = ps.executeQuery()) {
                 transcripts.addAll(getTranscriptsFromResultSet(rs));
             }
-        } catch (SQLException ex) {
-            throw new SQLException("Error retrieving gene coordinates for symbol: " + symbol, ex);
         }
+
+        // Retrieve gene symbol from kgXref
+        query = "SELECT geneSymbol FROM " + build + ".kgXref WHERE kgID=?";
+        try (Connection conn = getConnection();
+                    PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setString(1, id);
+            try (ResultSet rs2 = ps.executeQuery()) {
+                if (rs2.next()) {
+                    symbol = rs2.getString("geneSymbol");
+                }
+            }
+        }
+
+        for (GeneDetails gene : transcripts) {
+            gene.setSymbol(symbol);
+        }
+
         return transcripts;
     }
-    @Override
-    public ArrayList<GeneDetails> getGeneFromID(String id, String build, String db) throws SQLException, GetGeneFromIDException {
-        ArrayList<GeneDetails> transcripts = super.getGeneFromID(id, build, db);
-        if (transcripts.isEmpty()) {
-            System.out.println("Warning: UCSC-specific fallback may be needed for " + id);
-        }
-        return transcripts;
-    }
-    private ArrayList<GeneDetails> getTranscriptsFromResultSet(ResultSet rs) throws SQLException {
+
+    protected ArrayList<GeneDetails> getTranscriptsFromResultSet(ResultSet rs) throws SQLException {
         ArrayList<GeneDetails> transcripts = new ArrayList<>();
+
         while (rs.next()) {
             GeneDetails geneDetails = new GeneDetails();
             geneDetails.setId(rs.getString("name"));
